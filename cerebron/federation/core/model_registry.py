@@ -59,7 +59,7 @@ def build_payload(spec, prompt):
         elif lname in {"max_new_tokens", "max_tokens", "maximum_new_tokens"}:
             payload[name] = 40
         elif lname == "temperature":
-            payload[name] = 0.0
+            payload[name] = 0.1
         elif lname == "top_p":
             payload[name] = 1.0
         elif lname == "top_k":
@@ -120,7 +120,7 @@ def apply_probe(model, result, policy):
         model["consecutive_failures"] = 0
         if model["consecutive_successes"] >= int(policy.get("rehabilitate_after_consecutive_successes", 2)):
             model["status"] = "HEALTHY"
-        elif model.get("status") == "QUARANTINED":
+        elif model.get("status") in {"QUARANTINED", "DEGRADED"}:
             model["status"] = "PROBATION"
         if result.get("endpoint"):
             model["last_endpoint"] = result["endpoint"]
