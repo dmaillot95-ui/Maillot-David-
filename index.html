@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>CÉRÉBRON Ω Local</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">CÉRÉBRON Ω</p>
+        <h1>Essaim IA local dans le navigateur</h1>
+        <p class="subtitle">Les appels IA sont exécutés localement avec WebGPU. Vercel ne sert que l’interface.</p>
+      </div>
+      <div class="status-pill" id="webgpuStatus">Vérification WebGPU…</div>
+    </header>
+
+    <section class="card grid-2">
+      <div>
+        <label for="modelSelect">Modèle local</label>
+        <select id="modelSelect"></select>
+        <div class="row gap top-space">
+          <button id="loadModelBtn" class="primary">Charger le modèle</button>
+          <button id="refreshModelsBtn" class="secondary">Actualiser</button>
+        </div>
+        <div class="progress-wrap top-space">
+          <div class="progress"><span id="modelProgressBar"></span></div>
+          <small id="modelProgressText">Modèle non chargé</small>
+        </div>
+      </div>
+      <div class="note">
+        <strong>Important</strong>
+        <p>100 agents = 100 appels locaux séparés au même moteur IA, pas 100 modèles chargés simultanément. Les tâches passent en file pour éviter de saturer le portable.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <label for="mission">Mission</label>
+      <textarea id="mission" rows="6" placeholder="Ex. Auditer ce lemme Collatz, chercher les failles, calculer les cas critiques et produire une synthèse vérifiable."></textarea>
+
+      <div class="controls-grid top-space">
+        <div>
+          <label for="workerCount">Agents de travail</label>
+          <input id="workerCount" type="number" min="1" max="120" value="10" />
+        </div>
+        <div>
+          <label for="groupSize">Agents par essaim</label>
+          <input id="groupSize" type="number" min="1" max="10" value="10" />
+        </div>
+        <div>
+          <label for="workerTokens">Tokens max / agent</label>
+          <input id="workerTokens" type="number" min="128" max="1200" value="420" />
+        </div>
+      </div>
+
+      <div class="presets top-space">
+        <button data-count="10" class="chip">10</button>
+        <button data-count="50" class="chip">50</button>
+        <button data-count="100" class="chip">100</button>
+        <button data-count="120" class="chip">120</button>
+      </div>
+
+      <div class="row wrap gap top-space">
+        <button id="startBtn" class="primary">Lancer</button>
+        <button id="stopBtn" class="danger" disabled>Stop</button>
+        <button id="resumeBtn" class="secondary">Reprendre</button>
+        <button id="exportBtn" class="secondary">Exporter JSON</button>
+        <button id="clearBtn" class="ghost">Effacer mémoire locale</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="stats">
+        <div><span class="stat-label">État</span><strong id="runStatus">Inactif</strong></div>
+        <div><span class="stat-label">Agents exécutés</span><strong id="doneCount">0</strong></div>
+        <div><span class="stat-label">Essaims fusionnés</span><strong id="swarmCount">0</strong></div>
+        <div><span class="stat-label">Erreurs</span><strong id="errorCount">0</strong></div>
+      </div>
+      <div class="progress-wrap top-space">
+        <div class="progress"><span id="runProgressBar"></span></div>
+        <small id="runProgressText">Aucune campagne active</small>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>Synthèse</h2>
+        <span class="badge" id="campaignId">—</span>
+      </div>
+      <pre id="finalOutput">Aucun résultat.</pre>
+    </section>
+
+    <section class="card">
+      <details>
+        <summary>Résultats détaillés des agents</summary>
+        <div id="results"></div>
+      </details>
+    </section>
+
+    <footer>
+      <p>CLAIM ≤ EVIDENCE · REALITY &gt; COHERENCE · UNKNOWN REMAINS UNKNOWN</p>
+    </footer>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
