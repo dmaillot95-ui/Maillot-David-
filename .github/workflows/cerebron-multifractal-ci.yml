@@ -1,0 +1,30 @@
+name: CEREBRON Multifractal CI
+
+on:
+  push:
+    paths:
+      - 'cerebron/multifractal/**'
+      - 'scripts/test-multifractal.mjs'
+      - 'app/api/cerebron/multifractal/**'
+      - '.github/workflows/cerebron-multifractal-ci.yml'
+  pull_request:
+    paths:
+      - 'cerebron/multifractal/**'
+      - 'scripts/test-multifractal.mjs'
+      - 'app/api/cerebron/multifractal/**'
+      - '.github/workflows/cerebron-multifractal-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test-engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Deterministic multifractal self-test
+        run: node scripts/test-multifractal.mjs
