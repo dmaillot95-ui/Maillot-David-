@@ -1,0 +1,88 @@
+{
+  "schema": "cerebron-federation-v1",
+  "status": "ARCHITECTURE_FROZEN_PHASE_1",
+  "leader": {
+    "role": "CHATGPT_COORDINATOR",
+    "authority": "final_orchestration_and_user_interface",
+    "rules": [
+      "REALITY>COHERENCE",
+      "EVIDENCE>CONFIDENCE",
+      "CLAIM<=EVIDENCE",
+      "VERIFY_BEFORE_COMMIT",
+      "SIMULATION!=TEST",
+      "INDEPENDENT_MODELS_BEFORE_CONSENSUS"
+    ]
+  },
+  "scale": {
+    "civilizations": 12,
+    "teams_per_civilization": 10,
+    "agents_per_team": 12,
+    "logical_agents_per_civilization": 120,
+    "logical_agents_total": 1440,
+    "target_cycles": 10,
+    "target_agent_runs": 14400,
+    "github_parallel_cap": 20,
+    "execution_model": "queued_waves_with_persistent_state"
+  },
+  "civilizations": [
+    {"id":"C01","name":"EXPLORATION_RECHERCHE","mission":"sources, prior art, hypotheses, search space"},
+    {"id":"C02","name":"FORMALISATION","mission":"definitions, lemmas, invariants, exact problem decomposition"},
+    {"id":"C03","name":"PREUVE","mission":"independent proof routes and theorem construction"},
+    {"id":"C04","name":"CALCUL_SIMULATION","mission":"reproducible arithmetic, code, numerical falsification"},
+    {"id":"C05","name":"INGENIERIE","mission":"constraints, interfaces, feasibility, implementation"},
+    {"id":"C06","name":"INVENTION","mission":"alternative mechanisms, new conjectures, high-novelty routes"},
+    {"id":"C07","name":"RED_TEAM","mission":"attack claims, search counterexamples, failure modes"},
+    {"id":"C08","name":"CONTRE_AUDIT","mission":"audit the auditors, detect shared assumptions and correlated errors"},
+    {"id":"C09","name":"REPLICATION","mission":"independent reproduction using different models and methods"},
+    {"id":"C10","name":"CONTRADICTION_CAUSALITE","mission":"contradiction bank, causal checks, assumption conflicts"},
+    {"id":"C11","name":"SYNTHESE_MEMOIRE","mission":"compress validated knowledge and maintain canonical state"},
+    {"id":"C12","name":"DECISION_TRANSFER","mission":"rank next actions, evidence gates, stop/continue decisions"}
+  ],
+  "team_template": {
+    "size": 12,
+    "roles": [
+      "SCOUT",
+      "DECOMPOSER",
+      "PROOF_A",
+      "PROOF_B",
+      "COMPUTE_CHECKER",
+      "ALTERNATIVE_ROUTE",
+      "FALSIFIER",
+      "RED_TEAM",
+      "COUNTER_AUDITOR",
+      "REPLICATOR",
+      "SYNTHESIZER",
+      "JUDGE"
+    ]
+  },
+  "claim_pipeline": [
+    "PROPOSED",
+    "CHECKED",
+    "INDEPENDENTLY_REPLICATED",
+    "RED_TEAM_SURVIVED",
+    "ACCEPTED",
+    "REJECTED"
+  ],
+  "acceptance_gate": {
+    "minimum_independent_model_families": 2,
+    "minimum_audits": 1,
+    "minimum_counter_audits": 1,
+    "deterministic_check_required_when_possible": true,
+    "same_model_repetitions_count_as_independent": false,
+    "unsupported_consensus_is_evidence": false
+  },
+  "state_files": {
+    "mission_queue": "cerebron/federation/state/mission-queue.json",
+    "model_registry": "cerebron/federation/state/model-registry.json",
+    "claim_register": "cerebron/federation/state/claim-register.json",
+    "contradiction_register": "cerebron/federation/state/contradiction-register.json",
+    "latest_state": "cerebron/federation/state/latest-state.json"
+  },
+  "free_first_policy": {
+    "paid_inference_providers": false,
+    "preferred_workers": ["public_huggingface_spaces", "self_hosted_open_models_if_available"],
+    "orchestrator": "github_actions_public_standard_runners",
+    "fallback_on_worker_failure": "quarantine_and_reroute",
+    "spend_limit": 0
+  }
+}
