@@ -1,3 +1,5 @@
+import { loadBaseConfig, proposeCandidate, runABCycle, getLabState } from './cerebron/core/lab.js';
+
 const $ = (id) => document.getElementById(id);
 
 const ROLE_TEMPLATES = [
@@ -27,6 +29,9 @@ let engineModel = null;
 let stopRequested = false;
 let activeCampaign = null;
 let state = loadState();
+let evoBaseline = null;
+let evoCandidate = null;
+let evoBusy = false;
 
 function loadState() {
   try {
@@ -314,6 +319,88 @@ function clearMemory() {
   $("runStatus").textContent = "Inactif";
 }
 
+function renderCandidate() {
+  if (!evoCandidate) {
+    $("evoMutation").textContent = "—";
+    return;
+  }
+  $("evoGeneration").textContent = `G${evoCandidate.generation ?? 0}`;
+  $("evoMutation").textContent = JSON.stringify(evoCandidate.mutations || [], null, 2);
+}
+
+async function evoInit() {
+  evoBaseline = await loadBaseConfig();
+  evoCandidate = null;
+  $("evoGeneration").textContent = `G${evoBaseline.generation ?? 0}`;
+  $("evoMutation").textContent = "Baseline chargée. Propose un candidat.";
+  $("evoDecision").textContent = "NOT EXECUTED";
+  $("evoAudit").textContent = "Aucun audit.";
+  $("evoProgressBar").style.width = "0%";
+  $("evoProgressText").textContent = `Baseline ${evoBaseline.version}`;
+}
+
+function evoMutate() {
+  if (!evoBaseline) throw new Error("Charge d'abord la baseline.");
+  evoCandidate = proposeCandidate(evoBaseline);
+  renderCandidate();
+  $("evoDecision").textContent = "CANDIDATE READY — benchmark requis";
+}
+
+async function evoRun(mode) {
+  if (evoBusy) return;
+  if (!engine) throw new Error("Charge d'abord un modèle local.");
+  if (!evoBaseline) await evoInit();
+  if (!evoCandidate) evoMutate();
+
+  evoBusy = true;
+  const total = mode === 'full' ? 216 : 24;
+  let done = 0;
+  $("evoQuickBtn").disabled = true;
+  $("evoFullBtn").disabled = true;
+  $("evoDecision").textContent = "RUNNING";
+  $("evoProgressBar").style.width = "0%";
+
+  try {
+    const record = await runABCycle({
+      baselineConfig: evoBaseline,
+      candidateConfig: evoCandidate,
+      inferFn: infer,
+      mode,
+      onProgress: (p) => {
+        done += 1;
+        const pct = Math.min(100, Math.round(done / total * 100));
+        $("evoProgressBar").style.width = `${pct}%`;
+        $("evoProgressText").textContent = `${p.side} · ${p.testCase} · ${done}/${total}`;
+      }
+    });
+
+    const ev = record.evaluation;
+    const gain = Number.isFinite(ev?.gain) ? `${(ev.gain * 100).toFixed(2)}%` : "n/a";
+    $("evoDecision").textContent = `${ev?.decision || 'HOLD'}\n${ev?.reason || ''}\nGain: ${gain}\nAblation: NOT EXECUTED\nRed Team: NOT EXECUTED`;
+    $("evoAudit").textContent = JSON.stringify(record.audit, null, 2);
+    $("evoProgressBar").style.width = "100%";
+    $("evoProgressText").textContent = `Benchmark ${mode} terminé · décision ${ev?.decision || 'HOLD'}`;
+  } finally {
+    evoBusy = false;
+    $("evoQuickBtn").disabled = false;
+    $("evoFullBtn").disabled = false;
+  }
+}
+
+function restoreEvolutionView() {
+  const lab = getLabState();
+  const record = lab?.active;
+  if (!record) return;
+  evoBaseline = record.baselineConfig || null;
+  evoCandidate = record.candidateConfig || null;
+  renderCandidate();
+  const ev = record.evaluation || {};
+  const gain = Number.isFinite(ev.gain) ? `${(ev.gain * 100).toFixed(2)}%` : "n/a";
+  $("evoDecision").textContent = `${ev.decision || 'HOLD'}\n${ev.reason || ''}\nGain: ${gain}`;
+  $("evoAudit").textContent = JSON.stringify(record.audit || {}, null, 2);
+  $("evoProgressText").textContent = "Dernier cycle restauré depuis la mémoire locale";
+}
+
 function wire() {
   $("loadModelBtn").addEventListener("click", () => loadModel().catch((e) => alert(e.message)));
   $("refreshModelsBtn").addEventListener("click", () => populateModels().catch((e) => alert(e.message)));
@@ -322,6 +409,10 @@ function wire() {
   $("resumeBtn").addEventListener("click", () => resume().catch((e) => alert(e.message)));
   $("exportBtn").addEventListener("click", exportState);
   $("clearBtn").addEventListener("click", clearMemory);
+  $("evoInitBtn").addEventListener("click", () => evoInit().catch((e) => alert(e.message)));
+  $("evoMutateBtn").addEventListener("click", () => { try { evoMutate(); } catch (e) { alert(e.message); } });
+  $("evoQuickBtn").addEventListener("click", () => evoRun('quick').catch((e) => alert(e.message)));
+  $("evoFullBtn").addEventListener("click", () => evoRun('full').catch((e) => alert(e.message)));
   document.querySelectorAll("[data-count]").forEach((b) => b.addEventListener("click", () => $("workerCount").value = b.dataset.count));
 }
 
@@ -329,6 +420,7 @@ async function init() {
   $("webgpuStatus").textContent = navigator.gpu ? "WebGPU disponible" : "WebGPU indisponible";
   $("webgpuStatus").classList.toggle("bad", !navigator.gpu);
   wire();
+  restoreEvolutionView();
   try {
     await populateModels();
   } catch (e) {
