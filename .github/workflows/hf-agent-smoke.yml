@@ -22,5 +22,5 @@ jobs:
         run: hf-gradio info huggingface-projects/llama-3.2-3B-Instruct | tee /tmp/hf-info.json
       - name: Call real external Llama agent
         run: |
-          hf-gradio predict huggingface-projects/llama-3.2-3B-Instruct /generate '{"message":"Réponds sur une seule ligne exactement sous la forme HF_AGENT_OK | 37*41=<résultat>","chat_history":[],"max_new_tokens":64,"temperature":0.1,"top_p":0.9,"top_k":40,"repetition_penalty":1.0}' | tee /tmp/hf-result.json
+          hf-gradio predict huggingface-projects/llama-3.2-3B-Instruct /generate '{"message":"Réponds sur une seule ligne exactement sous la forme HF_AGENT_OK | 37*41=<résultat>","max_new_tokens":64,"temperature":0.1,"top_p":0.9,"top_k":40,"repetition_penalty":1.0}' | tee /tmp/hf-result.json
           grep -q 'HF_AGENT_OK' /tmp/hf-result.json
