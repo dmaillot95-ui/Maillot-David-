@@ -4,6 +4,10 @@
 Reads the persistent queue and living Hugging Face model registry, routes tasks to
 zero-euro public Spaces, and writes immutable JSONL execution results. Shard jobs
 do NOT mutate shared queue state; a single reducer merges their artifacts later.
+
+Quota policy: never buy capacity. If a free Space is quota/rate limited, try an
+independent compatible family, otherwise return HOLD_QUOTA_BACKOFF so the task
+remains retryable for a later wave.
 """
 from __future__ import annotations
 
@@ -11,7 +15,7 @@ import argparse
 import hashlib
 import json
 import subprocess
-import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +39,11 @@ ROLE_DIRECTIVES = {
 }
 
 PREFERRED_ENDPOINTS = ["/generate", "/chat", "/predict", "/respond", "/infer", "/run"]
+QUOTA_MARKERS = (
+    "quota", "zerogpu", "rate limit", "rate_limit", "too many requests",
+    "429", "capacity", "temporarily unavailable", "resource exhausted"
+)
+MAX_MODEL_ATTEMPTS_PER_TASK = 3
 
 
 def load(path: Path):
@@ -48,6 +57,11 @@ def size_num(value: str) -> float:
         return 0.0
 
 
+def is_quota_error(text: str | None) -> bool:
+    s = (text or "").lower()
+    return any(marker in s for marker in QUOTA_MARKERS)
+
+
 def active_models(role: str):
     reg = load(REGISTRY_PATH)
     models = []
@@ -56,16 +70,27 @@ def active_models(role: str):
             continue
         if role not in m.get("roles_allowed", []):
             continue
+        if m.get("cost_class") != "ZERO_EURO_PUBLIC_SPACE":
+            continue
         models.append({"model_id": model_id, **m})
     return models
 
 
-def choose_model(task):
+def model_candidates(task):
+    """Return deterministic candidates: preferred family first, then independent families.
+
+    One best model per family is tried before a second model from an already tried
+    family. This prioritises independence and avoids hammering a single Space.
+    """
     role = task["role"]
     models = active_models(role)
     if not models:
-        return None
-    families = sorted({m["family"] for m in models})
+        return []
+
+    groups = {}
+    for m in models:
+        groups.setdefault(m["family"], []).append(m)
+    families = sorted(groups)
     lane = {
         "PROOF_A": 0,
         "PROOF_B": 1,
@@ -76,11 +101,20 @@ def choose_model(task):
     }.get(role)
     if lane is None:
         lane = int(hashlib.sha256(task["task_id"].encode()).hexdigest(), 16)
-    family = families[lane % len(families)]
-    candidates = [m for m in models if m["family"] == family]
-    # Prefer larger model inside the chosen independent family, then stable id.
-    candidates.sort(key=lambda m: (-size_num(m.get("size_class", "0")), m["model_id"]))
-    return candidates[0]
+    start = lane % len(families)
+    family_order = families[start:] + families[:start]
+
+    for fam in family_order:
+        groups[fam].sort(key=lambda m: (-size_num(m.get("size_class", "0")), m["model_id"]))
+
+    ordered = []
+    # First pass: one model from each independent family.
+    for fam in family_order:
+        ordered.append(groups[fam][0])
+    # Second pass: remaining compatible models in those families.
+    for fam in family_order:
+        ordered.extend(groups[fam][1:])
+    return ordered[:MAX_MODEL_ATTEMPTS_PER_TASK]
 
 
 def role_prompt(task, mission, civilization_mission: str):
@@ -160,11 +194,12 @@ def invoke(model, prompt):
     space = model["space"]
     info = run(["hf-gradio", "info", space], 120)
     if info.returncode != 0:
-        return False, "", {"stage": "info", "error": (info.stderr or info.stdout)[-1500:]}
+        err = (info.stderr or info.stdout)[-1500:]
+        return False, "", {"stage": "info", "error": err, "error_type": "QUOTA" if is_quota_error(err) else "UPSTREAM"}
     try:
         api = json.loads(info.stdout)
     except Exception as exc:
-        return False, "", {"stage": "decode", "error": repr(exc)}
+        return False, "", {"stage": "decode", "error": repr(exc), "error_type": "DECODE"}
     endpoints = list(api.items())
     preferred = [model.get("last_endpoint")] + PREFERRED_ENDPOINTS
     preferred = [x for x in preferred if x]
@@ -177,9 +212,13 @@ def invoke(model, prompt):
         pred = run(["hf-gradio", "predict", space, endpoint, json.dumps(payload, ensure_ascii=False)], 240)
         if pred.returncode == 0 and (pred.stdout or "").strip():
             text = extract_text(pred.stdout)
-            return True, text, {"stage": "predict", "endpoint": endpoint}
-        errors.append(f"{endpoint}: {(pred.stderr or pred.stdout)[-700:]}")
-    return False, "", {"stage": "predict", "error": " | ".join(errors[-3:]) or "No compatible endpoint"}
+            return True, text, {"stage": "predict", "endpoint": endpoint, "error_type": None}
+        err = (pred.stderr or pred.stdout)[-1200:]
+        if is_quota_error(err):
+            # Do not hammer every endpoint of the same quota-limited Space.
+            return False, "", {"stage": "predict", "endpoint": endpoint, "error": err, "error_type": "QUOTA"}
+        errors.append(f"{endpoint}: {err[-700:]}")
+    return False, "", {"stage": "predict", "error": " | ".join(errors[-3:]) or "No compatible endpoint", "error_type": "UPSTREAM"}
 
 
 def queue_tasks(shard: int, limit: int, mission_id: str | None):
@@ -203,29 +242,66 @@ def civilization_map():
 
 
 def execute_one(task, mission, civ_map):
-    model = choose_model(task)
+    candidates = model_candidates(task)
     base = {
         "task_id": task["task_id"], "mission_id": task.get("mission_id"),
         "cycle": task.get("cycle"), "civilization": task.get("civilization"),
         "team": task.get("team"), "role": task["role"], "shard": task.get("shard")
     }
-    if model is None:
+    if not candidates:
         return {**base, "execution_status": "HOLD_NO_COMPATIBLE_MODEL", "ok": False,
-                "model_id": None, "model_family": None, "response": "", "error": "No HEALTHY/PROBATION compatible model"}
+                "model_id": None, "model_family": None, "response": "", "error": "No zero-euro HEALTHY/PROBATION compatible model",
+                "attempted_models": [], "evidence_status": "NO_EVIDENCE"}
+
     prompt = role_prompt(task, mission, civ_map.get(task.get("civilization"), ""))
-    ok, response, meta = invoke(model, prompt)
+    attempts = []
+    final_meta = {}
+    for model in candidates:
+        ok, response, meta = invoke(model, prompt)
+        attempt = {
+            "model_id": model["model_id"],
+            "model_family": model["family"],
+            "space": model["space"],
+            "ok": bool(ok),
+            "endpoint": meta.get("endpoint"),
+            "error_type": meta.get("error_type"),
+            "error": meta.get("error"),
+        }
+        attempts.append(attempt)
+        final_meta = {"model": model, "meta": meta}
+        if ok:
+            return {
+                **base,
+                "execution_status": "COMPLETED",
+                "ok": True,
+                "model_id": model["model_id"],
+                "model_family": model["family"],
+                "space": model["space"],
+                "endpoint": meta.get("endpoint"),
+                "response": response,
+                "response_sha256": hashlib.sha256(response.encode()).hexdigest() if response else None,
+                "error": None,
+                "attempted_models": attempts,
+                "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
+            }
+        # Small backoff before trying another free family; never purchase capacity.
+        time.sleep(1.5 if meta.get("error_type") == "QUOTA" else 0.5)
+
+    all_quota = bool(attempts) and all(a.get("error_type") == "QUOTA" for a in attempts)
+    last_model = final_meta.get("model") or candidates[-1]
     return {
         **base,
-        "execution_status": "COMPLETED" if ok else "FAILED_RETRYABLE",
-        "ok": bool(ok),
-        "model_id": model["model_id"],
-        "model_family": model["family"],
-        "space": model["space"],
-        "endpoint": meta.get("endpoint"),
-        "response": response,
-        "response_sha256": hashlib.sha256(response.encode()).hexdigest() if response else None,
-        "error": meta.get("error"),
-        "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT" if ok else "NO_EVIDENCE"
+        "execution_status": "HOLD_QUOTA_BACKOFF" if all_quota else "FAILED_RETRYABLE",
+        "ok": False,
+        "model_id": last_model.get("model_id"),
+        "model_family": last_model.get("family"),
+        "space": last_model.get("space"),
+        "endpoint": final_meta.get("meta", {}).get("endpoint"),
+        "response": "",
+        "response_sha256": None,
+        "error": final_meta.get("meta", {}).get("error"),
+        "attempted_models": attempts,
+        "evidence_status": "NO_EVIDENCE",
     }
 
 
@@ -256,21 +332,27 @@ def main():
     else:
         tasks, missions = queue_tasks(args.shard, args.limit, args.mission_id)
 
+    # Stagger the 20 shards so free public Spaces are not hit at the same instant.
+    if tasks and not args.smoke:
+        time.sleep(args.shard * 0.25)
+
     results = []
-    for task in tasks:
+    for index, task in enumerate(tasks):
         mission = missions.get(task.get("mission_id"))
         if not mission:
-            result = {"task_id": task["task_id"], "execution_status": "FAILED_RETRYABLE", "ok": False, "error": "Mission missing"}
+            result = {"task_id": task["task_id"], "execution_status": "FAILED_RETRYABLE", "ok": False, "error": "Mission missing", "attempted_models": []}
         elif task["role"] == "COMPUTE_CHECKER":
             result = {"task_id": task["task_id"], "mission_id": task.get("mission_id"), "cycle": task.get("cycle"),
                       "civilization": task.get("civilization"), "team": task.get("team"), "role": task["role"],
                       "shard": args.shard, "execution_status": "HOLD_DETERMINISTIC_CHECK", "ok": False,
                       "model_id": None, "model_family": None, "response": "HOLD_DETERMINISTIC_CHECK",
-                      "error": None, "evidence_status": "DETERMINISTIC_CHECK_REQUIRED"}
+                      "error": None, "attempted_models": [], "evidence_status": "DETERMINISTIC_CHECK_REQUIRED"}
         else:
             result = execute_one(task, mission, civ_map)
         results.append(result)
         print(json.dumps({k: result.get(k) for k in ("task_id","role","ok","execution_status","model_id","model_family","endpoint")}, ensure_ascii=False))
+        if index + 1 < len(tasks):
+            time.sleep(0.75 + ((args.shard + index) % 3) * 0.25)
 
     with out.open("w", encoding="utf-8") as f:
         for r in results:
