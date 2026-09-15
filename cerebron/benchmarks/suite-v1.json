@@ -1,0 +1,43 @@
+{
+  "id": "CEREBRON-BENCH-V1",
+  "version": 1,
+  "description": "Mini-suite locale pour comparer deux configurations d'orchestration sans confondre consensus et preuve.",
+  "cases": [
+    {
+      "id": "B01_ARITHMETIC",
+      "prompt": "Calcule 17 x 19. Donne le calcul, le resultat exact et un moyen de verification independent.",
+      "required_terms": ["323", "17", "19"],
+      "required_markers": ["CONCLUSION", "EVIDENCE"]
+    },
+    {
+      "id": "B02_EVIDENCE",
+      "prompt": "Une simulation est prevue dans un dossier mais n'a jamais ete executee. Peut-on classer le claim au niveau E3 ? Reponds avec statut, justification et prochaine action.",
+      "required_terms": ["non", "execute"],
+      "required_markers": ["EVIDENCE", "NEXT TEST"]
+    },
+    {
+      "id": "B03_CAUSALITY",
+      "prompt": "Deux variables sont fortement correlees sur 30 observations. Peut-on conclure a une causalite ? Donne la conclusion, les inconnues et un test discriminant.",
+      "required_terms": ["correlation", "causal"],
+      "required_markers": ["UNKNOWN", "NEXT TEST"]
+    },
+    {
+      "id": "B04_CONTRADICTION",
+      "prompt": "Deux sources industrielles donnent 80 et 120 pour le meme parametre, avec la meme unite mais des dates differentes. Que dois-tu faire avant d'utiliser une valeur nominale ?",
+      "required_terms": ["source", "date"],
+      "required_markers": ["CONTRADICTION", "EVIDENCE"]
+    },
+    {
+      "id": "B05_FALSIFICATION",
+      "prompt": "Un concept annonce +20% de performance sans test. Transforme ce claim en proposition falsifiable avec PASS, FAIL et mesure necessaire.",
+      "required_terms": ["20", "PASS", "FAIL"],
+      "required_markers": ["NEXT TEST"]
+    },
+    {
+      "id": "B06_TRANSFER",
+      "prompt": "Tu dois transmettre un concept E2 a un industriel. Indique ce qui est prouve, ce qui ne l'est pas, le prochain essai et les fichiers minimaux a remettre.",
+      "required_terms": ["E2", "fichier"],
+      "required_markers": ["EVIDENCE", "UNKNOWN", "NEXT TEST"]
+    }
+  ]
+}
