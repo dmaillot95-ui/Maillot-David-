@@ -86,20 +86,32 @@ jobs:
             --results-dir shard-results \
             --run-id '${{ github.run_id }}' \
             --summary federation-execution-summary.json
-      - name: Persist queue state when changed
+      - name: Build deterministic hierarchy
+        run: |
+          python cerebron/federation/core/hierarchy_reduce.py \
+            --results-dir shard-results \
+            --run-id '${{ github.run_id }}' \
+            --state cerebron/federation/state/hierarchy-state.json \
+            --report federation-hierarchy-report.json
+      - name: Persist queue and hierarchy state when changed
         run: |
           git config user.name 'cerebron-federation-bot'
           git config user.email 'cerebron-federation-bot@users.noreply.github.com'
-          git add cerebron/federation/state/mission-queue.json cerebron/federation/state/latest-state.json
+          git add \
+            cerebron/federation/state/mission-queue.json \
+            cerebron/federation/state/latest-state.json \
+            cerebron/federation/state/hierarchy-state.json
           if git diff --cached --quiet; then
-            echo 'No queue state change.'
+            echo 'No persistent state change.'
           else
-            git commit -m 'Persist CEREBRON 20-shard execution state'
+            git commit -m 'Persist CEREBRON shard and hierarchy state'
             git push
           fi
-      - name: Upload federation execution summary
+      - name: Upload federation execution reports
         uses: actions/upload-artifact@v4
         with:
           name: cerebron-federation-summary
-          path: federation-execution-summary.json
+          path: |
+            federation-execution-summary.json
+            federation-hierarchy-report.json
           retention-days: 30
