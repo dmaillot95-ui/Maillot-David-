@@ -5,14 +5,13 @@ on:
     paths:
       - 'cerebron/federation/control/command.json'
       - 'cerebron/federation/core/queue_engine.py'
-      - 'cerebron/federation/federation-v1.json'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: cerebron-federation-controller
+  group: cerebron-federation-state-writer
   cancel-in-progress: false
 
 jobs:
