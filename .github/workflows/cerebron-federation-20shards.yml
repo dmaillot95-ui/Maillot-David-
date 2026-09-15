@@ -5,6 +5,8 @@ on:
     paths:
       - 'cerebron/federation/control/execution.json'
   workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
 
 permissions:
   contents: write
@@ -14,8 +16,46 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  plan:
+    name: check-pending-work
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      should_run: ${{ steps.plan.outputs.should_run }}
+      pending_count: ${{ steps.plan.outputs.pending_count }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check execution gate and pending tasks
+        id: plan
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          cfg=json.loads(Path('cerebron/federation/control/execution.json').read_text(encoding='utf-8'))
+          q=json.loads(Path('cerebron/federation/state/mission-queue.json').read_text(encoding='utf-8'))
+          active=set(int(x) for x in cfg.get('active_shards', []))
+          mission=cfg.get('mission_id')
+          pending=[]
+          for t in q.get('tasks', {}).values():
+              if t.get('status') not in {'PENDING','FAILED_RETRYABLE'}:
+                  continue
+              if mission and t.get('mission_id') != mission:
+                  continue
+              if int(t.get('shard', -1)) not in active:
+                  continue
+              pending.append(t)
+          enabled=bool(cfg.get('enabled', False))
+          should=enabled and bool(pending)
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
+              f.write(f"should_run={'true' if should else 'false'}\n")
+              f.write(f"pending_count={len(pending)}\n")
+          print(json.dumps({'enabled':enabled,'pending_count':len(pending),'should_run':should},ensure_ascii=False))
+          PY
+
   shard:
     name: shard-${{ format('{0}', matrix.shard) }}
+    needs: plan
+    if: needs.plan.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -65,8 +105,8 @@ jobs:
 
   reduce:
     name: reduce-20-shards
-    if: always()
-    needs: shard
+    if: always() && needs.plan.outputs.should_run == 'true'
+    needs: [plan, shard]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
