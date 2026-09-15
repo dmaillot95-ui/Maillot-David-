@@ -1,0 +1,105 @@
+name: CEREBRON Federation 20 Shards
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/control/execution.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cerebron-federation-executor
+  cancel-in-progress: false
+
+jobs:
+  shard:
+    name: shard-${{ format('{0}', matrix.shard) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Hugging Face client
+        run: pip install --quiet hf-gradio
+      - name: Execute shard
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          cfg=json.loads(Path('cerebron/federation/control/execution.json').read_text(encoding='utf-8'))
+          shard=int(os.environ['SHARD'])
+          out=f'out/shard-{shard:02d}.jsonl'
+          Path('out').mkdir(exist_ok=True)
+          if not cfg.get('enabled', False) or shard not in cfg.get('active_shards', []):
+              Path(out).write_text('',encoding='utf-8')
+              print(json.dumps({'shard':shard,'status':'SKIPPED'}))
+              raise SystemExit(0)
+          args=['python','cerebron/federation/core/shard_worker.py','--shard',str(shard),'--limit',str(cfg.get('limit_per_shard',1)),'--output',out]
+          if cfg.get('mission_id'):
+              args += ['--mission-id', str(cfg['mission_id'])]
+          if str(cfg.get('mode','QUEUE')).upper() == 'SMOKE':
+              role=(cfg.get('smoke_roles') or {}).get(str(shard),'PROOF_A')
+              args += ['--smoke','--smoke-role',role,'--smoke-objective',str(cfg.get('smoke_objective','CEREBRON smoke test'))]
+          print('+',' '.join(args))
+          subprocess.run(args,check=True)
+          PY
+      - name: Upload shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-shard-${{ matrix.shard }}
+          path: out/shard-*.jsonl
+          if-no-files-found: warn
+          retention-days: 14
+
+  reduce:
+    name: reduce-20-shards
+    if: always()
+    needs: shard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cerebron-shard-*
+          path: shard-results
+      - name: Merge immutable shard outputs
+        run: |
+          python cerebron/federation/core/merge_shard_results.py \
+            --results-dir shard-results \
+            --run-id '${{ github.run_id }}' \
+            --summary federation-execution-summary.json
+      - name: Persist queue state when changed
+        run: |
+          git config user.name 'cerebron-federation-bot'
+          git config user.email 'cerebron-federation-bot@users.noreply.github.com'
+          git add cerebron/federation/state/mission-queue.json cerebron/federation/state/latest-state.json
+          if git diff --cached --quiet; then
+            echo 'No queue state change.'
+          else
+            git commit -m 'Persist CEREBRON 20-shard execution state'
+            git push
+          fi
+      - name: Upload federation execution summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-federation-summary
+          path: federation-execution-summary.json
+          retention-days: 30
