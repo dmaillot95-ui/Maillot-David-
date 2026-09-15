@@ -1,0 +1,46 @@
+name: CEREBRON Multifractal Live Agents
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/missions/current.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-real-agents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify real AI provider
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "PROVIDER_NOT_CONFIGURED: add repository secret GEMINI_API_KEY before launching real agents."
+            exit 2
+          fi
+
+      - name: Run CEREBRON real multifractal agents
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-3.1-flash-lite
+        run: node scripts/run-multifractal-gemini.mjs
+
+      - name: Upload mission results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-multifractal-results-${{ github.run_number }}
+          path: cerebron/results/
+          if-no-files-found: ignore
+          retention-days: 7
