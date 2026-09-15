@@ -1,0 +1,36 @@
+name: CEREBRON static checks
+
+on:
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'index.html'
+      - 'cerebron/**'
+      - '.github/workflows/cerebron-check.yml'
+  push:
+    branches:
+      - cerebron-self-improve-v1
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --input-type=module --check < app.js
+          node --input-type=module --check < cerebron/core/evolution.js
+          node --input-type=module --check < cerebron/core/benchmark.js
+          node --input-type=module --check < cerebron/core/lab.js
+      - name: Check JSON
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('cerebron/config/default.json','utf8'))"
+          node -e "JSON.parse(require('fs').readFileSync('cerebron/benchmarks/suite-v1.json','utf8'))"
+      - name: Verify interface hooks
+        run: |
+          grep -q 'id="evoQuickBtn"' index.html
+          grep -q 'id="evoFullBtn"' index.html
+          grep -q 'runABCycle' app.js
