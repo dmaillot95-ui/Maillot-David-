@@ -1,0 +1,82 @@
+name: CEREBRON Federation Controller
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/control/command.json'
+      - 'cerebron/federation/core/queue_engine.py'
+      - 'cerebron/federation/federation-v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cerebron-federation-controller
+  cancel-in-progress: false
+
+jobs:
+  controller:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute control command
+        id: control
+        run: |
+          python - <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+
+          cmd_path = Path('cerebron/federation/control/command.json')
+          cmd = json.loads(cmd_path.read_text(encoding='utf-8'))
+          action = str(cmd.get('action', 'NOP')).upper()
+          p = cmd.get('parameters') or {}
+          engine = ['python', 'cerebron/federation/core/queue_engine.py']
+
+          def run(args):
+              print('+', ' '.join(args))
+              subprocess.run(args, check=True)
+
+          if action == 'NOP':
+              print('NOP')
+          elif action == 'INIT':
+              run(engine + ['init'])
+          elif action == 'ENQUEUE':
+              args = engine + ['enqueue', '--title', p['title'], '--objective', p['objective'], '--priority', str(p.get('priority', 50)), '--cycles', str(p.get('cycles', 10))]
+              cp = subprocess.run(args, check=True, capture_output=True, text=True)
+              mission_id = cp.stdout.strip().splitlines()[-1]
+              print('MISSION_ID=' + mission_id)
+              if p.get('expand', True):
+                  run(engine + ['expand', mission_id])
+          elif action == 'EXPAND':
+              args = engine + ['expand', p['mission_id']]
+              if p.get('cycle') is not None:
+                  args += ['--cycle', str(p['cycle'])]
+              run(args)
+          elif action == 'RECOVER':
+              run(engine + ['recover'])
+          elif action == 'STATUS':
+              args = engine + ['status']
+              if p.get('mission_id'):
+                  args += ['--mission-id', p['mission_id']]
+              run(args)
+          else:
+              raise SystemExit(f'Unsupported action: {action}')
+          PY
+      - name: Persist federation state
+        run: |
+          git config user.name 'cerebron-federation-bot'
+          git config user.email 'cerebron-federation-bot@users.noreply.github.com'
+          git add cerebron/federation/state/*.json
+          if git diff --cached --quiet; then
+            echo 'No state change to persist.'
+          else
+            git commit -m 'Persist CEREBRON federation state'
+            git push
+          fi
