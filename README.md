@@ -1,41 +1,42 @@
-# CEREBRON OMEGA
+# CÉRÉBRON Ω Local
 
-Orchestrateur multi-agents experimental, prepare pour GitHub + Vercel.
+CÉRÉBRON Ω est configuré ici en application **statique** pour GitHub + Vercel. Le modèle IA tourne directement dans le navigateur avec WebLLM/WebGPU : Vercel sert l’interface mais n’exécute pas les appels IA.
 
-## Etat
+## Ce que cela change
 
-- Interface Next.js
-- Endpoint `/api/orchestrate`
-- Endpoint de controle `/api/health`
-- Jusqu'a 100 agents logiques par mission
-- Concurrence configurable par `CEREBRON_MAX_CONCURRENCY`
-- Fournisseur IA compatible OpenAI configurable
-- Aucun faux resultat : `EXECUTED`, `NOT_EXECUTED`, `ERROR`
+- aucun appel Floot pour les agents locaux ;
+- aucune clé API OpenAI nécessaire ;
+- aucun crédit IA Vercel consommé par l’orchestrateur local ;
+- chaque agent correspond à un appel d’inférence local distinct avec son propre rôle/contexte ;
+- un seul modèle est chargé et partagé afin de ne pas saturer le portable ;
+- les agents sont exécutés en file et regroupés par essaims ;
+- 10, 50, 100 ou 120 agents de travail peuvent être demandés ;
+- Stop/Reprise et sauvegarde locale des campagnes sont prévus.
 
-## Variables d'environnement
+## Limite réelle
 
-Copier les valeurs de `.env.example` dans les variables d'environnement du deploiement :
+120 agents ne signifie pas 120 modèles simultanés. La limite devient la puissance du portable, sa RAM/VRAM, WebGPU, la taille du modèle et le temps d’exécution. Les grands nombres d’agents peuvent prendre longtemps.
 
-- `CEREBRON_API_BASE`
-- `CEREBRON_API_KEY`
-- `CEREBRON_MODEL`
-- `CEREBRON_MAX_CONCURRENCY`
+## Utilisation
 
-Sans `CEREBRON_API_BASE`, l'interface reste utilisable mais les agents sont marques `NOT_EXECUTED`.
+1. Déployer/importer ce dépôt dans Vercel avec le preset `Other` (le `vercel.json` l’impose).
+2. Ouvrir l’application depuis Chrome ou Edge récent sur le portable.
+3. Vérifier que WebGPU est disponible.
+4. Choisir un petit modèle 1B–3B pour commencer.
+5. Charger le modèle ; le premier téléchargement peut être important.
+6. Entrer la mission et lancer le nombre d’agents voulu.
 
-## Deploiement Vercel
+Les résultats et checkpoints sont conservés dans `localStorage` du navigateur et peuvent être exportés en JSON.
 
-1. Importer ce depot GitHub dans Vercel.
-2. Vercel detecte automatiquement Next.js.
-3. Deployer d'abord sans cle IA pour verifier l'interface.
-4. Tester `/api/health`.
-5. Ajouter ensuite un fournisseur IA dans les variables d'environnement.
+## Règles racines
 
-## Regles racines
+- `REALITY > COHERENCE`
+- `EVIDENCE > CONFIDENCE`
+- `CLAIM <= EVIDENCE`
+- `SIMULATION != TEST`
+- `UNKNOWN REMAINS UNKNOWN`
+- `VERIFY BEFORE COMMIT`
 
-- REALITY > COHERENCE
-- EVIDENCE > CONFIDENCE
-- CLAIM <= EVIDENCE
-- SIMULATION != TEST
-- UNKNOWN REMAINS UNKNOWN
-- VERIFY BEFORE COMMIT
+## Moteur local
+
+WebLLM / MLC exécute l’inférence dans le navigateur via WebGPU. Aucun résultat d’agent n’est annoncé avant qu’un appel local réel n’ait terminé.
