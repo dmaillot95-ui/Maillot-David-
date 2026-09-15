@@ -1,0 +1,30 @@
+{
+  "schema": "cerebron-model-routing-v1",
+  "objective": "maximize real model-family diversity without paid inference",
+  "eligible_status": ["HEALTHY", "PROBATION"],
+  "fallback_status": ["DEGRADED"],
+  "excluded_status": ["QUARANTINED"],
+  "rules": {
+    "same_family_repetition_counts_as_independent": false,
+    "proof_a_proof_b_distinct_family_when_available": true,
+    "red_team_distinct_from_primary_proposer_when_available": true,
+    "counter_auditor_distinct_from_auditor_when_available": true,
+    "replicator_distinct_from_original_family_when_available": true,
+    "judge_may_read_all_outputs_but_does_not_create_independent_evidence": true,
+    "if_fewer_than_two_model_families_available": "HOLD_INDEPENDENCE_GATE",
+    "paid_fallback": "FORBIDDEN"
+  },
+  "selection": {
+    "algorithm": "deterministic_rotating_family_hash",
+    "hash_inputs": ["mission_id", "cycle", "civilization", "team", "role"],
+    "prefer": ["availability", "different_family", "role_compatibility", "health", "quality_score", "recent_success"],
+    "anti_monoculture": {
+      "max_same_family_fraction_per_team_when_alternatives_exist": 0.5,
+      "max_same_model_consecutive_assignments_per_shard": 3
+    }
+  },
+  "current_minimum_independence": {
+    "required_families_for_claim_acceptance": 2,
+    "note": "Availability is read live from model-registry.json; no fixed model is presumed operational."
+  }
+}
