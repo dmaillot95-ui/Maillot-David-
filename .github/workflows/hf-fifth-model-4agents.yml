@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   agent:
-    name: llama1b-${{ matrix.role }}
+    name: qwen7b-${{ matrix.role }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -24,14 +24,14 @@ jobs:
           python-version: '3.12'
       - name: Install client
         run: pip install --quiet hf-gradio
-      - name: Run real Llama 1B agent
+      - name: Run real Qwen 7B agent
         env:
           ROLE: ${{ matrix.role }}
         run: |
           python - <<'PY'
           import json, os, subprocess, sys
           from pathlib import Path
-          space='huggingface-projects/llama-3.2-1B-Instruct'
+          space='developerpro/Orion-zhen-Qwen2.5-7B-Instruct-Uncensored'
           role=os.environ['ROLE']
           prompts={
             'PROOF':"Étudie rigoureusement un cycle hypothétique de CINQ termes impairs x0..x4 de l'application accélérée de Collatz T(x)=(3x+1)/2^{v2(3x+1)}, avec a_i=v2(3x_i+1). Dérive l'identité cyclique exacte. Sépare PROUVÉ/À PROUVER. 250 mots max.",
@@ -39,23 +39,38 @@ jobs:
             'REDTEAM':"Red Team rigoureuse sur l'existence d'un cycle positif non trivial de CINQ termes impairs de Collatz accéléré. Teste minimum, prédécesseur, rotations, divisibilité, identité cyclique. Ne prétends pas conclure sans preuve. Termine par OBSTACLE RESTANT. 250 mots max.",
             'SYNTHESIS':"Propose UNE prochaine cible falsifiable pour éliminer les cycles positifs non triviaux de longueur N=5 de Collatz accéléré. Étiquette THEOREM seulement ce qui est dérivé, sinon TARGET/CONJECTURE. Donne énoncé, suffisance, plan, test indépendant. 250 mots max."
           }
-          p=subprocess.run(['hf-gradio','info',space],capture_output=True,text=True,timeout=120)
-          if p.returncode: print(p.stderr); sys.exit(1)
-          api=json.loads(p.stdout)
-          spec=api['/generate']['parameters']
-          payload={}
-          for q in spec:
-            n=q['name']
-            if n=='message': payload[n]=prompts[role]
-            elif n=='max_new_tokens': payload[n]=320
-            elif n=='temperature': payload[n]=0.1
-            elif n=='top_p': payload[n]=0.9
-            elif n=='top_k': payload[n]=40
-            elif n=='repetition_penalty': payload[n]=1.0
-          r=subprocess.run(['hf-gradio','predict',space,'/generate',json.dumps(payload,ensure_ascii=False)],capture_output=True,text=True,timeout=240)
-          success=r.returncode==0 and bool(r.stdout.strip())
-          out=Path(f'llama1b-{role.lower()}.txt')
-          out.write_text(f'MODEL={space}\nROLE={role}\nSUCCESS={int(success)}\n\n'+(r.stdout if success else r.stderr),encoding='utf-8')
+          prompt=prompts[role]
+          def run(cmd,timeout=240): return subprocess.run(cmd,capture_output=True,text=True,timeout=timeout)
+          info=run(['hf-gradio','info',space],120)
+          if info.returncode:
+            print(info.stderr); sys.exit(1)
+          api=json.loads(info.stdout)
+          preferred=['/generate','/chat','/predict','/respond','/infer']
+          endpoints=list(api.items())
+          endpoints.sort(key=lambda kv:(preferred.index(kv[0]) if kv[0] in preferred else 99,kv[0]))
+          success=False; response=''; used=''; errors=[]
+          for endpoint,spec in endpoints:
+            payload={}; prompt_set=False; compatible=True
+            for q in spec.get('parameters',[]):
+              n=q.get('name',''); ln=n.lower(); required=bool(q.get('required',False)); default=q.get('default'); typ=(q.get('type') or {}).get('type')
+              if ln in {'message','prompt','text','query','input','instruction','user_message'}:
+                payload[n]=prompt; prompt_set=True
+              elif ln in {'chat_history','history','messages'}: payload[n]=[]
+              elif ln in {'max_new_tokens','max_tokens','maximum_new_tokens'}: payload[n]=320
+              elif ln=='temperature': payload[n]=0.1
+              elif ln=='top_p': payload[n]=0.9
+              elif ln=='top_k': payload[n]=40
+              elif ln in {'repetition_penalty','repeat_penalty'}: payload[n]=1.0
+              elif required and default is None:
+                if typ=='string' and not prompt_set: payload[n]=prompt; prompt_set=True
+                else: compatible=False; break
+            if not compatible or not prompt_set: continue
+            r=run(['hf-gradio','predict',space,endpoint,json.dumps(payload,ensure_ascii=False)])
+            if r.returncode==0 and r.stdout.strip():
+              success=True; response=r.stdout.strip(); used=endpoint; break
+            errors.append(f'{endpoint}: {(r.stderr or r.stdout)[-1000:]}')
+          out=Path(f'qwen7b-{role.lower()}.txt')
+          out.write_text(f'MODEL={space}\nROLE={role}\nSUCCESS={int(success)}\nENDPOINT={used}\n\n'+response+'\n'+'\n'.join(errors[-3:]),encoding='utf-8')
           print(out.read_text(encoding='utf-8'))
           if not success: sys.exit(1)
           PY
@@ -63,5 +78,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: llama1b-${{ matrix.role }}
-          path: llama1b-*.txt
+          name: qwen7b-${{ matrix.role }}
+          path: qwen7b-*.txt
