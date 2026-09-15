@@ -66,6 +66,19 @@ def update_mission(q, mission_id):
     m["updated_at"] = now_iso()
 
 
+def count_attempts(row):
+    """Return (attempts, successes, failures) without inventing hidden calls."""
+    attempts = row.get("attempted_models")
+    if isinstance(attempts, list):
+        total = len(attempts)
+        success = sum(1 for a in attempts if a.get("ok"))
+        return total, success, total - success
+    # Backward compatibility with pre-fallback shard artifacts.
+    if row.get("model_id"):
+        return 1, int(bool(row.get("ok"))), int(not bool(row.get("ok")))
+    return 0, 0, 0
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--results-dir", required=True)
@@ -77,17 +90,24 @@ def main():
     rows = read_results(Path(args.results_dir))
     merged = 0
     ignored_smoke = 0
-    ok = 0
-    failed = 0
-    holds = 0
+    successful_tasks = 0
+    failed_tasks = 0
+    deterministic_holds = 0
+    quota_holds = 0
+    external_attempts = 0
+    successful_external_calls = 0
+    failed_external_calls = 0
     touched_missions = set()
 
     for row in rows:
+        att, succ, fail = count_attempts(row)
+        external_attempts += att
+        successful_external_calls += succ
+        failed_external_calls += fail
+
         tid = row.get("task_id")
         if str(tid).startswith("SMOKE-"):
             ignored_smoke += 1
-            ok += int(bool(row.get("ok")))
-            failed += int(not bool(row.get("ok")))
             continue
         t = q.get("tasks", {}).get(tid)
         if not t:
@@ -102,11 +122,17 @@ def main():
         t["evidence_status"] = row.get("evidence_status", "UNREVIEWED")
         t["result_ref"] = f"actions://{args.run_id}/{row.get('_artifact_file')}#{tid}"
         if status == "COMPLETED" and row.get("ok"):
-            t["status"] = "COMPLETED"; ok += 1
+            t["status"] = "COMPLETED"
+            successful_tasks += 1
         elif status == "HOLD_DETERMINISTIC_CHECK":
-            t["status"] = "FAILED_RETRYABLE"; holds += 1
+            t["status"] = "FAILED_RETRYABLE"
+            deterministic_holds += 1
+        elif status == "HOLD_QUOTA_BACKOFF":
+            t["status"] = "FAILED_RETRYABLE"
+            quota_holds += 1
         else:
-            t["status"] = "FAILED_RETRYABLE"; failed += 1
+            t["status"] = "FAILED_RETRYABLE"
+            failed_tasks += 1
         touched_missions.add(t["mission_id"])
         merged += 1
 
@@ -132,15 +158,19 @@ def main():
     atomic_write(LATEST_PATH, latest)
 
     summary = {
-        "schema": "cerebron-shard-run-summary-v1",
+        "schema": "cerebron-shard-run-summary-v2",
         "run_id": str(args.run_id),
         "at": now_iso(),
         "artifact_rows": len(rows),
         "merged_queue_tasks": merged,
         "smoke_rows": ignored_smoke,
-        "successful_external_calls": ok,
-        "failed_external_calls": failed,
-        "deterministic_holds": holds,
+        "successful_tasks": successful_tasks,
+        "failed_tasks": failed_tasks,
+        "deterministic_holds": deterministic_holds,
+        "quota_holds": quota_holds,
+        "external_call_attempts": external_attempts,
+        "successful_external_calls": successful_external_calls,
+        "failed_external_calls": failed_external_calls,
         "queue_status": counts,
     }
     atomic_write(Path(args.summary), summary)
