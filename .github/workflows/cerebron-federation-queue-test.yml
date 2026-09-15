@@ -1,0 +1,57 @@
+name: CEREBRON Federation Queue Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/**'
+      - '.github/workflows/cerebron-federation-queue-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  queue-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exercise persistent queue engine
+        run: |
+          python - <<'PY'
+          import importlib.util
+          import json
+          from pathlib import Path
+
+          path = Path('cerebron/federation/core/queue_engine.py')
+          spec = importlib.util.spec_from_file_location('queue_engine', path)
+          q = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(q)
+
+          # Use the checked-out state files. Changes stay ephemeral in CI.
+          q.atomic_write(q.QUEUE_PATH, q.empty_queue())
+          mid = q.new_mission('CI FEDERATION TEST', 'Validate 12x10x12 queue expansion and leasing', 100, 1)
+          created = q.expand(mid, 1)
+          assert created == 1440, created
+
+          s = q.status(mid)
+          assert s['tasks'] == 1440, s
+          assert s['status'] == {'PENDING': 1440}, s['status']
+          assert len(s['by_civilization']) == 12, len(s['by_civilization'])
+          assert all(v.get('PENDING') == 120 for v in s['by_civilization'].values()), s['by_civilization']
+          assert len(s['by_shard']) <= 20, len(s['by_shard'])
+
+          # Lease a real queue item from a nonempty shard and complete it.
+          shard = sorted(int(k) for k, v in s['by_shard'].items() if v.get('PENDING'))[0]
+          leased = q.lease(shard, 'ci-shard', 1, 30)
+          assert len(leased) == 1
+          tid = leased[0]['task_id']
+          q.mark(tid, 'COMPLETED', owner='ci-shard', model='DETERMINISTIC_TEST', worker='github-actions', result_ref='ci://ok', evidence='TESTED')
+          s2 = q.status(mid)
+          assert s2['status'].get('COMPLETED') == 1, s2['status']
+          assert s2['status'].get('PENDING') == 1439, s2['status']
+          print(json.dumps({'PASS': True, 'mission': mid, 'tasks': 1440, 'civilizations': 12, 'teams_per_civilization': 10, 'agents_per_team': 12, 'shards_seen': len(s['by_shard'])}, indent=2))
+          PY
