@@ -19,6 +19,9 @@
     "agents_per_team": 12,
     "logical_agents_per_civilization": 120,
     "logical_agents_total": 1440,
+    "logical_team_chiefs": 120,
+    "logical_civilization_chiefs": 12,
+    "federal_council_roles": 5,
     "target_cycles": 10,
     "target_agent_runs": 14400,
     "github_parallel_cap": 20,
@@ -71,11 +74,23 @@
     "same_model_repetitions_count_as_independent": false,
     "unsupported_consensus_is_evidence": false
   },
+  "hierarchy": {
+    "config": "cerebron/federation/hierarchy-v1.json",
+    "state": "cerebron/federation/state/hierarchy-state.json",
+    "promotion_order": [
+      "AGENT",
+      "TEAM_CHIEF",
+      "CIVILIZATION_CHIEF",
+      "FEDERAL_COUNCIL",
+      "CHATGPT_COORDINATOR"
+    ]
+  },
   "state_files": {
     "mission_queue": "cerebron/federation/state/mission-queue.json",
     "model_registry": "cerebron/federation/state/model-registry.json",
     "claim_register": "cerebron/federation/state/claim-register.json",
     "contradiction_register": "cerebron/federation/state/contradiction-register.json",
+    "hierarchy_state": "cerebron/federation/state/hierarchy-state.json",
     "latest_state": "cerebron/federation/state/latest-state.json"
   },
   "free_first_policy": {
