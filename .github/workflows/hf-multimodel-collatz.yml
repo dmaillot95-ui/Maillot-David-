@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       max-parallel: 20
       matrix:
-        model_id: [llama3b, gemma2b, gemma9b, mistral7b, phi4]
+        model_id: [llama3b, gemma2b, gemma9b, mistral7b, opencoder8b]
         role: [PROOF, AUDIT, REDTEAM, SYNTHESIS]
 
     steps:
@@ -48,7 +48,7 @@ jobs:
               'gemma2b': 'huggingface-projects/gemma-2-2b-it',
               'gemma9b': 'huggingface-projects/gemma-2-9b-it',
               'mistral7b': 'hysts/mistral-7b',
-              'phi4': 'eswardivi/phi-4',
+              'opencoder8b': 'OpenCoder-LLM/OpenCoder-8B-Instruct',
           }
           space = spaces[model_id]
           out_path = Path(f'result-{model_id}-{role.lower()}.txt')
@@ -181,7 +181,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: result-${{ matrix.model_id }}-${{ matrix.role }}
-          path: result-${{ matrix.model_id }}-${{ matrix.role }}.txt
+          path: result-*.txt
           if-no-files-found: warn
 
   aggregate:
@@ -204,6 +204,7 @@ jobs:
           files = sorted(Path('results').glob('result-*.txt'))
           success = 0
           model_ids = set()
+          roles = set()
           text = []
           for f in files:
               body = f.read_text(encoding='utf-8')
@@ -214,11 +215,15 @@ jobs:
                       k,v = line.split('=',1)
                       vals[k]=v
               model_ids.add(vals.get('MODEL_ID','UNKNOWN'))
+              roles.add(vals.get('ROLE','UNKNOWN'))
               success += 1 if vals.get('SUCCESS') == '1' else 0
           header = (
               'CEREBRON_REAL_EXTERNAL_AGENTS\n'
-              f'EXPECTED_CALLS=20\nRESULT_FILES={len(files)}/20\n'
-              f'SUCCESSFUL_CALLS={success}/20\nMODEL_GROUPS_SEEN={len(model_ids)}/5\n\n'
+              'EXPECTED_CALLS=20\n'
+              f'RESULT_FILES={len(files)}/20\n'
+              f'SUCCESSFUL_CALLS={success}/20\n'
+              f'MODEL_GROUPS_SEEN={len(model_ids)}/5\n'
+              f'ROLES_SEEN={len(roles)}/4\n\n'
           )
           Path('combined-20-independent-collatz.txt').write_text(header + '\n'.join(text), encoding='utf-8')
           print(Path('combined-20-independent-collatz.txt').read_text(encoding='utf-8'))
