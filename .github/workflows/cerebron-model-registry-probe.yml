@@ -1,0 +1,52 @@
+name: CEREBRON Hugging Face Model Registry Probe
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/core/model_registry.py'
+      - '.github/workflows/cerebron-model-registry-probe.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cerebron-model-registry-probe
+  cancel-in-progress: false
+
+jobs:
+  probe-public-spaces:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Hugging Face Gradio client
+        run: pip install --quiet hf-gradio
+      - name: Probe all registered zero-euro public Spaces
+        run: |
+          python cerebron/federation/core/model_registry.py probe | tee /tmp/cerebron-model-probe.json
+      - name: Persist model health registry
+        run: |
+          git config user.name 'cerebron-federation-bot'
+          git config user.email 'cerebron-federation-bot@users.noreply.github.com'
+          git add cerebron/federation/state/model-registry.json
+          if git diff --cached --quiet; then
+            echo 'No model registry change.'
+          else
+            git commit -m 'Update CEREBRON Hugging Face model health'
+            git push
+          fi
+      - name: Upload probe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-model-registry-probe
+          path: /tmp/cerebron-model-probe.json
+          if-no-files-found: warn
