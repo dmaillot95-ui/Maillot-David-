@@ -1,0 +1,228 @@
+name: CEREBRON HF 20 Agent Collatz
+
+on:
+  push:
+    paths:
+      - '.github/workflows/hf-multimodel-collatz.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  agents:
+    name: ${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: llama3b
+            space: huggingface-projects/llama-3.2-3B-Instruct
+          - id: gemma2b
+            space: huggingface-projects/gemma-2-2b-it
+          - id: gemma9b
+            space: huggingface-projects/gemma-2-9b-it
+          - id: mistral7b
+            space: hysts/mistral-7b
+          - id: qwen7b
+            space: Pablinho/Qwen-Qwen2.5-Coder-7B-Instruct
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Hugging Face Gradio client
+        run: pip install --quiet hf-gradio
+
+      - name: Run four real external agents
+        env:
+          SPACE: ${{ matrix.space }}
+          AGENT_ID: ${{ matrix.id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          space = os.environ['SPACE']
+          agent_id = os.environ['AGENT_ID']
+
+          prompts = [
+              (
+                  'PROOF',
+                  "Étudie l'application accélérée de Collatz sur les impairs positifs T(x)=(3x+1)/2^{v2(3x+1)}. "
+                  "Suppose un cycle hypothétique de longueur impaire N=5 avec valuations a_i>=1. "
+                  "Dérive le critère cyclique algébrique exact et les contraintes nécessaires. "
+                  "Distingue strictement ce qui est démontré de ce qui reste à prouver. Ne prétends pas éliminer N=5 sans preuve. 300 mots max."
+              ),
+              (
+                  'AUDIT',
+                  "Audit indépendant pour un cycle accéléré de Collatz de longueur N=5. "
+                  "Vérifie soigneusement l'identité x0(2^A-3^5)=sum_{j=0}^{4} 3^{4-j} 2^{s_j}, "
+                  "où A=sum a_i, s_0=0 et s_j=sum_{i=0}^{j-1}a_i. "
+                  "Contrôle l'indexation, les rotations, la positivité, l'intégralité et l'exactitude des valuations. "
+                  "Signale toute faille; pas de conclusion non démontrée. 300 mots max."
+              ),
+              (
+                  'REDTEAM',
+                  "Red Team sur N=5 pour l'application accélérée de Collatz. "
+                  "Essaie soit de construire un mot de valuations a0..a4 compatible avec un cycle positif non trivial, "
+                  "soit de dériver une obstruction rigoureuse à partir du minimum du cycle, du prédécesseur du minimum, "
+                  "de la divisibilité et de l'identité cyclique. Si tu n'aboutis pas, donne exactement l'obstacle restant. 300 mots max."
+              ),
+              (
+                  'SYNTHESIS',
+                  "Pour éliminer les cycles positifs non triviaux de longueur impaire N=5 de Collatz accéléré, "
+                  "propose le lemme falsifiable le plus fort et réaliste à démontrer ensuite. "
+                  "Donne: énoncé précis, pourquoi il suffirait, plan de preuve, et vérification arithmétique/computationnelle indépendante. "
+                  "Étiquette THEOREM seulement ce qui est déjà prouvé, sinon CONJECTURE/TARGET. 300 mots max."
+              ),
+          ]
+
+          def info_for(space_name):
+              p = subprocess.run(
+                  ['hf-gradio', 'info', space_name],
+                  capture_output=True, text=True, timeout=120
+              )
+              if p.returncode != 0:
+                  raise RuntimeError(f'info failed: {p.stderr[-1200:]}')
+              return json.loads(p.stdout)
+
+          def candidate_payloads(api, prompt):
+              preferred = ['/generate', '/chat', '/predict', '/respond']
+              endpoints = list(api.items())
+              endpoints.sort(key=lambda kv: (preferred.index(kv[0]) if kv[0] in preferred else 99, kv[0]))
+              for endpoint, spec in endpoints:
+                  params = spec.get('parameters', [])
+                  payload = {}
+                  prompt_set = False
+                  compatible = True
+                  for p in params:
+                      name = p.get('name', '')
+                      lname = name.lower()
+                      required = bool(p.get('required', False))
+                      default = p.get('default', None)
+                      typ = (p.get('type') or {}).get('type')
+
+                      if lname in {'message','prompt','text','query','input','instruction','user_message'}:
+                          payload[name] = prompt
+                          prompt_set = True
+                      elif lname in {'chat_history','history','messages'}:
+                          payload[name] = []
+                      elif lname in {'max_new_tokens','max_tokens','maximum_new_tokens'}:
+                          payload[name] = 360
+                      elif lname == 'temperature':
+                          payload[name] = 0.2
+                      elif lname == 'top_p':
+                          payload[name] = 0.9
+                      elif lname == 'top_k':
+                          payload[name] = 40
+                      elif lname in {'repetition_penalty','repeat_penalty'}:
+                          payload[name] = 1.0
+                      elif required and default is None:
+                          if typ == 'string' and not prompt_set:
+                              payload[name] = prompt
+                              prompt_set = True
+                          else:
+                              compatible = False
+                              break
+                  if compatible and prompt_set:
+                      yield endpoint, payload
+
+          api = info_for(space)
+          out_path = Path(f'result-{agent_id}.txt')
+          successes = 0
+
+          with out_path.open('w', encoding='utf-8') as out:
+              out.write(f'MODEL_SPACE={space}\n')
+              out.write(f'AGENT_GROUP={agent_id}\n\n')
+
+              for role, prompt in prompts:
+                  out.write(f'===== {role} =====\n')
+                  worked = False
+                  errors = []
+                  for endpoint, payload in candidate_payloads(api, prompt):
+                      try:
+                          proc = subprocess.run(
+                              ['hf-gradio', 'predict', space, endpoint, json.dumps(payload, ensure_ascii=False)],
+                              capture_output=True, text=True, timeout=240
+                          )
+                      except Exception as exc:
+                          errors.append(f'{endpoint}: {exc}')
+                          continue
+
+                      if proc.returncode == 0 and proc.stdout.strip():
+                          out.write(f'ENDPOINT={endpoint}\n')
+                          out.write(proc.stdout.strip() + '\n\n')
+                          print(f'{agent_id}/{role}: SUCCESS via {endpoint}')
+                          successes += 1
+                          worked = True
+                          break
+                      errors.append(f'{endpoint}: rc={proc.returncode} {proc.stderr[-500:]}')
+
+                  if not worked:
+                      out.write('ERROR: no compatible successful endpoint\n')
+                      for err in errors[-4:]:
+                          out.write(err + '\n')
+                      out.write('\n')
+                      print(f'{agent_id}/{role}: FAILED')
+
+              out.write(f'SUCCESS_COUNT={successes}/4\n')
+
+          print(out_path.read_text(encoding='utf-8'))
+          if successes == 0:
+              sys.exit(1)
+          PY
+
+      - name: Upload agent-group result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-${{ matrix.id }}
+          path: result-${{ matrix.id }}.txt
+          if-no-files-found: warn
+
+  aggregate:
+    name: aggregate-20-agent-results
+    if: always()
+    needs: agents
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: result-*
+          path: results
+          merge-multiple: true
+
+      - name: Build combined report
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          files = sorted(Path('results').glob('result-*.txt'))
+          text = []
+          success = 0
+          calls = 0
+          for f in files:
+              body = f.read_text(encoding='utf-8')
+              text.append(f'######## {f.name} ########\n{body}')
+              for line in body.splitlines():
+                  if line.startswith('SUCCESS_COUNT='):
+                      n = int(line.split('=')[1].split('/')[0])
+                      success += n
+                      calls += 4
+          header = f'CEREBRON_REAL_EXTERNAL_AGENTS\nSUCCESSFUL_CALLS={success}/{calls}\nMODEL_GROUPS={len(files)}/5\n\n'
+          Path('combined-20-agent-collatz.txt').write_text(header + '\n'.join(text), encoding='utf-8')
+          print((Path('combined-20-agent-collatz.txt')).read_text(encoding='utf-8'))
+          PY
+
+      - name: Upload combined report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-20-agent-collatz
+          path: combined-20-agent-collatz.txt
