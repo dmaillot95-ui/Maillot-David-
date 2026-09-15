@@ -101,7 +101,7 @@ export async function runBenchmarkConfig({ config, suite, inferFn, repetitions =
         let text = '';
         let status = 'EXECUTED';
         try {
-          text = await inferFn(system, user, 340);
+          text = await inferFn(system, user, 340, 0.0);
         } catch (error) {
           status = 'ERROR';
           text = String(error?.message || error);
