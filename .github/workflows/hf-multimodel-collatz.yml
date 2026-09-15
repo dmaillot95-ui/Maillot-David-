@@ -18,22 +18,8 @@ jobs:
       fail-fast: false
       max-parallel: 20
       matrix:
-        model:
-          - model_id: llama3b
-            space: huggingface-projects/llama-3.2-3B-Instruct
-          - model_id: gemma2b
-            space: huggingface-projects/gemma-2-2b-it
-          - model_id: gemma9b
-            space: huggingface-projects/gemma-2-9b-it
-          - model_id: mistral7b
-            space: hysts/mistral-7b
-          - model_id: phi4
-            space: eswardivi/phi-4
-        role:
-          - PROOF
-          - AUDIT
-          - REDTEAM
-          - SYNTHESIS
+        model_id: [llama3b, gemma2b, gemma9b, mistral7b, phi4]
+        role: [PROOF, AUDIT, REDTEAM, SYNTHESIS]
 
     steps:
       - uses: actions/setup-python@v5
@@ -45,8 +31,7 @@ jobs:
 
       - name: Run one real external agent
         env:
-          SPACE: ${{ matrix.model.space }}
-          MODEL_ID: ${{ matrix.model.model_id }}
+          MODEL_ID: ${{ matrix.model_id }}
           ROLE: ${{ matrix.role }}
         run: |
           python - <<'PY'
@@ -56,9 +41,16 @@ jobs:
           import sys
           from pathlib import Path
 
-          space = os.environ['SPACE']
           model_id = os.environ['MODEL_ID']
           role = os.environ['ROLE']
+          spaces = {
+              'llama3b': 'huggingface-projects/llama-3.2-3B-Instruct',
+              'gemma2b': 'huggingface-projects/gemma-2-2b-it',
+              'gemma9b': 'huggingface-projects/gemma-2-9b-it',
+              'mistral7b': 'hysts/mistral-7b',
+              'phi4': 'eswardivi/phi-4',
+          }
+          space = spaces[model_id]
           out_path = Path(f'result-{model_id}-{role.lower()}.txt')
 
           prompts = {
@@ -121,7 +113,6 @@ jobs:
                       required = bool(p.get('required', False))
                       default = p.get('default', None)
                       typ = (p.get('type') or {}).get('type')
-
                       if lname in {'message','prompt','text','query','input','instruction','user_message'}:
                           payload[name] = prompt
                           prompt_set = True
@@ -153,7 +144,6 @@ jobs:
           endpoint_used = None
           response = ''
           errors = []
-
           try:
               api = load_api()
               for endpoint, payload in candidate_payloads(api):
@@ -172,8 +162,7 @@ jobs:
               errors.append(str(exc))
 
           with out_path.open('w', encoding='utf-8') as out:
-              out.write(f'MODEL_SPACE={space}\nMODEL_ID={model_id}\nROLE={role}\n')
-              out.write(f'SUCCESS={1 if success else 0}\n')
+              out.write(f'MODEL_SPACE={space}\nMODEL_ID={model_id}\nROLE={role}\nSUCCESS={1 if success else 0}\n')
               if endpoint_used:
                   out.write(f'ENDPOINT={endpoint_used}\n')
               out.write('\n')
@@ -191,8 +180,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: result-${{ matrix.model.model_id }}-${{ matrix.role }}
-          path: result-${{ matrix.model.model_id }}-${{ matrix.role }}.txt
+          name: result-${{ matrix.model_id }}-${{ matrix.role }}
+          path: result-${{ matrix.model_id }}-${{ matrix.role }}.txt
           if-no-files-found: warn
 
   aggregate:
