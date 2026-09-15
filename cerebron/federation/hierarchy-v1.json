@@ -1,0 +1,78 @@
+{
+  "schema": "cerebron-hierarchy-v1",
+  "version": 1,
+  "principles": [
+    "REALITY>COHERENCE",
+    "EVIDENCE>CONFIDENCE",
+    "CLAIM<=EVIDENCE",
+    "VERIFY_BEFORE_COMMIT",
+    "SAME_MODEL_REPETITION!=INDEPENDENT_EVIDENCE",
+    "NO_PROMOTION_WITHOUT_REQUIRED_AUDIT"
+  ],
+  "levels": [
+    {
+      "id": "L1_AGENT",
+      "input": "individual_role_output",
+      "output": "immutable_agent_result"
+    },
+    {
+      "id": "L2_TEAM",
+      "count": 120,
+      "members_per_team": 12,
+      "logical_chief_role": "TEAM_CHIEF",
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "minimum_successful_required_roles": 8,
+      "minimum_independent_model_families": 2,
+      "promotion_rule": "all_required_roles_success_and_two_model_families"
+    },
+    {
+      "id": "L3_CIVILIZATION",
+      "count": 12,
+      "teams_per_civilization": 10,
+      "logical_chief_role": "CIVILIZATION_CHIEF",
+      "minimum_ready_teams": 10,
+      "minimum_independent_model_families": 2,
+      "promotion_rule": "all_ten_teams_ready"
+    },
+    {
+      "id": "L4_FEDERAL_COUNCIL",
+      "count": 1,
+      "members": 12,
+      "logical_roles": [
+        "FEDERAL_SYNTHESIZER",
+        "FEDERAL_AUDITOR",
+        "FEDERAL_COUNTER_AUDITOR",
+        "FEDERAL_FALSIFIER",
+        "FEDERAL_JUDGE"
+      ],
+      "minimum_ready_civilizations": 12,
+      "promotion_rule": "all_twelve_civilizations_ready"
+    },
+    {
+      "id": "L5_CHATGPT_COORDINATOR",
+      "count": 1,
+      "authority": "final_orchestration_and_user_interface",
+      "accepts_only": "federal_packages_with_explicit_gaps_and_evidence_status"
+    }
+  ],
+  "promotion_statuses": [
+    "WAITING",
+    "READY",
+    "HOLD",
+    "REJECTED"
+  ],
+  "semantic_chief_policy": {
+    "enabled": false,
+    "reason": "First validate deterministic hierarchy and anti-false-consensus gates before adding extra model calls.",
+    "future_mode": "chief_agents_operate_only_on_promotable_packages"
+  }
+}
