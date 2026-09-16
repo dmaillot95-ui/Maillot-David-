@@ -4,7 +4,7 @@ import argparse,json,subprocess,sys
 from pathlib import Path
 
 CORE=Path(__file__).resolve().parent
-WORKER=CORE/'shard_worker.py'
+WORKER=CORE/'adaptive_shard_worker.py'
 
 def parse_address(address:str):
     # T001/H001/S00 -> physical lane is final shard number modulo 20.
