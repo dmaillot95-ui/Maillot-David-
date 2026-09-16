@@ -62,6 +62,8 @@ jobs:
               run(args)
           elif action == 'CANCEL_MISSION':
               run(admin + ['cancel', p['mission_id']])
+          elif action == 'SET_TARGET_CYCLES':
+              run(admin + ['set-target-cycles', p['mission_id'], str(p['target_cycles'])])
           elif action == 'RECOVER':
               run(engine + ['recover'])
           elif action == 'STATUS':
