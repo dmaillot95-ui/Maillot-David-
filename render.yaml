@@ -5,7 +5,7 @@ services:
     plan: free
     buildCommand: "python -m compileall -q cerebron/forge"
     startCommand: "CEREBRON_FORGE_BIND=0.0.0.0 CEREBRON_FORGE_PORT=$PORT python -m cerebron.forge.server"
-    healthCheckPath: /status
+    healthCheckPath: /health
     envVars:
       - key: CEREBRON_FORGE_DB
         value: /tmp/cerebron-forge.db
@@ -13,3 +13,5 @@ services:
         sync: false
       - key: CEREBRON_FORGE_QUIET
         value: "1"
+      - key: CEREBRON_FORGE_MAX_BODY_BYTES
+        value: "1048576"
