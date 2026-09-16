@@ -1,0 +1,116 @@
+name: CEREBRON 36 Frontier Paths
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cerebron-36-frontier-paths.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  frontier-workers:
+    name: frontier-${{ matrix.role }}-${{ matrix.operator }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 36
+      matrix:
+        role: [ARCHITECT,SCIENTIST,SYSTEMS,MEMORY,ROUTER,INVENTOR,PROOF,REDTEAM,SCALING,MULTIMODAL,EVALUATOR,SAFETY]
+        operator: [INVERT,TRANSFER,EMERGE]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install local runtime
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors
+      - name: Generate frontier path
+        env:
+          ROLE: ${{ matrix.role }}
+          OPERATOR: ${{ matrix.operator }}
+          CEREBRON_LOCAL_CPU_MODEL: HuggingFaceTB/SmolLM2-360M-Instruct
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '260'
+          CEREBRON_LOCAL_CPU_OUT: 'out/${{ matrix.role }}-${{ matrix.operator }}.json'
+        run: |
+          mkdir -p out
+          export CEREBRON_LOCAL_CPU_PROMPT="You are one real research worker in CEREBRON. ROLE=${ROLE}. COGNITIVE_OPERATOR=${OPERATOR}. Mission: find a non-obvious but implementable path for a zero-paid multi-model civilization to become substantially more capable than any one member model. Do NOT claim superintelligence. Reject the ordinary answers 'more agents', 'bigger model', 'more context', 'more data' unless transformed into a genuinely different mechanism. If INVERT: reverse a standard assumption and derive consequences. If TRANSFER: import a mechanism from another field such as biology, markets, error-correcting codes, compilers, distributed systems, control theory, neuroscience, evolution, theorem proving, or information theory. If EMERGE: design local interaction rules that could create a measurable global capability not present in one worker. Return exactly: PATH_NAME; CORE_MECHANISM; WHY_NON_OBVIOUS; 3 IMPLEMENTATION_STEPS; MEASURABLE_PREDICTION; FALSIFICATION_TEST; FAILURE_MODE; REQUIRED_EVIDENCE. Be concrete and testable."
+          python cerebron/providers/local_cpu_llm.py
+          python - <<'PY'
+          import json,os
+          r=os.environ['ROLE']; o=os.environ['OPERATOR']; fn=f'out/{r}-{o}.json'
+          p=json.load(open(fn)); p['role']=r; p['operator']=o; p['worker_id']=f'{r}-{o}'
+          assert p['ok'] is True
+          assert p['spend_limit_eur']==0 and not p['paid_fallback'] and not p['api_key_used']
+          json.dump(p,open(fn,'w'),ensure_ascii=False,indent=2)
+          print(p['worker_id'],p['elapsed_s'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontier-${{ matrix.role }}-${{ matrix.operator }}
+          path: out/${{ matrix.role }}-${{ matrix.operator }}.json
+          retention-days: 14
+
+  synthesize:
+    name: frontier-synthesis
+    needs: frontier-workers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frontier-*
+          path: frontier
+          merge-multiple: true
+      - name: Build packet
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          fs=sorted(glob.glob('frontier/*.json'))
+          assert len(fs)==36,len(fs)
+          rows=[json.load(open(f)) for f in fs]
+          assert len({r['worker_id'] for r in rows})==36
+          packet='\n\n'.join(f"WORKER {r['worker_id']}:\n{r.get('answer','')}" for r in rows)
+          os.makedirs('out',exist_ok=True)
+          open('out/packet.txt','w').write(packet)
+          print('workers',len(rows),'chars',len(packet))
+          PY
+      - name: Install synthesis runtime
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors sentencepiece
+      - name: Synthesize frontier architectures
+        env:
+          CEREBRON_LOCAL_CPU_MODEL: Qwen/Qwen2.5-1.5B-Instruct
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '900'
+          CEREBRON_LOCAL_CPU_OUT: 'out/synthesis.json'
+        run: |
+          python - <<'PY'
+          import os
+          packet=open('out/packet.txt').read()
+          prompt='''You are the synthesis layer for 36 independent frontier-search workers. Their goal is NOT to sound futuristic but to discover mechanisms that can be implemented and falsified. Analyze all proposals. Produce: (1) TOP 10 DISTINCT FRONTIER PATHS; (2) for each path: mechanism, which worker ideas it combines, implementation experiment, measurable success criterion, decisive falsifier; (3) TOP 3 COMBINATIONS where two or more paths interact multiplicatively; (4) 5 ideas to reject as superficial/redundant; (5) one minimal experiment that could demonstrate a capability gain over the best individual model. Never claim superintelligence; label every claim as HYPOTHESIS or TESTABLE DERIVATION unless directly demonstrated.\n\nWORKER PACKET:\n'''+packet
+          os.environ['CEREBRON_LOCAL_CPU_PROMPT']=prompt
+          from cerebron.providers.local_cpu_llm import main
+          main()
+          PY
+          python - <<'PY'
+          import json
+          p=json.load(open('out/synthesis.json'))
+          assert p['ok'] is True and p['spend_limit_eur']==0 and not p['paid_fallback'] and not p['api_key_used']
+          print(p['answer'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-36-frontier-synthesis
+          path: |
+            out/synthesis.json
+            out/packet.txt
+          retention-days: 14
