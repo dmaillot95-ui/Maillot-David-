@@ -14,14 +14,18 @@ jobs:
         include:
           - region: CHINA
             model: Qwen/Qwen2.5-1.5B-Instruct
+            trust_remote_code: 'false'
           - region: JAPAN
             model: llm-jp/llm-jp-3-1.8b-instruct
+            trust_remote_code: 'false'
           - region: KOREA
             model: OpenLLM-Korea/EXAONE-3.5-2.4B-Instruct
+            trust_remote_code: 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       CEREBRON_LOCAL_CPU_MODEL: ${{ matrix.model }}
+      CEREBRON_TRUST_REMOTE_CODE: ${{ matrix.trust_remote_code }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,12 +56,14 @@ jobs:
             ans=r.get('answer','')
             m=re.search(r'FINAL\s*:\s*([A-Za-z0-9.-]+)', ans, re.I)
             pred=(m.group(1).upper() if m else '')
-            rows.append({'question':q,'expected':expected,'pred':pred,'correct':pred==expected,'raw':ans,'ok':r.get('ok',False),'elapsed_s':r.get('elapsed_s')})
+            rows.append({'question':q,'expected':expected,'pred':pred,'correct':pred==expected,'raw':ans,'ok':r.get('ok',False),'elapsed_s':r.get('elapsed_s'),'error_type':r.get('error_type'),'error':r.get('error')})
           out={
             'region':os.environ['REGION'],
             'model':os.environ['CEREBRON_LOCAL_CPU_MODEL'],
+            'trust_remote_code':os.environ.get('CEREBRON_TRUST_REMOTE_CODE','false'),
             'correct':sum(x['correct'] for x in rows),
             'total':len(rows),
+            'successful_inferences':sum(bool(x['ok']) for x in rows),
             'accuracy':sum(x['correct'] for x in rows)/len(rows),
             'elapsed_total_s':round(time.time()-started,3),
             'spend_limit_eur':0,
@@ -105,7 +111,7 @@ jobs:
             oracle += int(any(p==expected for p in preds))
             task_details.append({'task':i+1,'expected':expected,'predictions':dict(zip([r['region'] for r in rows],preds)),'majority':maj,'majority_correct':maj==expected,'any_region_correct':any(p==expected for p in preds)})
           report={
-            'regions':{r['region']:{'model':r['model'],'correct':r['correct'],'total':r['total'],'accuracy':r['accuracy'],'elapsed_total_s':r['elapsed_total_s']} for r in rows},
+            'regions':{r['region']:{'model':r['model'],'correct':r['correct'],'total':r['total'],'successful_inferences':r.get('successful_inferences',0),'accuracy':r['accuracy'],'elapsed_total_s':r['elapsed_total_s']} for r in rows},
             'federation_majority_correct':majority,
             'federation_majority_accuracy':majority/n,
             'federation_oracle_union_correct':oracle,
