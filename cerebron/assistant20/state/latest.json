@@ -1,9 +1,15 @@
 {
-  "schema": "cerebron-assistant20-state-v1",
-  "updated_at": "2026-09-16T03:52:04+00:00",
-  "last_run_id": "35053380750",
-  "mission_nonce": "collective-superintelligence-study-20260916",
+  "schema": "cerebron-assistant20-state-v2",
+  "updated_at": "2026-09-16T04:06:25+00:00",
+  "last_run_id": "35054107736",
+  "mission_nonce": "collective-superintelligence-microbatch-test-20260916a",
   "mission_objective": "QUESTION COLLECTIVE : comment GPT-5.6 Sol et les 20 agents Assistant-20 peuvent-ils devenir ensemble une intelligence collective nettement supérieure à chacun séparément ? Proposer une architecture concrète d'augmentation de capacité par spécialisation, diversité réelle des modèles, mémoire persistante, décomposition, parallélisme, débat contradictoire, calcul déterministe, outils, réplication, synthèse hiérarchique, apprentissage des erreurs et amélioration mesurable. Chercher les goulots d'étranglement et les expériences permettant de vérifier que le collectif devient réellement meilleur, pas seulement plus bavard.",
+  "execution_policy": {
+    "micro_batch_size": 4,
+    "max_parallel_external_calls": 4,
+    "micro_batch_pause_seconds": 8.0,
+    "per_agent_model_attempts": 3
+  },
   "active_agents": [
     "A01",
     "A02",
@@ -26,8 +32,8 @@
     "A19",
     "A20"
   ],
-  "completed_agents": 1,
-  "failed_agents": 19,
+  "completed_agents": 3,
+  "failed_agents": 17,
   "results": {
     "A01": {
       "specialty": "RECHERCHE",
@@ -38,106 +44,116 @@
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 2
     },
     "A02": {
       "specialty": "SCIENCE",
-      "status": "HOLD_QUOTA_BACKOFF",
-      "ok": false,
-      "model_id": "gemma9b",
+      "status": "COMPLETED",
+      "ok": true,
+      "model_id": "gemma2b",
       "model_family": "gemma-2",
-      "response_sha256": null,
-      "response_excerpt": "",
-      "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "response_sha256": "6e0d3ae9b155cd57d746e74c5d3ee767bb692a87ecf39cc7d2a776e0894ea9c8",
+      "response_excerpt": "## Architecture d'une Intelligence Collective GPT-5.6 Sol et Assistant-20\n\n**Objectif:** Augmenter la capacité de l'intelligence collective GPT-5.6 Sol et 20 agents Assistant-20 par spécialisation, diversité et apprentissage.\n\n**Hypothèse:** L'intelligence collective peut surpasser les capacités individuelles en combinant les forces de spécialisation, la diversité des modèles et l'apprentissage continu.\n\n**Architecture:**\n\n1. **Spécialisation:**\n    * **Agents spécialisés:**  Chaque agent Assist",
+      "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
+      "error_type": null,
+      "attempt_count": 3
     },
     "A03": {
       "specialty": "MATHEMATIQUES",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "gemma9b",
-      "model_family": "gemma-2",
+      "model_id": "llama3b",
+      "model_family": "llama-3.2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 2
     },
     "A04": {
       "specialty": "CALCUL",
-      "status": "HOLD_QUOTA_BACKOFF",
-      "ok": false,
+      "status": "COMPLETED",
+      "ok": true,
       "model_id": "llama3b",
       "model_family": "llama-3.2",
-      "response_sha256": null,
-      "response_excerpt": "",
-      "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "response_sha256": "988000568a42a5f4ccc0bc1fc1a3a449527182d013db24b76c544343ece85bf8",
+      "response_excerpt": "**Architecture d'Intelligence Collective : CÉRÉBRON Ω**\n\n**Mission :** Améliorer la capacité collective des 20 agents Assistant-20 en créant une intelligence supérieure à chacun séparément.\n\n**Architecture :**\n\n1. **Modèle de base** : Utiliser un modèle de langage basé sur les réseaux de neurones artificiels (RNN) pour traiter les informations collectives.\n2. **Spécialisation** : Chaque agent sera spécialisé dans une domaine spécifique (par exemple, mathématiques, physique, informatique) pour am",
+      "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
+      "error_type": null,
+      "attempt_count": 1
     },
     "A05": {
       "specialty": "PREUVE",
-      "status": "HOLD_QUOTA_BACKOFF",
-      "ok": false,
+      "status": "COMPLETED",
+      "ok": true,
       "model_id": "llama3b",
       "model_family": "llama-3.2",
-      "response_sha256": null,
-      "response_excerpt": "",
-      "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "response_sha256": "dfc75f631c3a453efd53f0278a476a2974eb1d8d235c9dda9bb95c6787d1fa03",
+      "response_excerpt": "**Architecture d'Intelligence Collective : CÉRÉBRON Ω**\n\n**Mission :** Augmenter la capacité collective des 20 agents Assistant-20 en créant une intelligence collective nettement supérieure à chacun séparément.\n\n**Architecture :**\n\n1. **Modèle de base** : Utiliser un modèle de langage basé sur les réseaux de neurones artificiels (RNN) pour chaque agent, avec une couche d'entrée pour les données d'entrée, une couche cachée pour le traitement des informations et une couche de sortie pour la répons",
+      "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
+      "error_type": null,
+      "attempt_count": 1
     },
     "A06": {
       "specialty": "VERIFICATION",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "llama3b",
-      "model_family": "llama-3.2",
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A07": {
       "specialty": "SIMULATION",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "llama3b",
-      "model_family": "llama-3.2",
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A08": {
       "specialty": "INGENIERIE",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "gemma9b",
+      "model_id": "gemma2b",
       "model_family": "gemma-2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A09": {
       "specialty": "ARCHITECTURE",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "llama3b",
-      "model_family": "llama-3.2",
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A10": {
       "specialty": "INVENTION",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "llama3b",
-      "model_family": "llama-3.2",
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A11": {
       "specialty": "INNOVATION",
@@ -148,7 +164,8 @@
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 2
     },
     "A12": {
       "specialty": "BREVETS_IP",
@@ -159,10 +176,23 @@
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 2
     },
     "A13": {
       "specialty": "BENCHMARK",
+      "status": "HOLD_QUOTA_BACKOFF",
+      "ok": false,
+      "model_id": "llama3b",
+      "model_family": "llama-3.2",
+      "response_sha256": null,
+      "response_excerpt": "",
+      "evidence_status": "NO_EVIDENCE",
+      "error_type": "QUOTA",
+      "attempt_count": 2
+    },
+    "A14": {
+      "specialty": "DATA",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
       "model_id": "gemma2b",
@@ -170,65 +200,71 @@
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
-    },
-    "A14": {
-      "specialty": "DATA",
-      "status": "HOLD_QUOTA_BACKOFF",
-      "ok": false,
-      "model_id": "gemma9b",
-      "model_family": "gemma-2",
-      "response_sha256": null,
-      "response_excerpt": "",
-      "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A15": {
       "specialty": "FALSIFICATION",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "llama3b",
-      "model_family": "llama-3.2",
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A16": {
       "specialty": "RED_TEAM",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "llama3b",
-      "model_family": "llama-3.2",
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A17": {
       "specialty": "CONTRE_AUDIT",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "gemma9b",
-      "model_family": "gemma-2",
+      "model_id": "llama3b",
+      "model_family": "llama-3.2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 2
     },
     "A18": {
       "specialty": "REPLICATION",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
-      "model_id": "llama3b",
-      "model_family": "llama-3.2",
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
+      "error_type": "QUOTA",
+      "attempt_count": 3
     },
     "A19": {
       "specialty": "SYNTHESE",
+      "status": "HOLD_QUOTA_BACKOFF",
+      "ok": false,
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
+      "response_sha256": null,
+      "response_excerpt": "",
+      "evidence_status": "NO_EVIDENCE",
+      "error_type": "QUOTA",
+      "attempt_count": 3
+    },
+    "A20": {
+      "specialty": "COORDINATEUR_SECONDAIRE",
       "status": "HOLD_QUOTA_BACKOFF",
       "ok": false,
       "model_id": "llama3b",
@@ -236,18 +272,8 @@
       "response_sha256": null,
       "response_excerpt": "",
       "evidence_status": "NO_EVIDENCE",
-      "error_type": "QUOTA"
-    },
-    "A20": {
-      "specialty": "COORDINATEUR_SECONDAIRE",
-      "status": "COMPLETED",
-      "ok": true,
-      "model_id": "llama3b",
-      "model_family": "llama-3.2",
-      "response_sha256": "4d74f4d97a1c30b80795c7096532d072baf3a6152f4c83a5c40d614275d1f5c7",
-      "response_excerpt": "**Architecture de l'Intelligence Collective**\n\nPour créer une intelligence collective supérieure à chacun séparément, nous proposons une architecture basée sur la spécialisation, la diversité réelle des modèles, la mémoire persistante, la décomposition, le parallélisme, le débat contradictoire, le calcul déterministe et les outils de synthèse hiérarchique.\n\n**Spécialisation**\n\n*   Chaque agent sera spécialisé dans une domaine spécifique (par exemple, la linguistique, la logique, la statistique, ",
-      "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
-      "error_type": null
+      "error_type": "QUOTA",
+      "attempt_count": 2
     }
   }
 }
