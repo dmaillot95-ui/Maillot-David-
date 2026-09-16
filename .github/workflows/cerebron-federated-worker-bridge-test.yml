@@ -9,6 +9,8 @@ on:
       - 'cerebron/federation/core/federated_worker_bridge.py'
       - 'cerebron/federation/core/federated_wave_commit.py'
       - 'cerebron/federation/core/federated_wave_reducer.py'
+      - 'cerebron/federation/core/provider_adapters.py'
+      - 'cerebron/federation/state/retry-request.json'
       - '.github/workflows/cerebron-federated-worker-bridge-test.yml'
 
 permissions:
@@ -29,13 +31,72 @@ jobs:
         with:
           python-version: '3.12'
       - id: plan
-        name: Plan next 20-address wave
+        name: Plan next 20-address wave or consume explicit retry
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p plan-out
-          python cerebron/federation/core/federated_multiwave_orchestrator.py --wave-size 20 > plan-out/plan.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          state_path=Path('cerebron/federation/state/federated-multiwave-state.json')
+          retry_path=Path('cerebron/federation/state/retry-request.json')
+          state=json.load(open(state_path))
+          retry={}
+          if retry_path.exists():
+              retry=json.load(open(retry_path))
+
+          wave=[]
+          if retry.get('status') == 'REQUESTED':
+              ids=list(retry.get('assignment_ids') or [])[:int(state.get('physical_cap',20))]
+              current_wave=int(state.get('wave_number',0))
+              for lane,aid in enumerate(ids):
+                  info=state.get('failed',{}).pop(aid,None)
+                  if not info:
+                      continue
+                  mid=info['mission_id']
+                  ms=state['missions'][mid]
+                  ms['failed_count']=max(0,int(ms.get('failed_count',0))-1)
+                  info=dict(info)
+                  info['status']='DISPATCHED'
+                  info['physical_lane']=lane
+                  info['wave_number']=current_wave
+                  state['inflight'][aid]=dict(info)
+                  wave.append(info)
+              if wave:
+                  state['last_wave']=wave
+                  state['wave_number']=current_wave+1
+                  state.setdefault('history',[]).append({
+                      'wave_number':current_wave,
+                      'assignments':[x['assignment_id'] for x in wave],
+                      'retry':True,
+                  })
+              retry['status']='CONSUMED'
+              retry['consumed_wave_number']=current_wave if wave else None
+              retry['consumed_count']=len(wave)
+              retry_path.write_text(json.dumps(retry,ensure_ascii=False,indent=2)+'\n')
+              state_path.write_text(json.dumps(state,ensure_ascii=False,indent=2)+'\n')
+              payload={'wave':wave,'summary':{
+                  'logical_total':state.get('logical_total'),
+                  'physical_cap':state.get('physical_cap'),
+                  'wave_number':state.get('wave_number'),
+                  'inflight':len(state.get('inflight',{})),
+                  'completed':len(state.get('completed',{})),
+                  'failed':len(state.get('failed',{})),
+                  'last_wave_size':len(wave),
+                  'retry_consumed':True,
+              }}
+              Path('plan-out/plan.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
+          else:
+              import subprocess
+              cp=subprocess.run([
+                  'python','cerebron/federation/core/federated_multiwave_orchestrator.py','--wave-size','20'
+              ],capture_output=True,text=True,check=True)
+              Path('plan-out/plan.json').write_text(cp.stdout)
+          PY
           cp cerebron/federation/state/federated-multiwave-state.json plan-out/federated-multiwave-state.json
+          cp cerebron/federation/state/retry-request.json plan-out/retry-request.json 2>/dev/null || true
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           p=json.load(open('plan-out/plan.json'))
@@ -76,6 +137,12 @@ jobs:
         run: pip install hf-gradio
       - name: Execute orchestrated federated assignment
         shell: bash
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GROQ_MODEL: openai/gpt-oss-20b
+          CLOUDFLARE_AI_MODEL: '@cf/zai-org/glm-4.7-flash'
         run: |
           set -euo pipefail
           mkdir -p out
@@ -111,8 +178,12 @@ jobs:
         with:
           name: orchestrated-wave-plan
           path: plan-in
-      - name: Restore planned state
-        run: cp plan-in/federated-multiwave-state.json cerebron/federation/state/federated-multiwave-state.json
+      - name: Restore planned state and consumed retry marker
+        run: |
+          cp plan-in/federated-multiwave-state.json cerebron/federation/state/federated-multiwave-state.json
+          if [ -f plan-in/retry-request.json ]; then
+            cp plan-in/retry-request.json cerebron/federation/state/retry-request.json
+          fi
       - name: Download worker artifacts
         uses: actions/download-artifact@v4
         with:
@@ -137,7 +208,7 @@ jobs:
           import json
           s=json.load(open('cerebron/federation/state/federated-multiwave-state.json'))
           r=json.load(open('cerebron/federation/state/orchestrated-wave-report-latest.json'))
-          assert r['completed_count']+r['failed_count'] == 20, r
+          assert r['completed_count']+r['failed_count'] == len(s.get('last_wave',[])), r
           assert r['state_inflight'] == 0, r
           print('CEREBRON_ORCHESTRATED_WAVE_TERMINAL_OK', r['completed_count'], r['failed_count'])
           print('NEXT_WAVE_NUMBER', s['wave_number'])
@@ -149,6 +220,7 @@ jobs:
             cerebron/federation/state/orchestrated-wave-report-latest.json
             cerebron/federation/state/wave-summary-latest.json
             cerebron/federation/state/federated-multiwave-state.json
+            cerebron/federation/state/retry-request.json
       - name: Persist orchestrator and routing memory
         shell: bash
         run: |
@@ -159,7 +231,8 @@ jobs:
             cerebron/federation/state/federated-multiwave-state.json \
             cerebron/federation/state/provider-runtime.json \
             cerebron/federation/state/wave-summary-latest.json \
-            cerebron/federation/state/orchestrated-wave-report-latest.json
+            cerebron/federation/state/orchestrated-wave-report-latest.json \
+            cerebron/federation/state/retry-request.json
           if git diff --cached --quiet; then
             echo 'No state change.'
             exit 0
