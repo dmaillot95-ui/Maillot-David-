@@ -1,0 +1,22 @@
+name: CEREBRON Superintelligence Task Funnel 2000
+on:
+  push:
+    paths:
+      - 'cerebron/superintelligence_task_funnel_2000.py'
+      - '.github/workflows/cerebron-superintelligence-task-funnel-2000.yml'
+  workflow_dispatch:
+jobs:
+  task-funnel:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run 2000-task decomposition funnel
+        run: python cerebron/superintelligence_task_funnel_2000.py
+      - name: Upload decomposition report
+        uses: actions/upload-artifact@v4
+        with:
+          name: superintelligence-task-funnel-2000
+          path: superintelligence_task_funnel_2000.json
