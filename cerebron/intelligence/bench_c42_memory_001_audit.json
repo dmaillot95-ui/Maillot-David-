@@ -1,0 +1,30 @@
+{
+  "benchmark_id": "BENCH-C42-MEMORY-001",
+  "status": "completed_hypothesis_falsified",
+  "run_id": 35129129114,
+  "artifact_id": 10460965227,
+  "artifact_sha256": "f30ed31f883217c4bdb066282b6e87da53bfca7409f585dde0c4e21a4f393b7c",
+  "evidence_level": "E3_verified_simulation",
+  "preregistered_hypothesis": "D > B > A > C by lowest hidden future regret",
+  "observed_ordering": ["B", "D", "A", "C"],
+  "results": {
+    "A_raw_memory": {"mean_regret": 0.04238318930694963, "accuracy": 0.8270833333333333, "memory_units": 320.0},
+    "B_compressed_rules": {"mean_regret": 0.01817340299879939, "accuracy": 0.8729166666666667, "memory_units": 16.0},
+    "C_no_cumulative_memory": {"mean_regret": 0.8002641320304846, "accuracy": 0.21666666666666667, "memory_units": 0.0},
+    "D_rules_scars_boundaries_credit_proxy": {"mean_regret": 0.026916582637435314, "accuracy": 0.8645833333333334, "memory_units": 51.0}
+  },
+  "seed_counts": {"D_beats_B": "1/8", "D_beats_A": "8/8"},
+  "validated_observations": [
+    "compressed rules outperform raw memory in this synthetic task family",
+    "raw memory strongly outperforms no cumulative memory",
+    "the current scar/boundary mechanism improves over raw memory but degrades relative to compressed rules",
+    "more structured memory is not automatically better memory",
+    "additional memory structure must pay complexity and future-regret rent"
+  ],
+  "decision": {
+    "promote_D": false,
+    "keep_B_as_current_champion": true,
+    "next_action": "redesign D using targeted scars only when predicted value exceeds cost, then preregister a fresh hidden task bank before retest"
+  },
+  "claim_limit": "Synthetic evidence about four memory regimes only; no claim of general intelligence, autonomous learning, or universal memory architecture."
+}
