@@ -1,0 +1,148 @@
+name: CEREBRON Civilization Capabilities V2
+
+on:
+  push:
+    paths:
+      - 'cerebron/civilization/CAPABILITIES_V2.md'
+      - '.github/workflows/cerebron-civilization-capabilities-v2.yml'
+  workflow_dispatch:
+
+jobs:
+  civilization-worker:
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        role:
+          - ARCHITECTURE
+          - SCIENCE
+          - INFRASTRUCTURE
+          - ECONOMY
+          - GOVERNANCE
+          - KNOWLEDGE
+          - INDUSTRY
+          - CULTURE
+          - SECURITY
+          - EXPLORATION
+          - REDTEAM
+          - EVALUATOR
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install local inference runtime
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors sentencepiece
+      - name: Run civilization worker with capabilities V2
+        env:
+          ROLE: ${{ matrix.role }}
+          CEREBRON_LOCAL_CPU_MODEL: HuggingFaceTB/SmolLM2-360M-Instruct
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '420'
+          CEREBRON_LOCAL_CPU_OUT: out/result.json
+        run: |
+          python - <<'PY'
+          import os
+          role=os.environ['ROLE']
+          doctrine=open('cerebron/civilization/CAPABILITIES_V2.md').read()
+          prompt=f'''You are a real local CEREBRON civilization worker. ROLE={role}.
+
+You must apply the following executable doctrine, not merely summarize it:
+
+{doctrine}
+
+MISSION:
+Design one concrete capability upgrade for a long-horizon AI civilization architecture in the domain of {role}. Use at least three of C1-C10. Your proposal must include:
+1. atomic claims;
+2. contradiction or failure graph;
+3. dynamic coalition of roles/models;
+4. one measurable benchmark;
+5. one matched-compute or ablation control;
+6. decisive falsifier;
+7. what enters Strategy Memory if the test succeeds;
+8. what is rejected if it fails.
+
+Do not claim superintelligence. Do not answer with only more agents, more context, more data or a larger model.'''
+          os.environ['CEREBRON_LOCAL_CPU_PROMPT']=prompt
+          from cerebron.providers.local_cpu_llm import main
+          main()
+          PY
+          python - <<'PY'
+          import json,os
+          p=json.load(open('out/result.json'))
+          assert p['ok'] is True
+          assert p['spend_limit_eur']==0
+          assert p['paid_fallback'] is False
+          assert p['api_key_used'] is False
+          p['role']=os.environ['ROLE']
+          p['worker_id']='CIV-'+os.environ['ROLE']
+          json.dump(p,open('out/result.json','w'),indent=2)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: civilization-v2-${{ matrix.role }}
+          path: out/result.json
+          retention-days: 14
+
+  civilization-synthesis:
+    needs: civilization-worker
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: civilization-v2-*
+          path: civilization
+          merge-multiple: false
+      - name: Build verified packet
+        run: |
+          python - <<'PY'
+          import glob,json,os
+          fs=sorted(glob.glob('civilization/*/result.json'))
+          assert len(fs)==12, len(fs)
+          rows=[json.load(open(f)) for f in fs]
+          assert len({r['worker_id'] for r in rows})==12
+          assert all(r['ok'] and r['spend_limit_eur']==0 and not r['paid_fallback'] and not r['api_key_used'] for r in rows)
+          os.makedirs('out',exist_ok=True)
+          json.dump(rows,open('out/workers.json','w'),indent=2)
+          packet='\n\n'.join(f"{r['worker_id']}:\n{r['answer']}" for r in rows)
+          open('out/packet.txt','w').write(packet)
+          print('verified_workers',len(rows),'packet_chars',len(packet))
+          PY
+      - name: Install synthesis runtime
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors sentencepiece
+      - name: Synthesize civilization upgrade
+        env:
+          CEREBRON_LOCAL_CPU_MODEL: Qwen/Qwen2.5-1.5B-Instruct
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '1400'
+          CEREBRON_LOCAL_CPU_OUT: out/synthesis.json
+        run: |
+          python - <<'PY'
+          import os
+          packet=open('out/packet.txt').read()
+          prompt='''You are the synthesis and evidence gate for 12 CEREBRON Civilization V2 workers. Build a rigorous integration plan from their proposals. Return exactly: A) 5 strongest testable upgrades; B) for each, mechanism, roles combined, benchmark, ablation, falsifier, evidence required; C) 3 weak/redundant proposals to reject; D) one smallest executable experiment; E) explicit statement of what is and is not demonstrated. Never claim superintelligence.\n\nWORKERS:\n'''+packet
+          os.environ['CEREBRON_LOCAL_CPU_PROMPT']=prompt
+          from cerebron.providers.local_cpu_llm import main
+          main()
+          PY
+          python - <<'PY'
+          import json
+          p=json.load(open('out/synthesis.json'))
+          assert p['ok'] is True and p['spend_limit_eur']==0 and not p['paid_fallback'] and not p['api_key_used']
+          print(p['answer'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-civilization-capabilities-v2-report
+          path: |
+            out/workers.json
+            out/packet.txt
+            out/synthesis.json
+          retention-days: 14
