@@ -14,6 +14,8 @@ import json
 import sys
 from pathlib import Path
 
+TRIGGER_NONCE = "2026-09-16TBOOSTER-432-V1"
+
 CORE = Path(__file__).resolve().parents[1] / "federation" / "core"
 if str(CORE) not in sys.path:
     sys.path.insert(0, str(CORE))
@@ -34,8 +36,7 @@ MISSION = {
     ),
 }
 
-ROLES = shard_worker.ROLE_DIRECTIVES.keys()
-ROLES = list(ROLES)
+ROLES = list(shard_worker.ROLE_DIRECTIVES.keys())
 
 THEMES = [
     "architecture du site central et API de controle",
@@ -46,7 +47,7 @@ THEMES = [
     "calcul CPU distribue sur machines self-hosted autorisees",
     "GPU locaux ou gratuits legitimement accessibles",
     "GitHub Actions comme control plane et calcul deterministe",
-    "self-hosted runners: enrôlement, heartbeat, securite et autoscaling",
+    "self-hosted runners: enrollement, heartbeat, securite et autoscaling",
     "edge/serverless gratuit et limites de quotas",
     "stockage objet/KV gratuit avec preuves d'integrite",
     "file de messages gratuite ou embarquee",
@@ -106,7 +107,7 @@ THEMES = [
     "architecture de federation multi-depots sans evasion de quotas",
     "controle des couts avec spend_limit_eur=0",
     "plan de validation E0 a E8 de l'infrastructure",
-    "red-team de l'hypothese 'compute illimite gratuit'",
+    "red-team de l'hypothese compute illimite gratuit",
     "alternatives au besoin de 432 machines simultanees",
     "optimisation par densite de travail EFFERVESCENCE",
     "partage volontaire de compute par utilisateurs du site",
@@ -182,6 +183,7 @@ def main() -> None:
         "results": len(results),
         "ok": sum(bool(r.get("ok")) for r in results),
         "paid_fallback": False,
+        "trigger_nonce": TRIGGER_NONCE,
     }, ensure_ascii=False))
 
 
