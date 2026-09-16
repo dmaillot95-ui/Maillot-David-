@@ -1,0 +1,22 @@
+{
+  "schema": "cerebron-opencrane-integration-v1",
+  "name": "OpenCrane",
+  "role": "mcp_rag_documentation",
+  "state": "PREPARED",
+  "counts_as_compute_worker": false,
+  "external_execution_enabled": false,
+  "paid_fallback": false,
+  "spend_limit_eur": 0,
+  "required_env": [
+    "CEREBRON_OPENCRANE_ENABLE",
+    "CEREBRON_OPENCRANE_URL",
+    "CEREBRON_OPENCRANE_ACCESS_TOKEN"
+  ],
+  "activation_gate": [
+    "endpoint_reachable",
+    "authentication_verified",
+    "source_allowlist_verified",
+    "retrieval_provenance_verified",
+    "zero_euro_verified"
+  ]
+}
