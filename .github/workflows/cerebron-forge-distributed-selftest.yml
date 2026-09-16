@@ -1,0 +1,96 @@
+name: CEREBRON Forge Distributed Selftest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/forge/core.py'
+      - 'cerebron/forge/server.py'
+      - 'cerebron/forge/remote_worker.py'
+      - '.github/workflows/cerebron-forge-distributed-selftest.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  distributed-selftest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Launch Forge server and remote workers
+        env:
+          CEREBRON_FORGE_TOKEN: selftest-token
+        run: |
+          set -euo pipefail
+          rm -rf out && mkdir -p out
+          export CEREBRON_FORGE_DB=out/distributed.db
+          export CEREBRON_FORGE_BIND=127.0.0.1
+          export CEREBRON_FORGE_PORT=8765
+          export CEREBRON_FORGE_QUIET=1
+          python -m cerebron.forge.server > out/server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+
+          python - <<'PY'
+          import json, time, urllib.request, os
+          base='http://127.0.0.1:8765'
+          headers={'Content-Type':'application/json','Authorization':'Bearer '+os.environ['CEREBRON_FORGE_TOKEN']}
+          def post(path,obj):
+              req=urllib.request.Request(base+path,data=json.dumps(obj).encode(),headers=headers,method='POST')
+              with urllib.request.urlopen(req,timeout=5) as r: return json.loads(r.read().decode())
+          for _ in range(50):
+              try:
+                  post('/register',{'worker_id':'BOOT','machine_id':'ci','provider':'github-ci','capabilities':['deterministic','cpu'],'max_parallel':1})
+                  break
+              except Exception:
+                  time.sleep(.1)
+          else: raise SystemExit('server did not start')
+          for i in range(24):
+              r=post('/submit',{'kind':'sum','payload':{'values':[i,i+1]},'required_capabilities':['deterministic'],'priority':100})
+              assert r['ok']
+          PY
+
+          for i in 1 2 3 4 5 6; do
+            CEREBRON_FORGE_URL=http://127.0.0.1:8765 \
+            CEREBRON_FORGE_TOKEN=selftest-token \
+            CEREBRON_WORKER_ID=REMOTE-$i \
+            CEREBRON_MACHINE_ID=CI-MACHINE-$i \
+            CEREBRON_WORKER_PROVIDER=github-ci \
+            python -m cerebron.forge.remote_worker > out/worker-$i.json &
+          done
+          wait
+
+          python - <<'PY'
+          import json, sqlite3
+          db=sqlite3.connect('out/distributed.db'); db.row_factory=sqlite3.Row
+          counts={r['status']:r['n'] for r in db.execute('select status,count(*) n from tasks group by status')}
+          assert counts == {'COMPLETED':24}, counts
+          rows=list(db.execute("select task_id,result_json,claimed_by from tasks where status='COMPLETED'"))
+          assert len(rows)==24
+          assert len({r['task_id'] for r in rows})==24
+          claimers={r['claimed_by'] for r in rows}
+          assert len(claimers) >= 2, claimers
+          workers=db.execute("select count(*) n from workers where active=1").fetchone()['n']
+          report={
+            'schema':'cerebron-forge-distributed-selftest-v1',
+            'server_ok':True,
+            'workers_registered':workers,
+            'remote_claimers_used':sorted(claimers),
+            'tasks_completed':24,
+            'duplicate_task_ids':0,
+            'paid_api_calls':0,
+            'spend_limit_eur':0,
+            'claim_superintelligence':False,
+          }
+          open('out/report.json','w').write(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-forge-distributed-selftest
+          path: out/
+          retention-days: 14
