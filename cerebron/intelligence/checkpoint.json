@@ -1,83 +1,85 @@
 {
-  "checkpoint": "CEREBRON-BENCHMARK-V2-STRUCTURAL-CLOSED",
+  "checkpoint": "CEREBRON-BENCH-003-R1-MATCHED-CLOSED",
   "date": "2026-09-16",
-  "ablation_run": 35122324731,
-  "benchmark_v2_run": 35124135017,
-  "benchmark_v2_artifact_id": 10458338994,
   "status": "completed",
-  "evidence_level": "E3_structural_simulation",
+  "evidence_level": "E3_verified_simulation",
   "operating_protocol": {
     "name": "CEREBRON-ALPHA-OMEGA",
     "status": "active",
     "human_facing_file": "cerebron/intelligence/CEREBRON-ALPHA-OMEGA.md",
     "worker_protocol_file": "cerebron/intelligence/worker_protocol.json",
-    "scope": [
-      "primary_assistant_reasoning_protocol",
-      "research_orchestration",
-      "benchmarks",
-      "audits",
-      "real_ai_workers_when_available"
-    ],
     "limitation": "Protocol use does not modify the underlying model, create new agents, or constitute evidence of self-improvement."
   },
+  "structural_core": {
+    "ablation_run": 35122324731,
+    "minimal_full_coverage_size": 6,
+    "nodes": ["deduction","procedure_refinement","system_identification","representation_reuse","failure_learning","verification"],
+    "score": 18.06,
+    "claim_limit": "Hand-specified structural simulation only."
+  },
+  "benchmark_v2": {
+    "run": 35124135017,
+    "status": "closed_with_confounds",
+    "known_confounds": ["latent parameter access","domain-label access","target-derived verification/error","target-directed refinement"]
+  },
   "cognitive_weight_layer": {
-    "status": "A0_baseline_validated_for_schema_only",
     "profile_file": "cerebron/intelligence/cognitive_weights.json",
     "governance_file": "cerebron/intelligence/weight_governance.py",
-    "workflow_file": ".github/workflows/cerebron-cognitive-weights.yml",
-    "validation_run": 35124831969,
-    "validation_conclusion": "success",
-    "weight_count": 12,
-    "meaning": "Versioned cognitive orchestration meta-parameters; not neural model weights.",
-    "promotion_gate": "No A0->A1 promotion without matched-resource held-out gain, transfer gain, ablation, leakage audit, no material regression, and reproducible rerun."
+    "governance_run": 35124831969,
+    "profile": "A0",
+    "meaning": "Versioned cognitive orchestration meta-parameters, not neural model weights.",
+    "status": "schema_valid_but_performance_not_validated"
   },
-  "required_capabilities": [
-    "verification",
-    "learning",
-    "transfer",
-    "reasoning",
-    "world_model",
-    "self_improvement"
-  ],
-  "minimal_full_coverage_size": 6,
-  "minimal_full_coverage_nodes": [
-    "deduction",
-    "procedure_refinement",
-    "system_identification",
-    "representation_reuse",
-    "failure_learning",
-    "verification"
-  ],
-  "minimal_full_coverage_score": 18.06,
-  "size_5_missing_required": ["world_model"],
-  "size_4_missing_required": ["transfer", "world_model"],
-  "benchmark_v2": {
-    "tasks": 160,
-    "orders_tested": 720,
-    "distinct_mae_values": 140,
-    "mae_spread": 2.557014,
-    "baseline_mae": 2.744626,
-    "best_mae": 0.230303,
-    "best_success_rate": 0.775,
-    "discriminates_orders": true,
-    "known_confounds": [
-      "latent parameter access",
-      "domain-label access",
-      "target-derived verification/error",
-      "target-directed refinement"
-    ]
+  "benchmark_v2_1_initial": {
+    "run": 35125248080,
+    "artifact_id": 10459610245,
+    "status": "invalid_for_comparative_claims",
+    "reason": "RNG consumption changed target task instances between transfer and no-transfer paths.",
+    "audit_file": "cerebron/intelligence/benchmark_v2_1_audit.json"
   },
-  "claim_limit": "The ablation and Benchmark V2 are deterministic internal structural experiments. V2 shows order sensitivity, but leakage/confounding prevents external-generalization or intelligence claims. Cognitive A0 weights are configuration parameters only until experimentally validated.",
-  "next_stage": "BENCHMARK_V2_1_LEAK_RESISTANT_WITH_WEIGHT_ABLATION",
+  "benchmark_v2_1_r1": {
+    "benchmark_id": "BENCH-003-R1",
+    "run": 35125349763,
+    "artifact_id": 10459182127,
+    "artifact_sha256": "96a71ec2c56cfe9ea750bfe2e77e5af7923e218d4c9a34b7c96c7449ed715b5b",
+    "target_task_bank_sha256": "31247ee7e2814eabba4d06c79951672340f19acee30a1491e8614c90e2d4ae70",
+    "status": "valid_matched_synthetic_test",
+    "neutral_baseline_mae": 0.0007841968132581761,
+    "a0_no_transfer_mae": 0.003051903469952456,
+    "a0_full_mae": 0.0032871584699718003,
+    "full_beats_baseline_seed_count": 0,
+    "transfer_gain_mae": -0.0002352550000193441,
+    "H1_full_beats_neutral": false,
+    "H2_transfer_positive": false,
+    "H3_any_ablation_effect": true,
+    "audit_file": "cerebron/intelligence/benchmark_v2_1_r1_audit.json"
+  },
+  "validated_weight_observations": {
+    "verification": "strong positive necessity in this harness",
+    "contradiction_detection": "positive contribution in this harness",
+    "uncertainty_penalty": "small positive contribution in this harness",
+    "transfer": "current A0 setting hurts held-out performance",
+    "complexity_penalty": "current A0 setting hurts held-out performance strongly",
+    "compute_penalty": "current A0 setting hurts held-out performance",
+    "evidence": "no measurable effect in this harness",
+    "not_exercised": ["failure_learning","world_model","reasoning","self_improvement","metacognition"]
+  },
+  "decision": {
+    "promote_A0_to_A1": false,
+    "reason": "A0 loses to neutral baseline on all five matched seeds and source-only transfer is negative.",
+    "anti_overfit_rule": "Do not tune A1 on BENCH-003-R1 held-out target results."
+  },
+  "next_stage": "A1_SOURCE_ONLY_PROPOSAL_THEN_BENCH-004_FRESH_HOLDOUT",
   "next_requirements": [
-    "hidden oracle inaccessible to candidate modules",
-    "observable-only module inputs",
-    "held-out task generators and domains",
-    "equal-resource baseline",
-    "explicit transfer test",
-    "explicit ablation test",
-    "failure-learning test without target leakage",
-    "A0-vs-A1 self-improvement test on withheld domains",
-    "cognitive-weight sensitivity and ablation under matched resources"
-  ]
+    "construct A1 only from source/development tasks",
+    "freeze A1 before fresh evaluation",
+    "preregister BENCH-004",
+    "use new unseen seeds and held-out families",
+    "same task bank and resource budget for neutral, A0 and A1",
+    "explicit transfer and ablation tests",
+    "test failure-learning without target leakage",
+    "test A0-vs-A1 on withheld domains",
+    "no promotion without reproducible matched-resource gain"
+  ],
+  "claim_limit": "BENCH-003-R1 is a valid matched synthetic E3 benchmark of orchestration meta-parameters. It does not demonstrate AGI, superintelligence, neural-weight learning, autonomous self-improvement, or external generalization."
 }
