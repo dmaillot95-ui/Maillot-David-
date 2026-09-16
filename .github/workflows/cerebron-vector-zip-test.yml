@@ -1,0 +1,50 @@
+name: CEREBRON Vector Zip Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/vector_zip/**'
+      - '.github/workflows/cerebron-vector-zip-test.yml'
+
+jobs:
+  vector-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build local vector index
+        run: |
+          python cerebron/vector_zip/vector_zip.py build cerebron /tmp/vector-index.json --dims 256 --max-chars 1200
+      - name: Query relevant CEREBRON chunks
+        run: |
+          python cerebron/vector_zip/vector_zip.py query /tmp/vector-index.json "runner worker task evidence claim" --top-k 8 > /tmp/query.json
+          cat /tmp/query.json
+      - name: Verify retrieval envelope
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/vector-index.json'))
+          q=json.load(open('/tmp/query.json'))
+          assert d['stats']['chunks'] > 0
+          assert len(q) == 8
+          retrieved=sum(r['chars'] for r in q)
+          source=d['stats']['source_chars']
+          report={
+            'files_indexed':d['stats']['files_indexed'],
+            'chunks_indexed':d['stats']['chunks'],
+            'source_chars':source,
+            'retrieved_chars_top8':retrieved,
+            'context_fraction': retrieved/source if source else None,
+            'paid_api_calls':0,
+            'claim':'local lexical-hash vector retrieval executed; exact source remains external; no claim of semantic lossless compression'
+          }
+          print(json.dumps(report,indent=2))
+          assert source > retrieved
+          open('/tmp/vector-zip-report.json','w').write(json.dumps(report,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-vector-zip-report
+          path: |
+            /tmp/vector-zip-report.json
+            /tmp/query.json
