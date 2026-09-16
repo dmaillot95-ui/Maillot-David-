@@ -1,0 +1,40 @@
+name: CEREBRON Vector Cognition Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/core/vector_cognition.py'
+      - '.github/workflows/cerebron-vector-cognition-test.yml'
+  workflow_dispatch:
+
+jobs:
+  vector-cognition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run deterministic vector cognition demo
+        run: |
+          python3 cerebron/core/vector_cognition.py | tee vector-cognition-report.json
+      - name: Validate claims and routing
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('vector-cognition-report.json').read_text())
+          assert d['engine']=='CEREBRON_VECTOR_COGNITION_OMEGA_V1'
+          assert d['claims']['superintelligence'] is False
+          assert d['claims']['autonomous_discovery'] is False
+          assert d['claims']['vector_crossing_prototype'] is True
+          assert d['atom_count']==6
+          assert len(d['retrieval'])==4
+          assert len(d['frontier'])==5
+          assert d['route']['selected']=='local_cpu'
+          assert all(x['status']=='CANDIDATE_NOT_PROVEN' for x in d['frontier'])
+          print('VECTOR_COGNITION_TEST=PASS')
+          PY
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: vector-cognition-report
+          path: vector-cognition-report.json
