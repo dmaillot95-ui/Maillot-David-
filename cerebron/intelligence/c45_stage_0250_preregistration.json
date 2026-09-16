@@ -1,0 +1,44 @@
+{
+  "campaign": "C45",
+  "stage": "0250",
+  "status": "PREREGISTERED_BEFORE_EXECUTION",
+  "baseline": "frozen C43/C44 pre-campaign baseline",
+  "parent_stage": "0100",
+  "evidence_ceiling": "E3 synthetic verified simulation",
+  "purpose": "Test the corrected C45 candidate at rung 250 under stricter resource parity and broader adversarial stress.",
+  "candidate_changes_from_rung_100": [
+    "remove observed deduplication mechanism after negative ablation signal at rung 100",
+    "retain scar guard",
+    "retain adaptive compiler",
+    "retain verification reservation",
+    "retain dependency-aware router"
+  ],
+  "resource_parity_rule": {
+    "description": "For every task, sham receives exactly the same units, coordination allocation and evidence-path allocation as the candidate. No cost override is permitted.",
+    "required_max_units_mismatch": 0,
+    "required_max_coord_mismatch": 0,
+    "required_max_evidence_path_mismatch": 0,
+    "required_max_total_cost_mismatch": 0.0
+  },
+  "seeds": [20261701,20261702,20261703,20261704,20261705,20261706,20261707,20261708,20261709,20261710,20261711,20261712,20261713],
+  "families": [
+    "standard","false_simple","scar_inversion","mixed_shift","high_uncertainty","dependency_spike","tight_budget","duplicate_mismatch","evidence_scarcity","nonreducible_easy","reducible_hard","compound_adversarial","budget_dependency_collision","evidence_inversion","router_trap"
+  ],
+  "ablations": ["scar_guard","adaptive_compiler","verification_reservation","router"],
+  "gates": {
+    "candidate_beats_baseline_both_seeds_min": 11,
+    "candidate_beats_sham_residual_seeds_min": 10,
+    "candidate_beats_sham_verified_seeds_min": 10,
+    "family_vcgc_relative_regression_floor": -0.05,
+    "positive_ablation_signals_min": 3,
+    "strict_resource_parity_required": true
+  },
+  "work_unit_accounting": {
+    "family_checks": 240,
+    "ablation_checks": 4,
+    "resource_parity_check": 1,
+    "gates": 5,
+    "total": 250
+  },
+  "promotion_rule": "Only a preregistered PASS permits progression to rung 500. A PASS is not evidence of AGI or superintelligence."
+}
