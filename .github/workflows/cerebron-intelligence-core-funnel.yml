@@ -1,0 +1,25 @@
+name: CEREBRON Intelligence Core Funnel
+
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence_core/intelligence_core_funnel.py'
+      - '.github/workflows/cerebron-intelligence-core-funnel.yml'
+  workflow_dispatch:
+
+jobs:
+  intelligence-core:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run dual funnel
+        run: python cerebron/intelligence_core/intelligence_core_funnel.py
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: intelligence-core-funnel
+          path: intelligence-core-funnel.json
+          retention-days: 14
