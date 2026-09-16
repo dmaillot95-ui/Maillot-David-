@@ -1,0 +1,25 @@
+name: CEREBRON C45 Overhead Frontier 0060
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/intelligence/c45_overhead_frontier_0060.py'
+      - 'cerebron/intelligence/C45-OVERHEAD-FRONTIER-0060-ADDENDUM.json'
+      - '.github/workflows/cerebron-c45-overhead-frontier-0060.yml'
+
+jobs:
+  overhead-frontier-0060:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run overhead frontier 60
+        run: python cerebron/intelligence/c45_overhead_frontier_0060.py
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-c45-overhead-frontier-0060-results
+          path: artifacts/c45_overhead_frontier_0060_results.json
