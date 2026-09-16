@@ -13,6 +13,21 @@ MORE AGENTS != MORE INTELLIGENCE
 MORE MODULES != MORE CAPABILITY
 TRANSFER WHAT CAUSED SUCCESS, NOT EVERYTHING PRESENT DURING SUCCESS
 
+## Automatic assimilation rule
+VERIFIED INFORMATION IS ASSIMILATED BY DEFAULT.
+ONLY CAPABILITY CLAIMS REQUIRE EXPERIMENTAL PROOF.
+
+Operational loop:
+NEW INFORMATION -> VERIFY -> CLASSIFY -> ASSIMILATE -> REUSE
+
+Heavy experimental validation is reserved for:
+- claims that a new capability exists;
+- claims that one architecture/profile is better than another;
+- major routing, learning, transfer, or self-improvement changes;
+- promotions that would replace a previous champion or canonical mechanism.
+
+Ordinary verified facts, methods, corrections, rules, negative knowledge, and experience are integrated directly into the appropriate bank and become available to future cognitive programs without requiring a dedicated benchmark.
+
 ## Level 0 — Three mother seeds
 ### Α — UNDERSTAND
 Distinction -> Relation -> Structure -> Reality -> Root Question -> Gap -> Unknown -> Contradiction -> Constraint -> Bottleneck -> Representation Shift
