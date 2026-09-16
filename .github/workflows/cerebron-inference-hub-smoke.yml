@@ -22,16 +22,16 @@ jobs:
           python-version: '3.12'
       - name: Install free external inference client
         run: pip install --quiet hf-gradio
-      - name: Execute two real logical agents
+      - name: Execute twenty real logical agents
         run: |
-          python cerebron/inference_hub/hub.py enqueue --mission-id HUB-REAL-SMOKE-${{ github.run_id }} --prompt 'Réponds CEREBRON_HUB_OK puis calcule exactement 17*19. CLAIM<=EVIDENCE.' --agents 2
-          python cerebron/inference_hub/hub.py run --limit 2
+          python cerebron/inference_hub/hub.py enqueue --mission-id HUB-REAL-SMOKE-20-${{ github.run_id }} --prompt 'Réponds CEREBRON_HUB_OK puis calcule exactement 17*19. CLAIM<=EVIDENCE.' --agents 20
+          python cerebron/inference_hub/hub.py run --limit 20
           python cerebron/inference_hub/hub.py status
       - name: Upload execution evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cerebron-hub-smoke-${{ github.run_id }}
+          name: cerebron-hub-smoke-20-${{ github.run_id }}
           path: |
             cerebron/inference_hub/state/queue.json
             cerebron/inference_hub/state/latest.json
