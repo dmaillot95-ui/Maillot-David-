@@ -1,0 +1,29 @@
+name: CEREBRON Collatz Common Factor 2000 Funnel
+
+on:
+  push:
+    paths:
+      - 'cerebron/collatz/campaign_common_factor_2000.py'
+      - '.github/workflows/cerebron-collatz-common-factor-2000.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  common-factor-2000:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run common-factor 2000 funnel
+        run: python cerebron/collatz/campaign_common_factor_2000.py
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: collatz-common-factor-funnel
+          path: collatz-common-factor-funnel.json
+          retention-days: 14
