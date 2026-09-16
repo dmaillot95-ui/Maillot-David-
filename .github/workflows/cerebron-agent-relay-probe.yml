@@ -1,0 +1,32 @@
+name: CEREBRON Agent Relay Probe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/agent_factory/relay_probe.py'
+      - '.github/workflows/cerebron-agent-relay-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Probe managed-agent relays without billable calls
+        run: python cerebron/agent_factory/relay_probe.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-relay-probe
+          path: relay-probe.json
+          retention-days: 7
