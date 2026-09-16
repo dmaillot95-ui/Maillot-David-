@@ -1,0 +1,55 @@
+name: CEREBRON Forge Omega Selftest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/forge/core.py'
+      - '.github/workflows/cerebron-forge-selftest.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  forge-selftest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run CEREBRON Forge scheduler selftest
+        run: |
+          rm -rf out
+          mkdir -p out
+          python cerebron/forge/core.py | tee out/report.json
+          python - <<'PY'
+          import json, sqlite3
+          from pathlib import Path
+
+          report=json.load(open('out/report.json'))
+          assert report['schema']=='cerebron-forge-v1'
+          assert report['workers_active']==4
+          assert report['logical_parallel_capacity']==4
+          assert report['tasks'].get('COMPLETED')==8
+          assert report['submitted']==8
+          assert report['completed_exact']==8
+          assert report['spend_limit_eur']==0
+          assert report['claim_superintelligence'] is False
+
+          db=sqlite3.connect('out/cerebron-forge.db')
+          rows=db.execute("SELECT task_id,status,claimed_by FROM tasks").fetchall()
+          assert len(rows)==8
+          assert len({r[0] for r in rows})==8
+          assert all(r[1]=='COMPLETED' for r in rows)
+          assert all(r[2] in {'LOCAL-1','LOCAL-2','LOCAL-3','LOCAL-4'} for r in rows)
+          print(json.dumps({'forge_selftest':'PASS','tasks':8,'workers':4,'double_claims':0,'spend_limit_eur':0}))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-forge-selftest
+          path: |
+            out/report.json
+            out/cerebron-forge.db
+          retention-days: 14
