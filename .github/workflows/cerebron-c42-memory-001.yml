@@ -1,0 +1,24 @@
+name: CEREBRON C42 MEMORY 001
+
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence/bench_c42_memory_001.py'
+      - '.github/workflows/cerebron-c42-memory-001.yml'
+  workflow_dispatch:
+
+jobs:
+  bench-c42-memory-001:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run BENCH-C42-MEMORY-001
+        run: python cerebron/intelligence/bench_c42_memory_001.py
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-c42-memory-001-results
+          path: bench_c42_memory_001_results.json
