@@ -1,0 +1,88 @@
+name: CEREBRON Agent Twin API Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/agent_factory/twin_api.py'
+      - '.github/workflows/cerebron-agent-twin-api-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  api-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Start twin API
+        run: |
+          export CEREBRON_TWIN_DB="$RUNNER_TEMP/cerebron-agent-twin.db"
+          nohup python cerebron/agent_factory/twin_api.py --host 127.0.0.1 --port 8787 > "$RUNNER_TEMP/twin-api.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/twin-api.pid"
+          python - <<'PY'
+          import time, urllib.request
+          for _ in range(50):
+              try:
+                  print(urllib.request.urlopen('http://127.0.0.1:8787/health', timeout=1).read().decode())
+                  break
+              except Exception:
+                  time.sleep(.1)
+          else:
+              raise SystemExit('API did not start')
+          PY
+      - name: Create agent, task, children, results, stop
+        run: |
+          python - <<'PY'
+          import json, urllib.request
+          base='http://127.0.0.1:8787'
+          def req(method,path,data=None):
+              raw=None if data is None else json.dumps(data).encode()
+              r=urllib.request.Request(base+path,data=raw,method=method,headers={'Content-Type':'application/json'})
+              with urllib.request.urlopen(r,timeout=5) as x:
+                  return json.loads(x.read().decode())
+          health=req('GET','/health')
+          assert health['ok'] is True and health['spend_limit_eur']==0 and health['paid_fallback'] is False
+          agent=req('POST','/agents',{'name':'math-parent','specialization':'math_proof','engine':'deterministic_calc'})
+          aid=agent['id']
+          assert aid.startswith('AG-') and agent['status']=='READY'
+          task=req('POST',f'/agents/{aid}/tasks',{'kind':'CALC','payload':{'expression':'sqrt(144)+2**10'}})
+          assert task['status']=='COMPLETED', task
+          assert task['result']['value']==1036.0, task
+          spawned=req('POST',f'/agents/{aid}/spawn',{'count':3,'specialization':'counterexample'})
+          children=spawned['children']
+          assert len(children)==3 and all(c['parent_id']==aid for c in children)
+          results=req('GET',f'/agents/{aid}/results')
+          assert len(results['tasks'])==1 and results['tasks'][0]['status']=='COMPLETED'
+          stopped=req('DELETE',f'/agents/{aid}')
+          assert stopped['stopped'] is True
+          final=req('GET',f'/agents/{aid}')
+          assert final['status']=='STOPPED'
+          proof={
+            'engine':'CEREBRON_AGENT_TWIN_API_V1',
+            'health':health,
+            'agent_id':aid,
+            'task_id':task['id'],
+            'task_result':task['result'],
+            'children_ids':[c['id'] for c in children],
+            'parent_status_after_delete':final['status'],
+            'real_http_calls':7,
+            'logical_agents_created':4,
+            'physical_runners_used':1,
+            'claim':'API orchestration validated; logical agents are not additional physical runners or proprietary model copies.'
+          }
+          open('agent-twin-api-proof.json','w').write(json.dumps(proof,indent=2)+'\n')
+          print(json.dumps(proof))
+          PY
+      - name: Show server log
+        if: always()
+        run: cat "$RUNNER_TEMP/twin-api.log" || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-agent-twin-api-proof
+          path: agent-twin-api-proof.json
+          retention-days: 7
