@@ -1,0 +1,75 @@
+name: CEREBRON Agent Twin Physical Spawn Test
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cerebron-agent-twin-physical-spawn-test.yml'
+  workflow_dispatch:
+
+jobs:
+  spawn-parent:
+    runs-on: ubuntu-24.04
+    outputs:
+      parent_id: ${{ steps.parent.outputs.parent_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: parent
+        shell: bash
+        run: |
+          PARENT_ID="AGP-${GITHUB_RUN_ID}"
+          echo "parent_id=$PARENT_ID" >> "$GITHUB_OUTPUT"
+          printf '{"parent_id":"%s","requested_children":4,"claim":"parent orchestrator only"}\n' "$PARENT_ID" > parent.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: twin-parent
+          path: parent.json
+
+  child:
+    needs: spawn-parent
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        child: [0,1,2,3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute independent child worker
+        shell: bash
+        env:
+          PARENT_ID: ${{ needs.spawn-parent.outputs.parent_id }}
+          CHILD_SLOT: ${{ matrix.child }}
+        run: |
+          python - <<'PY'
+          import json, os, platform, socket, math
+          parent=os.environ['PARENT_ID']
+          slot=int(os.environ['CHILD_SLOT'])
+          child_id=f"AGC-{os.environ.get('GITHUB_RUN_ID')}-{slot}"
+          # Deterministic task used only to prove independent execution on a separate hosted runner.
+          value=math.isqrt((slot+10)**2)
+          out={
+            "parent_id":parent,
+            "child_id":child_id,
+            "slot":slot,
+            "runner_name":os.environ.get("RUNNER_NAME"),
+            "runner_os":os.environ.get("RUNNER_OS"),
+            "hostname":socket.gethostname(),
+            "machine":platform.machine(),
+            "task_kind":"CALC_PROOF_OF_EXECUTION",
+            "result":value,
+            "status":"COMPLETED",
+            "spend_limit_eur":0,
+            "paid_fallback":False,
+            "claim":"independent GitHub-hosted worker execution; not a proprietary model copy"
+          }
+          fn=f"child-{slot}.json"
+          open(fn,"w",encoding="utf-8").write(json.dumps(out,indent=2)+"\n")
+          print(json.dumps(out))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: twin-child-${{ matrix.child }}
+          path: child-${{ matrix.child }}.json
