@@ -1,0 +1,168 @@
+name: CEREBRON External Nonredundant Role Wave
+
+on:
+  workflow_run:
+    workflows: ["CEREBRON Hugging Face Model Registry Probe"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cerebron-external-role-wave
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      has_work: ${{ steps.plan.outputs.has_work }}
+      healthy_families: ${{ steps.plan.outputs.healthy_families }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: plan
+        name: Build nonredundant role x model-family plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+
+          roles = [
+            'SCOUT','DECOMPOSER','PROOF_A','PROOF_B','COMPUTE_CHECKER','ALTERNATIVE_ROUTE',
+            'FALSIFIER','RED_TEAM','COUNTER_AUDITOR','REPLICATOR','SYNTHESIZER','JUDGE'
+          ]
+          reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
+          families={}
+          for mid,m in reg.get('models',{}).items():
+            if m.get('status') not in {'HEALTHY','PROBATION'}: continue
+            if m.get('cost_class') != 'ZERO_EURO_PUBLIC_SPACE': continue
+            fam=m.get('family') or mid
+            cur=families.get(fam)
+            size=float(str(m.get('size_class','0')).upper().replace('B','') or 0)
+            if cur is None or size > cur[0]:
+              families[fam]=(size,mid,m)
+          selected=[(fam,v[1],v[2]) for fam,v in sorted(families.items())]
+          pairs=[]
+          for role in roles:
+            for fam,mid,m in selected:
+              if role not in m.get('roles_allowed',[]):
+                continue
+              pairs.append({'role':role,'family':fam,'model_id':mid})
+          pairs=pairs[:20]
+          print('matrix='+json.dumps({'include':pairs},separators=(',',':')))
+          print('has_work='+('true' if pairs else 'false'))
+          print('healthy_families='+str(len(selected)))
+          PY
+
+  external-worker:
+    needs: plan
+    if: needs.plan.outputs.has_work == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install zero-euro public-space client
+        run: pip install --quiet hf-gradio
+      - name: Execute real external AI role
+        env:
+          ROLE: ${{ matrix.role }}
+          MODEL_ID: ${{ matrix.model_id }}
+          FAMILY: ${{ matrix.family }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json, os, sys, hashlib
+          from pathlib import Path
+          sys.path.insert(0,'cerebron/federation/core')
+          import shard_worker
+
+          reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
+          mid=os.environ['MODEL_ID']; role=os.environ['ROLE']; fam=os.environ['FAMILY']
+          model={'model_id':mid, **reg['models'][mid]}
+          task={
+            'task_id':f'EXT-{role}-{mid}', 'role':role, 'civilization':'CEREBRON',
+            'team':'EXTERNAL_NONREDUNDANT', 'mission_id':'M-A97A56A2852A'
+          }
+          mission={'title':'CEREBRON external role validation','objective':'Produce one compact, technically useful role-specific output while respecting CLAIM<=EVIDENCE.'}
+          prompt=shard_worker.role_prompt(task, mission, 'Validate external nonredundant role execution')
+          ok,text,meta=shard_worker.invoke_hf(model,prompt)
+          result={
+            'schema':'cerebron-external-role-result-v1','role':role,'model_id':mid,'model_family':fam,
+            'provider':'huggingface_public_spaces','ok':bool(ok),'execution_status':'COMPLETED' if ok else 'FAILED_RETRYABLE',
+            'endpoint':meta.get('endpoint'),'error_type':meta.get('error_type'),'error':meta.get('error'),
+            'response':text if ok else None,
+            'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,
+            'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'
+          }
+          Path('out/result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps({k:v for k,v in result.items() if k!='response'},ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: external-role-${{ matrix.role }}-${{ matrix.model_id }}
+          path: out/result.json
+          if-no-files-found: error
+
+  omega-fusion:
+    needs: [plan, external-worker]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.has_work == 'true'
+        with:
+          pattern: external-role-*
+          path: external-results
+          merge-multiple: false
+      - name: Fuse real external results without inflating independence
+        env:
+          HAS_WORK: ${{ needs.plan.outputs.has_work }}
+          HEALTHY_FAMILIES: ${{ needs.plan.outputs.healthy_families }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          rows=[]
+          root=Path('external-results')
+          if root.exists():
+            for p in root.rglob('result.json'):
+              try: rows.append(json.loads(p.read_text()))
+              except Exception: pass
+          ok=[r for r in rows if r.get('ok')]
+          unique_pairs={(r.get('role'),r.get('model_family')) for r in ok}
+          families={r.get('model_family') for r in ok if r.get('model_family')}
+          roles={r.get('role') for r in ok if r.get('role')}
+          report={
+            'schema':'cerebron-external-role-omega-v1',
+            'healthy_families_planned':int(os.environ.get('HEALTHY_FAMILIES') or 0),
+            'artifact_rows':len(rows),
+            'successful_external_calls':len(ok),
+            'validated_role_family_pairs':len(unique_pairs),
+            'successful_model_families':sorted(families),
+            'successful_roles':sorted(roles),
+            'independence_rule':'same model family is not counted as an independent engine',
+            'claim_note':'Only successful external calls count as external AI agents; planned jobs and CPU runners do not.'
+          }
+          Path('external-omega-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: external-role-omega-report
+          path: external-omega-report.json
