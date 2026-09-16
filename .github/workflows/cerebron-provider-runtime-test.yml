@@ -1,0 +1,45 @@
+name: CEREBRON Provider Runtime Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/core/provider_runtime_reduce.py'
+      - 'cerebron/federation/routing/provider_router.py'
+      - 'cerebron/federation/state/provider-runtime.json'
+      - '.github/workflows/cerebron-provider-runtime-test.yml'
+  workflow_dispatch:
+
+jobs:
+  provider-runtime-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify quota memory changes next route order
+        run: |
+          mkdir -p /tmp/cerebron
+          cp cerebron/federation/state/provider-runtime.json /tmp/cerebron/state.json
+          cat > /tmp/cerebron/results.jsonl <<'EOF'
+          {"attempted_models":[{"provider":"huggingface_public_spaces","ok":false,"error_type":"QUOTA"}]}
+          {"attempted_models":[{"provider":"groq_free","ok":true,"error_type":null}]}
+          EOF
+          python cerebron/federation/core/provider_runtime_reduce.py \
+            --state /tmp/cerebron/state.json \
+            --results /tmp/cerebron/results.jsonl \
+            --output /tmp/cerebron/report.json
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, 'cerebron/federation/routing')
+          from provider_router import load_state, ordered_routes
+          st = load_state(Path('/tmp/cerebron/state.json'))
+          order = ordered_routes(['groq_free','huggingface_public_spaces'], st)
+          assert order[0] == 'groq_free', order
+          hf = st['providers']['huggingface_public_spaces']
+          assert hf['quota_hits'] >= 1
+          assert hf['cooldown_until'] > 0
+          print({'order': order, 'hf_quota_hits': hf['quota_hits']})
+          PY
