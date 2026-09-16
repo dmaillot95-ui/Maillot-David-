@@ -1,0 +1,54 @@
+name: CEREBRON Physical Node Functional Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/physical_node/**'
+      - '.github/workflows/cerebron-physical-node-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  physical-node-software-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Initialize autonomous node
+        env:
+          CEREBRON_NODE_ROOT: ${{ runner.temp }}/cerebron-node
+        run: |
+          python cerebron/physical_node/node.py init
+      - name: Test CPU task and DAG fanout
+        env:
+          CEREBRON_NODE_ROOT: ${{ runner.temp }}/cerebron-node
+        run: |
+          python cerebron/physical_node/node.py enqueue CALC '{"expr":"sqrt(144)+2**10"}' --priority 1
+          python cerebron/physical_node/node.py enqueue FANOUT '{"children":[{"kind":"CALC","payload":{"expr":"6*7"},"priority":2},{"kind":"CALC","payload":{"expr":"3**8"},"priority":3}]}' --priority 2
+          python cerebron/physical_node/node.py run-once
+          python cerebron/physical_node/node.py run-once
+          python cerebron/physical_node/node.py run-once
+          python cerebron/physical_node/node.py run-once
+          python cerebron/physical_node/node.py status | tee status.json
+          python - <<'PY'
+          import json
+          p=json.load(open('status.json'))
+          assert p['node']['spend_limit_eur']==0
+          assert p['node']['paid_fallback'] is False
+          assert p['node']['engines']['cpu_calculator'] is True
+          assert p['node']['engines']['task_dag'] is True
+          assert p['tasks'].get('COMPLETED') == 4, p
+          print('PHYSICAL_NODE_FRAMEWORK=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: physical-node-test-evidence
+          path: |
+            status.json
+            ${{ runner.temp }}/cerebron-node/evidence.jsonl
+          retention-days: 14
