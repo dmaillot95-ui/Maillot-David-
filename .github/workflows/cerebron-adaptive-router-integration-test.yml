@@ -1,0 +1,52 @@
+name: CEREBRON Adaptive Router Integration Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/federation/core/adaptive_shard_worker.py'
+      - 'cerebron/federation/core/federated_worker_bridge.py'
+      - 'cerebron/federation/routing/provider_router.py'
+      - 'cerebron/federation/state/provider-runtime.json'
+      - '.github/workflows/cerebron-adaptive-router-integration-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adaptive-router:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile adaptive worker
+        run: |
+          python -m py_compile \
+            cerebron/federation/core/adaptive_shard_worker.py \
+            cerebron/federation/core/federated_worker_bridge.py \
+            cerebron/federation/routing/provider_router.py
+      - name: Verify learned ordering without external calls
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          core = Path('cerebron/federation/core').resolve()
+          sys.path.insert(0, str(core))
+          import adaptive_shard_worker as a
+          a.shard_worker.available_zero_euro_routes = lambda: [
+              'huggingface_public_spaces',
+              'cloudflare_workers_ai_free',
+              'groq_free',
+              'github_actions_cpu',
+          ]
+          order = a.adaptive_provider_order({'task_id':'CI-ADAPTIVE'})
+          snap = a.router_snapshot()
+          print('ORDER', order)
+          print('SNAPSHOT', snap)
+          assert order == ['groq_free','cloudflare_workers_ai_free','huggingface_public_spaces'], order
+          assert snap['scores']['huggingface_public_spaces'] < snap['scores']['groq_free']
+          print('CEREBRON_ADAPTIVE_ROUTER_OK')
+          PY
