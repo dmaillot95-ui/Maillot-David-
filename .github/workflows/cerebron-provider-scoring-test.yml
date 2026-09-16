@@ -1,0 +1,51 @@
+name: CEREBRON Provider Scoring Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/routing/provider_router.py'
+      - '.github/workflows/cerebron-provider-scoring-test.yml'
+  workflow_dispatch:
+
+jobs:
+  provider-scoring-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate adaptive provider scoring
+        run: |
+          python -m py_compile cerebron/federation/routing/provider_router.py
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, 'cerebron/federation/routing')
+          import provider_router as r
+
+          routes = ['groq_free','cloudflare_workers_ai_free','huggingface_public_spaces']
+          st = r.load_state(None)
+          before = r.ordered_routes(routes, st, now=1000)
+          assert set(before) == set(routes)
+
+          # Repeated quota hits must demote/cool down Groq without deleting it.
+          r.record_result(st, 'groq_free', ok=False, error_type='QUOTA', now=1000, retry_after_seconds=120)
+          after = r.ordered_routes(routes, st, now=1001)
+          assert after[-1] == 'groq_free'
+          assert r.score_route('groq_free', st, now=1001) < -1e8
+
+          # After cooldown, success evidence can rehabilitate the route.
+          r.record_result(st, 'groq_free', ok=True, latency_ms=50, now=1201)
+          s = r.score_route('groq_free', st, now=1201)
+          assert s > -1e8
+
+          # A healthy lower-latency route should outrank a failure-heavy route.
+          for _ in range(4):
+              r.record_result(st, 'cloudflare_workers_ai_free', ok=True, latency_ms=60, now=1201)
+          for _ in range(4):
+              r.record_result(st, 'huggingface_public_spaces', ok=False, error_type='UPSTREAM', latency_ms=500, now=1201)
+          ordered = r.ordered_routes(routes, st, now=1201)
+          assert ordered.index('cloudflare_workers_ai_free') < ordered.index('huggingface_public_spaces')
+          print(r.snapshot(st, routes, now=1201))
+          PY
