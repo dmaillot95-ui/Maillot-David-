@@ -1,0 +1,35 @@
+name: CEREBRON Federated Hubs 1000 Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/topology/federated-hubs-1000.json'
+      - 'cerebron/federation/core/federated_scheduler.py'
+      - '.github/workflows/cerebron-federated-hubs-1000-test.yml'
+  workflow_dispatch:
+
+jobs:
+  topology-1000-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate 1000-shard logical topology
+        run: |
+          python -m py_compile cerebron/federation/core/federated_scheduler.py
+          python cerebron/federation/core/federated_scheduler.py --topology cerebron/federation/topology/federated-hubs-1000.json > /tmp/topology.json
+          cat /tmp/topology.json
+          python - <<'PY'
+          import json
+          x = json.load(open('/tmp/topology.json'))
+          assert x['logical_shards'] == 1000
+          assert x['unique_addresses'] == 1000
+          assert x['physical_concurrency_cap'] == 20
+          assert x['active_in_wave'] == 20
+          assert x['tribes'] == 10
+          assert x['hubs'] == 50
+          print('CEREBRON_1000_TOPOLOGY_OK')
+          PY
