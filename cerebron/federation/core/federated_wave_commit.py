@@ -25,16 +25,17 @@ def main():
         aid=obj.get('assignment_id')
         rc=int(obj.get('returncode',1))
         worker_results=obj.get('worker_results') or []
-        terminal_ok=rc==0 and any(r.get('status')=='COMPLETED' for r in worker_results if isinstance(r,dict))
+        terminal_statuses=[str(r.get('execution_status') or r.get('status') or 'UNKNOWN') for r in worker_results if isinstance(r,dict)]
+        terminal_ok=rc==0 and any(s=='COMPLETED' for s in terminal_statuses)
         if aid:
             (completed if terminal_ok else failed).append(aid)
-        rows.append({'file':str(f),'assignment_id':aid,'returncode':rc,'terminal_ok':terminal_ok})
+        rows.append({'file':str(f),'assignment_id':aid,'returncode':rc,'terminal_statuses':terminal_statuses,'terminal_ok':terminal_ok})
 
     mark_terminal(state, completed, 'COMPLETED')
     mark_terminal(state, failed, 'FAILED')
     save_json(state_path,state)
     report={
-      'schema':'cerebron-orchestrated-wave-commit-v1',
+      'schema':'cerebron-orchestrated-wave-commit-v2',
       'completed':completed,
       'failed':failed,
       'completed_count':len(completed),
