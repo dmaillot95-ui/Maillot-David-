@@ -11,11 +11,16 @@ on:
       - 'cerebron/federation/core/federated_wave_reducer.py'
       - 'cerebron/federation/core/provider_adapters.py'
       - 'cerebron/federation/state/retry-request.json'
+      - 'cerebron/federation/state/chat-control.json'
       - '.github/workflows/cerebron-federated-worker-bridge-test.yml'
 
 permissions:
   contents: write
   actions: read
+
+concurrency:
+  group: cerebron-orchestrated-wave
+  cancel-in-progress: false
 
 jobs:
   plan:
@@ -31,25 +36,42 @@ jobs:
         with:
           python-version: '3.12'
       - id: plan
-        name: Plan next 20-address wave or consume explicit retry
+        name: Plan ChatGPT-controlled wave
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p plan-out
           python - <<'PY'
-          import json
+          import json, subprocess
           from pathlib import Path
 
           state_path=Path('cerebron/federation/state/federated-multiwave-state.json')
           retry_path=Path('cerebron/federation/state/retry-request.json')
+          control_path=Path('cerebron/federation/state/chat-control.json')
           state=json.load(open(state_path))
-          retry={}
-          if retry_path.exists():
-              retry=json.load(open(retry_path))
+          control=json.load(open(control_path)) if control_path.exists() else {}
+          retry=json.load(open(retry_path)) if retry_path.exists() else {}
 
+          paused=bool(control.get('paused', True))
+          command=str(control.get('command','IDLE')).upper()
+          wave_size=max(1,min(int(control.get('wave_size',20)),int(state.get('physical_cap',20))))
           wave=[]
-          if retry.get('status') == 'REQUESTED':
-              ids=list(retry.get('assignment_ids') or [])[:int(state.get('physical_cap',20))]
+
+          if paused or command in {'IDLE','PAUSE','STOP'}:
+              payload={'wave':[],'summary':{
+                  'control':'PAUSED' if paused else command,
+                  'request_id':control.get('request_id'),
+                  'logical_total':state.get('logical_total'),
+                  'physical_cap':state.get('physical_cap'),
+                  'wave_number':state.get('wave_number'),
+                  'inflight':len(state.get('inflight',{})),
+                  'completed':len(state.get('completed',{})),
+                  'failed':len(state.get('failed',{})),
+                  'last_wave_size':0,
+              }}
+              Path('plan-out/plan.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
+          elif command == 'RETRY' and retry.get('status') == 'REQUESTED':
+              ids=list(retry.get('assignment_ids') or [])[:wave_size]
               current_wave=int(state.get('wave_number',0))
               for lane,aid in enumerate(ids):
                   info=state.get('failed',{}).pop(aid,None)
@@ -71,6 +93,7 @@ jobs:
                       'wave_number':current_wave,
                       'assignments':[x['assignment_id'] for x in wave],
                       'retry':True,
+                      'chat_request_id':control.get('request_id'),
                   })
               retry['status']='CONSUMED'
               retry['consumed_wave_number']=current_wave if wave else None
@@ -78,6 +101,8 @@ jobs:
               retry_path.write_text(json.dumps(retry,ensure_ascii=False,indent=2)+'\n')
               state_path.write_text(json.dumps(state,ensure_ascii=False,indent=2)+'\n')
               payload={'wave':wave,'summary':{
+                  'control':'RETRY',
+                  'request_id':control.get('request_id'),
                   'logical_total':state.get('logical_total'),
                   'physical_cap':state.get('physical_cap'),
                   'wave_number':state.get('wave_number'),
@@ -89,27 +114,29 @@ jobs:
               }}
               Path('plan-out/plan.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
           else:
-              import subprocess
               cp=subprocess.run([
-                  'python','cerebron/federation/core/federated_multiwave_orchestrator.py','--wave-size','20'
+                  'python','cerebron/federation/core/federated_multiwave_orchestrator.py',
+                  '--wave-size',str(wave_size)
               ],capture_output=True,text=True,check=True)
-              Path('plan-out/plan.json').write_text(cp.stdout)
+              payload=json.loads(cp.stdout)
+              payload.setdefault('summary',{})['control']=command
+              payload['summary']['request_id']=control.get('request_id')
+              Path('plan-out/plan.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
           PY
           cp cerebron/federation/state/federated-multiwave-state.json plan-out/federated-multiwave-state.json
           cp cerebron/federation/state/retry-request.json plan-out/retry-request.json 2>/dev/null || true
+          cp cerebron/federation/state/chat-control.json plan-out/chat-control.json
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           p=json.load(open('plan-out/plan.json'))
           wave=p.get('wave',[])
-          include=[]
-          for x in wave:
-              include.append({
-                  'assignment_id':x['assignment_id'],
-                  'mission_id':x['mission_id'],
-                  'address':x['address'],
-                  'wave_number':x['wave_number'],
-                  'physical_lane':x['physical_lane'],
-              })
+          include=[{
+              'assignment_id':x['assignment_id'],
+              'mission_id':x['mission_id'],
+              'address':x['address'],
+              'wave_number':x['wave_number'],
+              'physical_lane':x['physical_lane'],
+          } for x in wave]
           print('matrix='+json.dumps({'include':include},separators=(',',':')))
           print('has_work='+('true' if include else 'false'))
           PY
@@ -178,12 +205,10 @@ jobs:
         with:
           name: orchestrated-wave-plan
           path: plan-in
-      - name: Restore planned state and consumed retry marker
+      - name: Restore planned state and control markers
         run: |
           cp plan-in/federated-multiwave-state.json cerebron/federation/state/federated-multiwave-state.json
-          if [ -f plan-in/retry-request.json ]; then
-            cp plan-in/retry-request.json cerebron/federation/state/retry-request.json
-          fi
+          if [ -f plan-in/retry-request.json ]; then cp plan-in/retry-request.json cerebron/federation/state/retry-request.json; fi
       - name: Download worker artifacts
         uses: actions/download-artifact@v4
         with:
@@ -237,7 +262,7 @@ jobs:
             echo 'No state change.'
             exit 0
           fi
-          git commit -m 'Persist orchestrated federated wave state'
+          git commit -m 'Persist ChatGPT-controlled CEREBRON wave state'
           for n in 1 2 3; do
             git fetch origin main
             git rebase origin/main || { git rebase --abort || true; sleep $((n*2)); continue; }
