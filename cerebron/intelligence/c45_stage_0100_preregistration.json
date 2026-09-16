@@ -1,0 +1,50 @@
+{
+  "campaign": "C45",
+  "stage": "0100",
+  "baseline": "frozen C43/C44 pre-campaign baseline",
+  "parent": "C45-0050-R1",
+  "purpose": "Scale the repaired campaign-control architecture to 100 auditable work units while increasing stress diversity and preserving exact cost-matched controls.",
+  "evidence_ceiling": "E3 synthetic verified simulation",
+  "frozen_before_results": true,
+  "simple_first_status": "removed_from_core_after_R50_R1_ablation",
+  "candidate_core": [
+    "adaptive_campaign_compiler",
+    "verification_reservation",
+    "dependency_router",
+    "scar_guard_high_confidence_only",
+    "observed_deduplication",
+    "capability_scorecard"
+  ],
+  "seeds": [20261601,20261602,20261603,20261604,20261605,20261606,20261607,20261608,20261609,20261610,20261611],
+  "families": [
+    "standard",
+    "false_simple",
+    "scar_inversion",
+    "mixed_shift",
+    "high_uncertainty",
+    "dependency_spike",
+    "tight_budget",
+    "duplicate_mismatch",
+    "evidence_scarcity",
+    "nonreducible_easy",
+    "reducible_hard",
+    "compound_adversarial"
+  ],
+  "controls": ["baseline", "candidate", "exact_cost_sham"],
+  "ablations": [
+    "scar_guard",
+    "adaptive_compiler",
+    "verification_reservation",
+    "router",
+    "dedupe"
+  ],
+  "gates": {
+    "candidate_vs_baseline_seed_wins_min": 9,
+    "candidate_vs_exact_cost_sham_residual_wins_min": 8,
+    "candidate_vs_exact_cost_sham_verified_wins_min": 8,
+    "family_vcgc_relative_regression_floor": -0.05,
+    "positive_ablation_signals_min": 3,
+    "exact_cost_mismatch_max": 1e-12
+  },
+  "claim_limit": "Passing this synthetic stress benchmark permits progression to rung 250 only. It is not evidence of AGI or superintelligence."
+}
