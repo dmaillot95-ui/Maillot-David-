@@ -20,6 +20,17 @@
     ],
     "limitation": "Protocol use does not modify the underlying model, create new agents, or constitute evidence of self-improvement."
   },
+  "cognitive_weight_layer": {
+    "status": "A0_baseline_validated_for_schema_only",
+    "profile_file": "cerebron/intelligence/cognitive_weights.json",
+    "governance_file": "cerebron/intelligence/weight_governance.py",
+    "workflow_file": ".github/workflows/cerebron-cognitive-weights.yml",
+    "validation_run": 35124831969,
+    "validation_conclusion": "success",
+    "weight_count": 12,
+    "meaning": "Versioned cognitive orchestration meta-parameters; not neural model weights.",
+    "promotion_gate": "No A0->A1 promotion without matched-resource held-out gain, transfer gain, ablation, leakage audit, no material regression, and reproducible rerun."
+  },
   "required_capabilities": [
     "verification",
     "learning",
@@ -56,8 +67,8 @@
       "target-directed refinement"
     ]
   },
-  "claim_limit": "The ablation and Benchmark V2 are deterministic internal structural experiments. V2 shows order sensitivity, but leakage/confounding prevents external-generalization or intelligence claims.",
-  "next_stage": "BENCHMARK_V2_1_LEAK_RESISTANT",
+  "claim_limit": "The ablation and Benchmark V2 are deterministic internal structural experiments. V2 shows order sensitivity, but leakage/confounding prevents external-generalization or intelligence claims. Cognitive A0 weights are configuration parameters only until experimentally validated.",
+  "next_stage": "BENCHMARK_V2_1_LEAK_RESISTANT_WITH_WEIGHT_ABLATION",
   "next_requirements": [
     "hidden oracle inaccessible to candidate modules",
     "observable-only module inputs",
@@ -66,6 +77,7 @@
     "explicit transfer test",
     "explicit ablation test",
     "failure-learning test without target leakage",
-    "A0-vs-A1 self-improvement test on withheld domains"
+    "A0-vs-A1 self-improvement test on withheld domains",
+    "cognitive-weight sensitivity and ablation under matched resources"
   ]
 }
