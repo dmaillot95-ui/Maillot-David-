@@ -1,0 +1,69 @@
+name: CEREBRON Physical Node Mesh Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/physical_node/peer_mesh.py'
+      - '.github/workflows/cerebron-physical-node-mesh-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  mesh-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Simulate three autonomous physical nodes over shared mesh transport
+        run: |
+          set -euo pipefail
+          export CEREBRON_MESH_ROOT="$RUNNER_TEMP/mesh"
+
+          export CEREBRON_NODE_ID=PN-A
+          python cerebron/physical_node/peer_mesh.py heartbeat
+          python cerebron/physical_node/peer_mesh.py publish CALC '{"expr":"21*2"}' --priority 1 > published.json
+
+          export CEREBRON_NODE_ID=PN-B
+          python cerebron/physical_node/peer_mesh.py heartbeat
+          python cerebron/physical_node/peer_mesh.py claim > claimed.json
+
+          TASK=$(find "$CEREBRON_MESH_ROOT/inbox" -name '*.json' | head -n1)
+          python cerebron/physical_node/peer_mesh.py result "$TASK" '{"ok":true,"value":42,"engine":"cpu_calculator","cost_eur":0}' > result.json
+
+          export CEREBRON_NODE_ID=PN-C
+          python cerebron/physical_node/peer_mesh.py heartbeat
+          python cerebron/physical_node/peer_mesh.py peers > peers.json
+
+          python - <<'PY'
+          import json, os, pathlib
+          root=pathlib.Path(os.environ['CEREBRON_MESH_ROOT'])
+          pub=json.load(open('published.json'))
+          claim=json.load(open('claimed.json'))
+          res=json.load(open('result.json'))
+          peers=json.load(open('peers.json'))
+          assert pub['body']['task_id'] == claim['body']['task_id']
+          assert claim['body']['source_node'] == 'PN-A'
+          assert res['body']['executed_by'] == 'PN-B'
+          assert res['body']['result']['value'] == 42
+          assert res['body']['spend_limit_eur'] == 0
+          assert len(peers) == 3
+          assert {p['node_id'] for p in peers} == {'PN-A','PN-B','PN-C'}
+          assert len(list((root/'claims').glob('*.json'))) == 1
+          assert len(list((root/'results').glob('*.json'))) == 1
+          print('PHYSICAL_NODE_MESH=PASS')
+          print(json.dumps({'peers':3,'task_source':'PN-A','executor':'PN-B','result':42,'spend_limit_eur':0}))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: physical-node-mesh-evidence
+          path: |
+            published.json
+            claimed.json
+            result.json
+            peers.json
+          retention-days: 14
