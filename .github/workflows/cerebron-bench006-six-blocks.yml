@@ -1,0 +1,25 @@
+name: CEREBRON BENCH-006 Six Blocks
+
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence/bench006_six_blocks.py'
+      - 'cerebron/intelligence/bench006_preregistration.json'
+      - '.github/workflows/cerebron-bench006-six-blocks.yml'
+  workflow_dispatch:
+
+jobs:
+  bench006:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run BENCH-006
+        run: python cerebron/intelligence/bench006_six_blocks.py
+      - name: Upload BENCH-006 result
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-bench006-six-blocks
+          path: bench006_results.json
