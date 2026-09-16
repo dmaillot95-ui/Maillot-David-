@@ -6,6 +6,7 @@ Providers implemented as safe opt-in HTTP adapters:
 - vercel_http: user-controlled Vercel endpoint
 - scaleway_http: user-controlled Scaleway endpoint
 - alibaba_http: user-controlled Alibaba endpoint
+- digitalocean_http: user-controlled DigitalOcean worker endpoint
 
 No external provider is called unless BOTH CEREBRON_FEDERATION_ENABLE=1 and the
 provider-specific endpoint variable are present. Paid fallback is forbidden.
@@ -25,11 +26,13 @@ PROVIDERS = {
     "vercel": "CEREBRON_VERCEL_WORKER_URL",
     "scaleway": "CEREBRON_SCALEWAY_WORKER_URL",
     "alibaba": "CEREBRON_ALIBABA_WORKER_URL",
+    "digitalocean": "CEREBRON_DIGITALOCEAN_WORKER_URL",
 }
 TOKEN_ENV = {
     "vercel": "CEREBRON_VERCEL_WORKER_TOKEN",
     "scaleway": "CEREBRON_SCALEWAY_WORKER_TOKEN",
     "alibaba": "CEREBRON_ALIBABA_WORKER_TOKEN",
+    "digitalocean": "CEREBRON_DIGITALOCEAN_WORKER_TOKEN",
 }
 
 
