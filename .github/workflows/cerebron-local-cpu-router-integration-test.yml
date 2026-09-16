@@ -1,0 +1,55 @@
+name: CEREBRON Local CPU Router Integration Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/providers/local_cpu_llm.py'
+      - 'cerebron/federation/core/adaptive_shard_worker.py'
+      - '.github/workflows/cerebron-local-cpu-router-integration-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  router-local-cpu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install zero-euro local runtime
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors hf-gradio
+      - name: Execute adaptive Router local CPU route
+        env:
+          CEREBRON_LOCAL_CPU_ENABLE: '1'
+          CEREBRON_LOCAL_CPU_MODEL: 'HuggingFaceTB/SmolLM2-135M-Instruct'
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '32'
+        run: |
+          mkdir -p out
+          python - <<'PY'
+          import json, pathlib, sys
+          core=pathlib.Path('cerebron/federation/core').resolve()
+          sys.path.insert(0,str(core))
+          import adaptive_shard_worker as a
+          routes=a.expanded_available_zero_euro_routes()
+          assert 'github_actions_local_cpu_llm' in routes, routes
+          ok,text,meta=a.expanded_provider_attempt('github_actions_local_cpu_llm','Reply briefly with: ROUTER_LOCAL_CPU_OK')
+          evidence={'ok':ok,'text':text,'meta':meta,'routes':routes,'snapshot':a.router_snapshot(),'spend_limit_eur':0,'paid_fallback':False}
+          pathlib.Path('out/router-local-cpu.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(evidence,ensure_ascii=False))
+          assert ok is True
+          assert meta['provider']=='github_actions_local_cpu_llm'
+          assert meta['api_key_used'] is False
+          assert meta['spend_limit_eur']==0
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cerebron-local-cpu-router-${{ github.run_id }}
+          path: out/router-local-cpu.json
+          retention-days: 14
