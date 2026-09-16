@@ -1,0 +1,155 @@
+name: CEREBRON Multi-Trame Real Parallel Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/control/multitrame-test-request.json'
+      - '.github/workflows/cerebron-multitrame-test.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: cerebron-multitrame-test
+  cancel-in-progress: false
+
+jobs:
+  worker:
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include:
+          - trame: ALPHA
+            lane: 0
+            role: PROOF_A
+          - trame: ALPHA
+            lane: 1
+            role: REPLICATOR
+          - trame: BETA
+            lane: 2
+            role: PROOF_B
+          - trame: BETA
+            lane: 3
+            role: FALSIFIER
+          - trame: GAMMA
+            lane: 4
+            role: COMPUTE_CHECKER
+          - trame: GAMMA
+            lane: 5
+            role: RED_TEAM
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute real parallel lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import hashlib, json, os, time
+          from pathlib import Path
+
+          trame='${{ matrix.trame }}'
+          lane=int('${{ matrix.lane }}')
+          role='${{ matrix.role }}'
+          started=time.time()
+
+          # Reproductible CPU workload: independent lane, real computation.
+          seed=f'CEREBRON|{trame}|{lane}|{role}'.encode()
+          digest=seed
+          rounds=120000 + lane*1000
+          for i in range(rounds):
+              digest=hashlib.sha256(digest + i.to_bytes(4,'little')).digest()
+
+          # Small deterministic Collatz verification sample; this is a compute test,
+          # not a proof of the Collatz conjecture.
+          def collatz(n):
+              steps=0
+              peak=n
+              while n != 1 and steps < 10000:
+                  n = n//2 if n%2==0 else 3*n+1
+                  peak=max(peak,n)
+                  steps+=1
+              return steps,peak,n==1
+
+          start_n=2 + lane*250
+          rows=[]
+          ok=True
+          for n in range(start_n,start_n+250):
+              steps,peak,reached=collatz(n)
+              rows.append((n,steps,peak,reached))
+              ok = ok and reached
+
+          payload={
+              'schema':'cerebron-multitrame-worker-v1',
+              'trame':trame,
+              'lane':lane,
+              'role':role,
+              'execution':'REAL_GITHUB_ACTIONS_CPU',
+              'ai_model_used':False,
+              'cpu_rounds':rounds,
+              'collatz_sample_start':start_n,
+              'collatz_sample_count':250,
+              'all_sample_values_reached_1':ok,
+              'sample_max_peak':max(r[2] for r in rows),
+              'digest_sha256':digest.hex(),
+              'duration_seconds':round(time.time()-started,4),
+              'claim_note':'Parallel execution proof only; not an independent AI agent and not a Collatz proof.'
+          }
+          Path(f'out/{trame}-{lane}.json').write_text(json.dumps(payload,indent=2)+'\n')
+          print(json.dumps(payload,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: multitrame-${{ matrix.trame }}-${{ matrix.lane }}
+          path: out/*.json
+
+  omega-fusion:
+    needs: worker
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: multitrame-*
+          path: artifacts
+          merge-multiple: true
+      - name: Fuse six real lane artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          files=sorted(Path('artifacts').glob('*.json'))
+          rows=[json.load(open(p)) for p in files]
+          assert len(rows)==6, (len(rows),[str(p) for p in files])
+          assert len({(r['trame'],r['lane']) for r in rows})==6
+          assert all(r['execution']=='REAL_GITHUB_ACTIONS_CPU' for r in rows)
+          summary={
+              'schema':'cerebron-multitrame-fusion-v1',
+              'status':'PASS',
+              'real_parallel_lanes':6,
+              'trames':sorted({r['trame'] for r in rows}),
+              'workers_per_trame':2,
+              'all_cpu_jobs_real':True,
+              'ai_agents_claimed':0,
+              'ai_model_used':False,
+              'rows':rows,
+              'claim_note':'Validated parallel orchestration/fusion layer only. AI capacity must be connected separately.'
+          }
+          Path('multitrame-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+          print(json.dumps(summary,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: multitrame-omega-summary
+          path: multitrame-summary.json
