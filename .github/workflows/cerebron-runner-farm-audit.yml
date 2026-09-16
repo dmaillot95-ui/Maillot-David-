@@ -1,0 +1,44 @@
+name: CEREBRON Runner Farm Physical Audit
+
+on:
+  push:
+    paths:
+      - 'cerebron/runner_farm/**'
+      - '.github/workflows/cerebron-runner-farm-audit.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Count only heartbeat-backed physical runners
+        run: |
+          python cerebron/runner_farm/runner_registry.py \
+            --registry cerebron/runner_farm/state/runner-registry.json \
+            --output cerebron/runner_farm/state/runner-farm-status.json \
+            --stale-seconds 180
+      - name: Show physical gap
+        run: cat cerebron/runner_farm/state/runner-farm-status.json
+      - name: Persist runner farm status
+        run: |
+          git config user.name 'cerebron-runner-farm'
+          git config user.email 'cerebron-runner-farm@users.noreply.github.com'
+          git add cerebron/runner_farm/state/runner-farm-status.json
+          if git diff --cached --quiet; then
+            echo 'No runner farm status change.'
+          else
+            git commit -m 'Persist CEREBRON physical runner farm status'
+            git push
+          fi
