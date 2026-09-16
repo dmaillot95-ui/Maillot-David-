@@ -1,0 +1,21 @@
+{
+  "id": "C45-RUNG-0125",
+  "status": "PREREGISTERED",
+  "baseline": "same frozen C45 baseline used for prior rungs",
+  "purpose": "Measure whether a 125-unit campaign is a productive operating point before testing 200 units.",
+  "units": 125,
+  "seeds": [20261231,20261301,20261303,20261305,20261307,20261309,20261311,20261313,20261315,20261317,20261319],
+  "families": ["affine","saturating","inverse","piecewise","noisy","shifted","sparse","dense","mixed","adversarial"],
+  "arms": ["baseline","candidate_125","matched_sham"],
+  "resource_parity": "candidate_125 and matched_sham receive identical per-task unit, coordination and verification budgets",
+  "metrics": ["residual","verified_work","vcgc","cost","family_robustness","seed_win_rate"],
+  "gates": {
+    "candidate_beats_baseline_seeds": 0.8,
+    "candidate_beats_sham_seeds": 0.6,
+    "family_non_regression_fraction": 0.9,
+    "resource_parity_required": true
+  },
+  "claim_ceiling": "synthetic deterministic benchmark only; no AGI/superintelligence claim",
+  "next_if_pass": "test rung 200 on same frozen baseline",
+  "next_if_fail": "do not scale; diagnose failure"
+}
