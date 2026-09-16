@@ -1,0 +1,28 @@
+name: CEREBRON Cognitive Weights Governance
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'cerebron/intelligence/cognitive_weights.json'
+      - 'cerebron/intelligence/weight_governance.py'
+      - '.github/workflows/cerebron-cognitive-weights.yml'
+  workflow_dispatch:
+
+jobs:
+  validate-cognitive-weights:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate cognitive meta-weights
+        run: python cerebron/intelligence/weight_governance.py
+      - name: Upload validation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-cognitive-weight-validation
+          path: cerebron/intelligence/weight_validation_report.json
