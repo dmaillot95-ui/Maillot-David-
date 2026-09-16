@@ -4,8 +4,14 @@ on:
   push:
     paths:
       - 'cerebron/civilization/CAPABILITIES_V2.md'
+      - 'cerebron/civilization/campaign_memory.py'
       - '.github/workflows/cerebron-civilization-capabilities-v2.yml'
   workflow_dispatch:
+  schedule:
+    - cron: '47 1 * * *'
+
+permissions:
+  contents: read
 
 jobs:
   civilization-worker:
@@ -36,51 +42,67 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Build evidence-bounded campaign memory
+        run: python cerebron/civilization/campaign_memory.py --out out/memory --sample 180
       - name: Install local inference runtime
         run: |
           python -m pip install --quiet --upgrade pip
           python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors sentencepiece
-      - name: Run civilization worker with all V2 capabilities
+      - name: Run civilization worker with C1-C11 and experience replay
         env:
           ROLE: ${{ matrix.role }}
           OPERATOR: ${{ matrix.operator }}
           CEREBRON_LOCAL_CPU_MODEL: HuggingFaceTB/SmolLM2-360M-Instruct
-          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '520'
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '620'
           CEREBRON_LOCAL_CPU_OUT: out/result.json
         run: |
           python - <<'PY'
-          import os
+          import json, os
           role=os.environ['ROLE']
           operator=os.environ['OPERATOR']
-          doctrine=open('cerebron/civilization/CAPABILITIES_V2.md').read()
-          prompt=f'''You are one real local CEREBRON Civilization V2 worker.
+          doctrine=open('cerebron/civilization/CAPABILITIES_V2.md',encoding='utf-8').read()
+          mem=json.load(open('out/memory/memory-packet.json',encoding='utf-8'))
+          compact={
+            'summary':mem['summary'],
+            'role_performance':mem['role_performance'],
+            'top_failure_modes':mem['top_failure_modes'][:12],
+            'candidate_sample':mem['candidate_sample'][:10],
+            'outcome_divergence_sample':mem['outcome_divergence_sample'][:10],
+            'instructions':mem['instructions'],
+          }
+          prompt=f'''You are one real local CEREBRON Civilization worker.
 ROLE={role}
 NOVELTY_OPERATOR={operator}
 
-Apply ALL C1-C10 capabilities below as an executable protocol, not as prose to summarize:
+Apply ALL C1-C11 capabilities below as an executable protocol, not prose to summarize.
 
+DOCTRINE:
 {doctrine}
 
-MISSION:
-Develop one concrete civilization capability upgrade in the domain {role} using the {operator} operator.
+CURRENT CAMPAIGN EXPERIENCE (metadata is routing evidence, not proof of semantic truth):
+{json.dumps(compact,ensure_ascii=False)}
 
-MANDATORY EXECUTION CHAIN:
-TASK -> DECOMPOSE -> DIVERSE SEARCH -> ATOMIC CLAIMS -> CONTRADICTION GRAPH -> COGNITIVE ERROR CORRECTION -> DYNAMIC COALITION -> PROOF/REDTEAM -> OBJECTIVE SCORE -> ABLATION -> STRATEGY MEMORY -> ROUTER UPDATE.
+MISSION:
+Develop one concrete civilization capability upgrade in domain {role} using {operator}. Explicitly reuse the campaign experience where relevant. Do not treat COMPLETED as scientific validation.
+
+MANDATORY CHAIN:
+TASK -> EXPERIENCE REPLAY -> DECOMPOSE -> DIVERSE SEARCH -> ATOMIC CLAIMS -> CONTRADICTION GRAPH -> COGNITIVE ERROR CORRECTION -> DYNAMIC COALITION -> PROOF/REDTEAM -> OBJECTIVE SCORE -> ABLATION -> STRATEGY MEMORY -> ROUTER UPDATE.
 
 Return:
 1. atomic claims;
-2. contradiction/failure graph;
-3. dynamic coalition and why each member is needed;
-4. cognitive error-correction rule;
-5. measurable benchmark and threshold;
-6. best-single baseline and matched-compute baseline;
-7. ablation test;
-8. decisive falsifier;
-9. strategy-memory record if successful;
-10. router update if successful;
-11. what must be rejected/quarantined if it fails.
+2. historical evidence used and its limits;
+3. contradiction/failure graph;
+4. dynamic coalition;
+5. cognitive error-correction rule;
+6. measurable benchmark and threshold;
+7. best-single and matched-compute baselines;
+8. ablation;
+9. decisive falsifier;
+10. Strategy Memory entry only if evidence would justify promotion;
+11. router update if justified;
+12. reject/quarantine conditions.
 
-Do not claim superintelligence. Do not answer merely with more agents, more context, more data, or a larger model. CLAIM<=EVIDENCE.'''
+Do not claim superintelligence. Do not answer merely with more agents, more context, more data or a larger model. CLAIM<=EVIDENCE.'''
           os.environ['CEREBRON_LOCAL_CPU_PROMPT']=prompt
           from cerebron.providers.local_cpu_llm import main
           main()
@@ -95,14 +117,15 @@ Do not claim superintelligence. Do not answer merely with more agents, more cont
           p['role']=os.environ['ROLE']
           p['operator']=os.environ['OPERATOR']
           p['worker_id']='CIV-'+os.environ['ROLE']+'-'+os.environ['OPERATOR']
-          p['capability_protocol']='C1-C10'
+          p['capability_protocol']='C1-C11'
+          p['experience_replay']=True
           json.dump(p,open('out/result.json','w'),indent=2)
           PY
       - uses: actions/upload-artifact@v4
         with:
           name: civilization-v2-${{ matrix.role }}-${{ matrix.operator }}
           path: out/result.json
-          retention-days: 14
+          retention-days: 90
 
   civilization-synthesis:
     needs: civilization-worker
@@ -112,6 +135,8 @@ Do not claim superintelligence. Do not answer merely with more agents, more cont
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Build current campaign memory
+        run: python cerebron/civilization/campaign_memory.py --out out/memory --sample 180
       - uses: actions/download-artifact@v4
         with:
           pattern: civilization-v2-*
@@ -128,7 +153,7 @@ Do not claim superintelligence. Do not answer merely with more agents, more cont
           assert len({r['role'] for r in rows})==12
           assert {r['operator'] for r in rows}=={'INVERT','TRANSFER','EMERGE'}
           assert all(r['ok'] and r['spend_limit_eur']==0 and not r['paid_fallback'] and not r['api_key_used'] for r in rows)
-          assert all(r.get('capability_protocol')=='C1-C10' for r in rows)
+          assert all(r.get('capability_protocol')=='C1-C11' and r.get('experience_replay') is True for r in rows)
           os.makedirs('out',exist_ok=True)
           json.dump(rows,open('out/workers.json','w'),indent=2)
           packet='\n\n'.join(f"{r['worker_id']}:\n{r['answer']}" for r in rows)
@@ -139,31 +164,39 @@ Do not claim superintelligence. Do not answer merely with more agents, more cont
         run: |
           python -m pip install --quiet --upgrade pip
           python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors sentencepiece
-      - name: Synthesize 36-worker civilization upgrade
+      - name: Synthesize 36-worker civilization upgrade with historical memory
         env:
           CEREBRON_LOCAL_CPU_MODEL: Qwen/Qwen2.5-1.5B-Instruct
-          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '2200'
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '2600'
           CEREBRON_LOCAL_CPU_OUT: out/synthesis.json
         run: |
           python - <<'PY'
-          import os
-          packet=open('out/packet.txt').read()
-          doctrine=open('cerebron/civilization/CAPABILITIES_V2.md').read()
-          prompt='''You are the synthesis/evidence gate for 36 CEREBRON Civilization V2 workers (12 roles x 3 novelty operators). Apply C1-C10 strictly. Do not majority-vote claims into truth. Build contradiction clusters, preserve disagreements, use PROOF/REDTEAM/EVALUATOR gates, and only integrate claims with adequate evidence.
+          import json,os
+          packet=open('out/packet.txt',encoding='utf-8').read()
+          doctrine=open('cerebron/civilization/CAPABILITIES_V2.md',encoding='utf-8').read()
+          memory=json.load(open('out/memory/memory-packet.json',encoding='utf-8'))
+          mem_compact={
+            'summary':memory['summary'],
+            'role_performance':memory['role_performance'],
+            'top_failure_modes':memory['top_failure_modes'][:20],
+            'outcome_divergence_sample':memory['outcome_divergence_sample'][:20],
+          }
+          prompt='''You are the synthesis/evidence gate for 36 CEREBRON Civilization workers. Apply C1-C11 strictly. Historical COMPLETED status is execution evidence only, not semantic truth. Never majority-vote a claim into truth. Cluster contradictions, preserve disagreement, and require PROOF/REDTEAM/EVALUATOR gates before promotion to Strategy Memory.
 
 Return exactly:
 A) 10 strongest distinct candidate capabilities;
-B) for each: mechanism, workers combined, contradiction status, benchmark, best-single baseline, matched-compute baseline, ablation, falsifier, evidence needed;
+B) for each: mechanism, workers combined, historical evidence used, contradiction status, benchmark, best-single baseline, matched-compute baseline, ablation, falsifier, evidence needed;
 C) TOP 3 multiplicative combinations;
 D) 5 proposals rejected as weak/redundant/unfalsifiable;
-E) one smallest executable benchmark experiment;
-F) Strategy Memory entries to retain;
-G) Router updates justified by evidence;
-H) explicit statement of what is established, derived, conjectural, and not demonstrated.
+E) highest-value historical divergence to inspect next;
+F) one smallest executable benchmark experiment;
+G) Strategy Memory candidates and what additional evidence each needs;
+H) Router updates justified by measured evidence only;
+I) established / derived / conjectural / not demonstrated.
 
 Never claim superintelligence without benchmark evidence.
 
-DOCTRINE:\n'''+doctrine+'\n\nWORKERS:\n'+packet
+DOCTRINE:\n'''+doctrine+'\n\nCAMPAIGN MEMORY:\n'+json.dumps(mem_compact,ensure_ascii=False)+'\n\nWORKERS:\n'+packet
           os.environ['CEREBRON_LOCAL_CPU_PROMPT']=prompt
           from cerebron.providers.local_cpu_llm import main
           main()
@@ -181,4 +214,9 @@ DOCTRINE:\n'''+doctrine+'\n\nWORKERS:\n'+packet
             out/workers.json
             out/packet.txt
             out/synthesis.json
-          retention-days: 14
+            out/memory/campaign-summary.json
+            out/memory/strategy-candidates.json
+            out/memory/outcome-divergence.json
+            out/memory/role-performance.json
+            out/memory/memory-packet.json
+          retention-days: 90
