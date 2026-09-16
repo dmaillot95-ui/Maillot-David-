@@ -32,7 +32,7 @@ jobs:
           task = WorkerTask.create('SELFTEST', 'Return only OK')
           validate_zero_euro(task)
           status = provider_status()
-          assert set(status) == {'vercel','scaleway','alibaba','digitalocean'}
+          assert set(status) == {'vercel','scaleway','alibaba','digitalocean','cloudflare','render'}
           assert os.getenv('CEREBRON_FEDERATION_ENABLE','0') != '1'
           assert all(v['enabled'] is False for v in status.values())
           assert all(v['paid_fallback'] is False for v in status.values())
@@ -43,7 +43,7 @@ jobs:
           assert bank['paid_fallback'] is False
 
           out = {
-            'schema': 'cerebron-federation-selftest-v2',
+            'schema': 'cerebron-federation-selftest-v3',
             'contract_ok': True,
             'external_execution_enabled': False,
             'providers': status,
