@@ -11,14 +11,15 @@ permissions:
 
 jobs:
   specialists:
-    name: specialist-${{ matrix.role }}
+    name: specialist-${{ matrix.role }}-${{ matrix.lens }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 36
       matrix:
         role: [ARCHITECT,SCIENTIST,SYSTEMS,MEMORY,ROUTER,INVENTOR,PROOF,REDTEAM,SCALING,MULTIMODAL,EVALUATOR,SAFETY]
+        lens: [DECOMPOSE,CONNECT,FALSIFY]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,24 +32,26 @@ jobs:
       - name: Run specialist
         env:
           ROLE: ${{ matrix.role }}
+          LENS: ${{ matrix.lens }}
           CEREBRON_LOCAL_CPU_MODEL: HuggingFaceTB/SmolLM2-135M-Instruct
           CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '180'
-          CEREBRON_LOCAL_CPU_OUT: 'out/${{ matrix.role }}.json'
+          CEREBRON_LOCAL_CPU_OUT: 'out/${{ matrix.role }}-${{ matrix.lens }}.json'
         run: |
           mkdir -p out
-          export CEREBRON_LOCAL_CPU_PROMPT="ROLE=${ROLE}. Shared challenge: design a zero-paid multi-agent system that outperforms one isolated small model on hard research tasks without claiming superintelligence before evidence. Your unique cognitive function is ${ROLE}. Produce: 3 unique contributions from your role, 2 interactions with other roles, 1 falsification test, 1 failure mode. Avoid generic repetition."
+          export CEREBRON_LOCAL_CPU_PROMPT="ROLE=${ROLE}. STRATEGY=${LENS}. Shared challenge: design a zero-paid multi-agent system that outperforms one isolated small model on hard research tasks without claiming superintelligence before evidence. Your cognitive function is ${ROLE}. Your strategy is ${LENS}: if DECOMPOSE, break the problem into the most useful subproblems and interfaces; if CONNECT, search for cross-role combinations and non-obvious synergies; if FALSIFY, attack assumptions, find counterexamples, and define decisive tests. Produce 3 role-specific contributions, 2 interactions with other roles, 1 measurable prediction, 1 falsification test, and 1 failure mode. Avoid generic repetition."
           python cerebron/providers/local_cpu_llm.py
           python - <<'PY'
           import json,os
-          r=os.environ['ROLE']; p=json.load(open(f'out/{r}.json')); p['role']=r
+          r=os.environ['ROLE']; l=os.environ['LENS']; fn=f'out/{r}-{l}.json'
+          p=json.load(open(fn)); p['role']=r; p['lens']=l; p['worker_id']=f'{r}-{l}'
           assert p['ok'] is True and p['spend_limit_eur']==0 and not p['paid_fallback'] and not p['api_key_used']
-          json.dump(p,open(f'out/{r}.json','w'),ensure_ascii=False,indent=2)
-          print(r,p['elapsed_s'])
+          json.dump(p,open(fn,'w'),ensure_ascii=False,indent=2)
+          print(p['worker_id'],p['elapsed_s'])
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: cog-${{ matrix.role }}
-          path: out/${{ matrix.role }}.json
+          name: cog-${{ matrix.role }}-${{ matrix.lens }}
+          path: out/${{ matrix.role }}-${{ matrix.lens }}.json
           retention-days: 14
 
   baseline:
@@ -66,9 +69,9 @@ jobs:
       - name: Run isolated model
         env:
           CEREBRON_LOCAL_CPU_MODEL: HuggingFaceTB/SmolLM2-135M-Instruct
-          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '360'
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '540'
           CEREBRON_LOCAL_CPU_OUT: 'out/baseline.json'
-          CEREBRON_LOCAL_CPU_PROMPT: 'Design a zero-paid multi-agent system that outperforms one isolated small model on hard research tasks without claiming superintelligence before evidence. Cover architecture, memory, routing, proof, red-team, scaling, multimodal, evaluation, safety, benchmarks and failure modes. Be concrete.'
+          CEREBRON_LOCAL_CPU_PROMPT: 'Design a zero-paid multi-agent system that outperforms one isolated small model on hard research tasks without claiming superintelligence before evidence. Cover architecture, memory, routing, proof, red-team, scaling, multimodal, evaluation, safety, decomposition, cross-role synergies, benchmarks, predictions, falsification tests and failure modes. Be concrete.'
         run: |
           mkdir -p out
           python cerebron/providers/local_cpu_llm.py
@@ -84,7 +87,7 @@ jobs:
           retention-days: 14
 
   judge:
-    name: deterministic-judge
+    name: deterministic-judge-36
     needs: [specialists, baseline]
     runs-on: ubuntu-24.04
     steps:
@@ -100,17 +103,18 @@ jobs:
       - name: Score diversity and coverage
         run: |
           python - <<'PY'
-          import json,glob,re,hashlib,os,math
+          import json,glob,re,os
           files=sorted(glob.glob('specialists/*.json'))
-          assert len(files)==12,len(files)
+          assert len(files)==36,len(files)
           rows=[json.load(open(f)) for f in files]
           base=json.load(open('baseline/baseline.json'))
           texts=[r.get('answer','') for r in rows]
+          worker_ids=[r['worker_id'] for r in rows]
           roles=[r['role'] for r in rows]
+          lenses=[r['lens'] for r in rows]
           def toks(s): return set(re.findall(r'[a-zA-Z]{4,}',s.lower()))
           sets=[toks(t) for t in texts]
           union=set().union(*sets)
-          inter=set.intersection(*sets) if sets else set()
           pair=[]
           for i in range(len(sets)):
             for j in range(i+1,len(sets)):
@@ -119,24 +123,29 @@ jobs:
           base_set=toks(base.get('answer',''))
           novelty=len(union-base_set)
           report={
-            'specialists':12,
+            'workers':36,
+            'worker_ids_unique':len(set(worker_ids)),
             'roles_unique':len(set(roles)),
+            'lenses_unique':len(set(lenses)),
             'collective_unique_terms':len(union),
             'baseline_unique_terms':len(base_set),
             'collective_terms_not_in_baseline':novelty,
+            'coverage_ratio_vs_baseline':round(len(union)/max(1,len(base_set)),4),
             'mean_pairwise_jaccard':round(sum(pair)/len(pair),4),
             'all_jobs_zero_paid':all(r['spend_limit_eur']==0 and not r['paid_fallback'] and not r['api_key_used'] for r in rows+[base]),
             'claim_superintelligence':False,
-            'interpretation':'Measures output diversity/coverage only; does not prove superior intelligence.'
+            'interpretation':'36-worker test measures diversity and coverage only; superior reasoning requires answer-verified benchmark tasks.'
           }
           os.makedirs('out',exist_ok=True)
           json.dump(report,open('out/report.json','w'),indent=2)
           print(json.dumps(report,indent=2))
+          assert report['worker_ids_unique']==36
           assert report['roles_unique']==12
+          assert report['lenses_unique']==3
           assert report['all_jobs_zero_paid'] is True
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: cerebron-combinatorial-cognition-report
+          name: cerebron-combinatorial-cognition-report-36
           path: out/report.json
           retention-days: 14
