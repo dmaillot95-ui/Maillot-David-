@@ -1,0 +1,52 @@
+name: CEREBRON Assistant20
+
+on:
+  push:
+    paths:
+      - 'cerebron/assistant20/control/mission.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cerebron-assistant20
+  cancel-in-progress: false
+
+jobs:
+  assistant20:
+    name: 20-persistent-assistant-agents
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Hugging Face client
+        run: pip install --quiet hf-gradio
+      - name: Run multiplexed assistant agents
+        env:
+          ASSISTANT20_OUT: assistant20-out
+        run: python cerebron/assistant20/assistant20_worker.py
+      - name: Persist assistant20 state
+        run: |
+          git config user.name 'cerebron-assistant20-bot'
+          git config user.email 'cerebron-assistant20-bot@users.noreply.github.com'
+          git add cerebron/assistant20/state/latest.json
+          if git diff --cached --quiet; then
+            echo 'No assistant20 state change.'
+          else
+            git commit -m 'Persist CEREBRON assistant20 state'
+            git push
+          fi
+      - name: Upload assistant20 outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-assistant20-${{ github.run_id }}
+          path: assistant20-out/
+          if-no-files-found: warn
+          retention-days: 30
