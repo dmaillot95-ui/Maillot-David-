@@ -1,0 +1,48 @@
+{
+  "benchmark_id": "BENCH-006",
+  "title": "Six-Block Executable Capability Experiments",
+  "date": "2026-09-16",
+  "evidence_ceiling": "E3_verified_simulation",
+  "purpose": "Test six distinct executable cognitive blocks with separate observables, equal-budget sham controls, and anti-alias checks before scaling to 36 deterministic jobs.",
+  "blocks": {
+    "B1_representation_world_model": {
+      "mechanism": "infer a compact latent predictive model from observations and choose a representation that minimizes heldout prediction error",
+      "primary_metric": "heldout_prediction_mae",
+      "sham_control": "same compute over randomly permuted candidate representations"
+    },
+    "B2_reasoning_creativity": {
+      "mechanism": "derive valid conclusions from rule sets and generate candidate solution paths under structural novelty constraints",
+      "primary_metric": "valid_solution_rate",
+      "sham_control": "same number of candidate derivations with rule-order permutation only"
+    },
+    "B3_planning_experimentation": {
+      "mechanism": "select an action sequence and next experiment to reduce uncertainty under a fixed action budget",
+      "primary_metric": "goal_achievement_minus_action_cost",
+      "sham_control": "same action count with random experiment selection"
+    },
+    "B4_verification_metacognition": {
+      "mechanism": "detect invalid candidates, calibrate confidence, and abstain only when uncertainty is justified",
+      "primary_metric": "verification_brier_plus_error_rate",
+      "sham_control": "same verification calls with confidence labels shuffled"
+    },
+    "B5_learning_transfer": {
+      "mechanism": "update strategy from verified prior failures and transfer reusable structure to an unseen task family",
+      "primary_metric": "post_failure_heldout_gain",
+      "sham_control": "same update budget with failure labels permuted"
+    },
+    "B6_cooperation_self_improvement": {
+      "mechanism": "combine independent partial proposals, detect disagreement, and apply a bounded procedure revision validated on development tasks",
+      "primary_metric": "post_revision_gain_under_equal_budget",
+      "sham_control": "same proposal and revision count but random proposal fusion"
+    }
+  },
+  "anti_alias_rules": [
+    "No two blocks may share the same primary metric and same decision variable set.",
+    "Each block must expose a unique state transition or observable intervention.",
+    "A block fails if replacing it with another block's computation leaves outputs unchanged on all test cases.",
+    "Sham control receives equal deterministic compute budget.",
+    "No hidden target values, family labels, or latent generator parameters may be visible to selectors."
+  ],
+  "scale_rule": "Do not launch the 36 deterministic jobs until all six block-level executable tests run successfully and anti-alias checks pass.",
+  "claim_limit": "Passing BENCH-006 would establish only separable executable behavior in a synthetic test harness, not general intelligence, AGI, or superintelligence."
+}
