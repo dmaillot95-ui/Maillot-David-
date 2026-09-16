@@ -1,4 +1,4 @@
-name: CEREBRON Civilization Capabilities V2
+name: CEREBRON Civilization Capabilities V2 — 36 Workers
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
   civilization-worker:
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 36
       matrix:
         role:
           - ARCHITECTURE
@@ -26,6 +26,10 @@ jobs:
           - EXPLORATION
           - REDTEAM
           - EVALUATOR
+        operator:
+          - INVERT
+          - TRANSFER
+          - EMERGE
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -36,35 +40,47 @@ jobs:
         run: |
           python -m pip install --quiet --upgrade pip
           python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors sentencepiece
-      - name: Run civilization worker with capabilities V2
+      - name: Run civilization worker with all V2 capabilities
         env:
           ROLE: ${{ matrix.role }}
+          OPERATOR: ${{ matrix.operator }}
           CEREBRON_LOCAL_CPU_MODEL: HuggingFaceTB/SmolLM2-360M-Instruct
-          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '420'
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '520'
           CEREBRON_LOCAL_CPU_OUT: out/result.json
         run: |
           python - <<'PY'
           import os
           role=os.environ['ROLE']
+          operator=os.environ['OPERATOR']
           doctrine=open('cerebron/civilization/CAPABILITIES_V2.md').read()
-          prompt=f'''You are a real local CEREBRON civilization worker. ROLE={role}.
+          prompt=f'''You are one real local CEREBRON Civilization V2 worker.
+ROLE={role}
+NOVELTY_OPERATOR={operator}
 
-You must apply the following executable doctrine, not merely summarize it:
+Apply ALL C1-C10 capabilities below as an executable protocol, not as prose to summarize:
 
 {doctrine}
 
 MISSION:
-Design one concrete capability upgrade for a long-horizon AI civilization architecture in the domain of {role}. Use at least three of C1-C10. Your proposal must include:
-1. atomic claims;
-2. contradiction or failure graph;
-3. dynamic coalition of roles/models;
-4. one measurable benchmark;
-5. one matched-compute or ablation control;
-6. decisive falsifier;
-7. what enters Strategy Memory if the test succeeds;
-8. what is rejected if it fails.
+Develop one concrete civilization capability upgrade in the domain {role} using the {operator} operator.
 
-Do not claim superintelligence. Do not answer with only more agents, more context, more data or a larger model.'''
+MANDATORY EXECUTION CHAIN:
+TASK -> DECOMPOSE -> DIVERSE SEARCH -> ATOMIC CLAIMS -> CONTRADICTION GRAPH -> COGNITIVE ERROR CORRECTION -> DYNAMIC COALITION -> PROOF/REDTEAM -> OBJECTIVE SCORE -> ABLATION -> STRATEGY MEMORY -> ROUTER UPDATE.
+
+Return:
+1. atomic claims;
+2. contradiction/failure graph;
+3. dynamic coalition and why each member is needed;
+4. cognitive error-correction rule;
+5. measurable benchmark and threshold;
+6. best-single baseline and matched-compute baseline;
+7. ablation test;
+8. decisive falsifier;
+9. strategy-memory record if successful;
+10. router update if successful;
+11. what must be rejected/quarantined if it fails.
+
+Do not claim superintelligence. Do not answer merely with more agents, more context, more data, or a larger model. CLAIM<=EVIDENCE.'''
           os.environ['CEREBRON_LOCAL_CPU_PROMPT']=prompt
           from cerebron.providers.local_cpu_llm import main
           main()
@@ -77,12 +93,14 @@ Do not claim superintelligence. Do not answer with only more agents, more contex
           assert p['paid_fallback'] is False
           assert p['api_key_used'] is False
           p['role']=os.environ['ROLE']
-          p['worker_id']='CIV-'+os.environ['ROLE']
+          p['operator']=os.environ['OPERATOR']
+          p['worker_id']='CIV-'+os.environ['ROLE']+'-'+os.environ['OPERATOR']
+          p['capability_protocol']='C1-C10'
           json.dump(p,open('out/result.json','w'),indent=2)
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: civilization-v2-${{ matrix.role }}
+          name: civilization-v2-${{ matrix.role }}-${{ matrix.operator }}
           path: out/result.json
           retention-days: 14
 
@@ -99,15 +117,18 @@ Do not claim superintelligence. Do not answer with only more agents, more contex
           pattern: civilization-v2-*
           path: civilization
           merge-multiple: false
-      - name: Build verified packet
+      - name: Build verified 36-worker packet
         run: |
           python - <<'PY'
           import glob,json,os
           fs=sorted(glob.glob('civilization/*/result.json'))
-          assert len(fs)==12, len(fs)
+          assert len(fs)==36, len(fs)
           rows=[json.load(open(f)) for f in fs]
-          assert len({r['worker_id'] for r in rows})==12
+          assert len({r['worker_id'] for r in rows})==36
+          assert len({r['role'] for r in rows})==12
+          assert {r['operator'] for r in rows}=={'INVERT','TRANSFER','EMERGE'}
           assert all(r['ok'] and r['spend_limit_eur']==0 and not r['paid_fallback'] and not r['api_key_used'] for r in rows)
+          assert all(r.get('capability_protocol')=='C1-C10' for r in rows)
           os.makedirs('out',exist_ok=True)
           json.dump(rows,open('out/workers.json','w'),indent=2)
           packet='\n\n'.join(f"{r['worker_id']}:\n{r['answer']}" for r in rows)
@@ -118,16 +139,31 @@ Do not claim superintelligence. Do not answer with only more agents, more contex
         run: |
           python -m pip install --quiet --upgrade pip
           python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors sentencepiece
-      - name: Synthesize civilization upgrade
+      - name: Synthesize 36-worker civilization upgrade
         env:
           CEREBRON_LOCAL_CPU_MODEL: Qwen/Qwen2.5-1.5B-Instruct
-          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '1400'
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '2200'
           CEREBRON_LOCAL_CPU_OUT: out/synthesis.json
         run: |
           python - <<'PY'
           import os
           packet=open('out/packet.txt').read()
-          prompt='''You are the synthesis and evidence gate for 12 CEREBRON Civilization V2 workers. Build a rigorous integration plan from their proposals. Return exactly: A) 5 strongest testable upgrades; B) for each, mechanism, roles combined, benchmark, ablation, falsifier, evidence required; C) 3 weak/redundant proposals to reject; D) one smallest executable experiment; E) explicit statement of what is and is not demonstrated. Never claim superintelligence.\n\nWORKERS:\n'''+packet
+          doctrine=open('cerebron/civilization/CAPABILITIES_V2.md').read()
+          prompt='''You are the synthesis/evidence gate for 36 CEREBRON Civilization V2 workers (12 roles x 3 novelty operators). Apply C1-C10 strictly. Do not majority-vote claims into truth. Build contradiction clusters, preserve disagreements, use PROOF/REDTEAM/EVALUATOR gates, and only integrate claims with adequate evidence.
+
+Return exactly:
+A) 10 strongest distinct candidate capabilities;
+B) for each: mechanism, workers combined, contradiction status, benchmark, best-single baseline, matched-compute baseline, ablation, falsifier, evidence needed;
+C) TOP 3 multiplicative combinations;
+D) 5 proposals rejected as weak/redundant/unfalsifiable;
+E) one smallest executable benchmark experiment;
+F) Strategy Memory entries to retain;
+G) Router updates justified by evidence;
+H) explicit statement of what is established, derived, conjectural, and not demonstrated.
+
+Never claim superintelligence without benchmark evidence.
+
+DOCTRINE:\n'''+doctrine+'\n\nWORKERS:\n'+packet
           os.environ['CEREBRON_LOCAL_CPU_PROMPT']=prompt
           from cerebron.providers.local_cpu_llm import main
           main()
@@ -140,7 +176,7 @@ Do not claim superintelligence. Do not answer with only more agents, more contex
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: cerebron-civilization-capabilities-v2-report
+          name: cerebron-civilization-capabilities-v2-36-report
           path: |
             out/workers.json
             out/packet.txt
