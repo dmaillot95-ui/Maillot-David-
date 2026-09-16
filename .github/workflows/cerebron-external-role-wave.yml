@@ -1,6 +1,9 @@
 name: CEREBRON External Nonredundant Role Wave
 
 on:
+  push:
+    paths:
+      - '.github/workflows/cerebron-external-role-wave.yml'
   workflow_run:
     workflows: ["CEREBRON Hugging Face Model Registry Probe"]
     types: [completed]
@@ -30,11 +33,7 @@ jobs:
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
-
-          roles = [
-            'SCOUT','DECOMPOSER','PROOF_A','PROOF_B','COMPUTE_CHECKER','ALTERNATIVE_ROUTE',
-            'FALSIFIER','RED_TEAM','COUNTER_AUDITOR','REPLICATOR','SYNTHESIZER','JUDGE'
-          ]
+          roles=['SCOUT','DECOMPOSER','PROOF_A','PROOF_B','COMPUTE_CHECKER','ALTERNATIVE_ROUTE','FALSIFIER','RED_TEAM','COUNTER_AUDITOR','REPLICATOR','SYNTHESIZER','JUDGE']
           reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
           families={}
           for mid,m in reg.get('models',{}).items():
@@ -43,15 +42,12 @@ jobs:
             fam=m.get('family') or mid
             cur=families.get(fam)
             size=float(str(m.get('size_class','0')).upper().replace('B','') or 0)
-            if cur is None or size > cur[0]:
-              families[fam]=(size,mid,m)
+            if cur is None or size > cur[0]: families[fam]=(size,mid,m)
           selected=[(fam,v[1],v[2]) for fam,v in sorted(families.items())]
           pairs=[]
           for role in roles:
             for fam,mid,m in selected:
-              if role not in m.get('roles_allowed',[]):
-                continue
-              pairs.append({'role':role,'family':fam,'model_id':mid})
+              if role in m.get('roles_allowed',[]): pairs.append({'role':role,'family':fam,'model_id':mid})
           pairs=pairs[:20]
           print('matrix='+json.dumps({'include':pairs},separators=(',',':')))
           print('has_work='+('true' if pairs else 'false'))
@@ -88,25 +84,14 @@ jobs:
           from pathlib import Path
           sys.path.insert(0,'cerebron/federation/core')
           import shard_worker
-
           reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
           mid=os.environ['MODEL_ID']; role=os.environ['ROLE']; fam=os.environ['FAMILY']
           model={'model_id':mid, **reg['models'][mid]}
-          task={
-            'task_id':f'EXT-{role}-{mid}', 'role':role, 'civilization':'CEREBRON',
-            'team':'EXTERNAL_NONREDUNDANT', 'mission_id':'M-A97A56A2852A'
-          }
+          task={'task_id':f'EXT-{role}-{mid}','role':role,'civilization':'CEREBRON','team':'EXTERNAL_NONREDUNDANT','mission_id':'M-A97A56A2852A'}
           mission={'title':'CEREBRON external role validation','objective':'Produce one compact, technically useful role-specific output while respecting CLAIM<=EVIDENCE.'}
           prompt=shard_worker.role_prompt(task, mission, 'Validate external nonredundant role execution')
           ok,text,meta=shard_worker.invoke_hf(model,prompt)
-          result={
-            'schema':'cerebron-external-role-result-v1','role':role,'model_id':mid,'model_family':fam,
-            'provider':'huggingface_public_spaces','ok':bool(ok),'execution_status':'COMPLETED' if ok else 'FAILED_RETRYABLE',
-            'endpoint':meta.get('endpoint'),'error_type':meta.get('error_type'),'error':meta.get('error'),
-            'response':text if ok else None,
-            'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,
-            'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'
-          }
+          result={'schema':'cerebron-external-role-result-v1','role':role,'model_id':mid,'model_family':fam,'provider':'huggingface_public_spaces','ok':bool(ok),'execution_status':'COMPLETED' if ok else 'FAILED_RETRYABLE','endpoint':meta.get('endpoint'),'error_type':meta.get('error_type'),'error':meta.get('error'),'response':text if ok else None,'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'}
           Path('out/result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
           print(json.dumps({k:v for k,v in result.items() if k!='response'},ensure_ascii=False,indent=2))
           PY
@@ -130,7 +115,6 @@ jobs:
           merge-multiple: false
       - name: Fuse real external results without inflating independence
         env:
-          HAS_WORK: ${{ needs.plan.outputs.has_work }}
           HEALTHY_FAMILIES: ${{ needs.plan.outputs.healthy_families }}
         shell: bash
         run: |
@@ -148,17 +132,7 @@ jobs:
           unique_pairs={(r.get('role'),r.get('model_family')) for r in ok}
           families={r.get('model_family') for r in ok if r.get('model_family')}
           roles={r.get('role') for r in ok if r.get('role')}
-          report={
-            'schema':'cerebron-external-role-omega-v1',
-            'healthy_families_planned':int(os.environ.get('HEALTHY_FAMILIES') or 0),
-            'artifact_rows':len(rows),
-            'successful_external_calls':len(ok),
-            'validated_role_family_pairs':len(unique_pairs),
-            'successful_model_families':sorted(families),
-            'successful_roles':sorted(roles),
-            'independence_rule':'same model family is not counted as an independent engine',
-            'claim_note':'Only successful external calls count as external AI agents; planned jobs and CPU runners do not.'
-          }
+          report={'schema':'cerebron-external-role-omega-v1','healthy_families_planned':int(os.environ.get('HEALTHY_FAMILIES') or 0),'artifact_rows':len(rows),'successful_external_calls':len(ok),'validated_role_family_pairs':len(unique_pairs),'successful_model_families':sorted(families),'successful_roles':sorted(roles),'independence_rule':'same model family is not counted as an independent engine','claim_note':'Only successful external calls count as external AI agents; planned jobs and CPU runners do not.'}
           Path('external-omega-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
           print(json.dumps(report,ensure_ascii=False,indent=2))
           PY
