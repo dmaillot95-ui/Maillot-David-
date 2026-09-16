@@ -1,0 +1,55 @@
+{
+  "schema": "cerebron-free-tier-registry-v1",
+  "policy": {
+    "spend_limit_eur": 0,
+    "paid_fallback": false,
+    "payment_method_required": false,
+    "auto_upgrade": false
+  },
+  "approved": {
+    "github_actions": {
+      "role": ["batch", "ci", "deterministic_cpu", "local_llm"],
+      "status": "connected",
+      "notes": "Use only within repository/account quota; no paid model API."
+    },
+    "cloudflare": {
+      "role": ["gateway", "routing", "edge", "workers_ai_free_allocation"],
+      "status": "code_ready_not_connected",
+      "hard_free_behavior": true,
+      "notes": "Workers Free; Workers AI free allocation must fail closed when exhausted."
+    },
+    "render": {
+      "role": ["forge_control_plane", "light_http_worker"],
+      "status": "code_ready_not_connected",
+      "hard_free_behavior": true,
+      "notes": "Free web service may sleep/suspend; ephemeral filesystem."
+    },
+    "vercel": {
+      "role": ["serverless_worker", "gateway"],
+      "status": "connector_installed_account_not_resolved",
+      "hard_free_behavior": true,
+      "notes": "Hobby only; never enable Pro or usage purchase."
+    },
+    "netlify": {
+      "role": ["serverless_worker", "gateway", "background_light"],
+      "status": "code_ready_not_connected",
+      "hard_free_behavior": true,
+      "notes": "Free plan has a hard monthly credit limit and no auto recharge."
+    },
+    "supabase": {
+      "role": ["edge_worker", "state", "postgres", "realtime"],
+      "status": "code_ready_not_connected",
+      "hard_free_behavior": true,
+      "notes": "Free plan only; no paid add-ons or upgrade."
+    }
+  },
+  "excluded_or_restricted": {
+    "digitalocean": "payment method required for intended compute path",
+    "deno_deploy": "unverified/restricted no-card allowance; full Free limits require card verification",
+    "huggingface_compute_spaces": "compute Space creation requires paid plan as of 2026",
+    "github_models": "service retired 2026-07-30",
+    "floot": "interface/status repository only; not a compute provider",
+    "scaleway": "not approved until no-card zero-euro path is verified",
+    "alibaba": "not approved until no-card zero-euro path is verified"
+  }
+}
