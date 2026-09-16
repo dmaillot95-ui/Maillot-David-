@@ -1,0 +1,27 @@
+name: CEREBRON Collatz Global Descent Finite Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/collatz/test_global_descent_campaign.py'
+      - '.github/workflows/cerebron-collatz-global-descent.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collatz-global-descent:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run finite global-descent stress test
+        run: python cerebron/collatz/test_global_descent_campaign.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: collatz-global-descent-finite-test
+          path: collatz-global-descent-finite-test.json
+          retention-days: 14
