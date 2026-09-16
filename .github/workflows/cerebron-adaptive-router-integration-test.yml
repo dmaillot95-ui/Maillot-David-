@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'cerebron/federation/core/adaptive_shard_worker.py'
+      - 'cerebron/federation/core/provider_adapters_extra.py'
       - 'cerebron/federation/core/federated_worker_bridge.py'
       - 'cerebron/federation/routing/provider_router.py'
       - 'cerebron/federation/state/provider-runtime.json'
@@ -26,6 +27,7 @@ jobs:
         run: |
           python -m py_compile \
             cerebron/federation/core/adaptive_shard_worker.py \
+            cerebron/federation/core/provider_adapters_extra.py \
             cerebron/federation/core/federated_worker_bridge.py \
             cerebron/federation/routing/provider_router.py
       - name: Verify learned ordering without external calls
@@ -36,7 +38,7 @@ jobs:
           core = Path('cerebron/federation/core').resolve()
           sys.path.insert(0, str(core))
           import adaptive_shard_worker as a
-          a.shard_worker.available_zero_euro_routes = lambda: [
+          a._BASE_AVAILABLE = lambda: [
               'huggingface_public_spaces',
               'cloudflare_workers_ai_free',
               'groq_free',
