@@ -1,0 +1,25 @@
+name: CEREBRON Intelligence Core Ablation 2000
+
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence_core/test_core_ablation_2000.py'
+      - '.github/workflows/cerebron-intelligence-core-ablation-2000.yml'
+  workflow_dispatch:
+
+jobs:
+  ablation-core:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run 2000 ablation funnel
+        run: python cerebron/intelligence_core/test_core_ablation_2000.py
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: intelligence-core-ablation-2000
+          path: intelligence-core-ablation-2000.json
+          retention-days: 14
