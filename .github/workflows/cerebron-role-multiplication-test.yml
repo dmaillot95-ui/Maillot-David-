@@ -1,0 +1,127 @@
+name: CEREBRON Nonredundant Role Multiplication Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/control/role-multiplication-trigger.json'
+      - '.github/workflows/cerebron-role-multiplication-test.yml'
+
+permissions:
+  contents: read
+
+env:
+  CEREBRON_ZERO_EURO: 'true'
+
+jobs:
+  role-worker:
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        include:
+          - {slot: 0, trame: ROOT, role: SCOUT}
+          - {slot: 1, trame: ROOT, role: DECOMPOSER}
+          - {slot: 2, trame: PROOF, role: PROOF_A}
+          - {slot: 3, trame: PROOF, role: PROOF_B}
+          - {slot: 4, trame: COMPUTE, role: COMPUTE_CHECKER}
+          - {slot: 5, trame: ALT, role: ALTERNATIVE_ROUTE}
+          - {slot: 6, trame: ATTACK, role: FALSIFIER}
+          - {slot: 7, trame: ATTACK, role: RED_TEAM}
+          - {slot: 8, trame: AUDIT, role: COUNTER_AUDITOR}
+          - {slot: 9, trame: REPLICA, role: REPLICATOR}
+          - {slot: 10, trame: FUSION, role: SYNTHESIZER}
+          - {slot: 11, trame: DECISION, role: JUDGE}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute distinct deterministic role workload
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import hashlib, json, os, time
+          slot=int('${{ matrix.slot }}')
+          role='${{ matrix.role }}'
+          trame='${{ matrix.trame }}'
+          seed=f'CEREBRON|{trame}|{role}|{slot}'
+          h=hashlib.sha256(seed.encode()).hexdigest()
+          # Each role gets a distinct deterministic workload and checksum.
+          n=180000 + slot*7000
+          acc=0
+          for i in range(1,n):
+              acc=(acc + ((i*(slot+3)) ^ (i>>3))) % 1000000007
+          # Deterministic Collatz micro-check over a distinct interval per role.
+          start=3 + slot*200
+          end=start+200
+          max_steps=0
+          for x in range(start,end):
+              y=x; steps=0
+              while y!=1 and steps<2000:
+                  y = y//2 if y%2==0 else 3*y+1
+                  steps+=1
+              max_steps=max(max_steps,steps)
+          out={
+            'schema':'cerebron-nonredundant-role-result-v1',
+            'slot':slot,'trame':trame,'role':role,
+            'execution':'REAL_GITHUB_ACTIONS_CPU',
+            'independent_ai_claim':False,
+            'workload_checksum':acc,
+            'role_sha256':h,
+            'collatz_interval':[start,end-1],
+            'collatz_max_steps':max_steps,
+            'status':'COMPLETED'
+          }
+          open(f'out/role-{slot:02d}.json','w').write(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: role-${{ matrix.slot }}-${{ matrix.role }}
+          path: out/*.json
+
+  omega-fusion:
+    needs: role-worker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: role-*
+          path: roles
+          merge-multiple: true
+      - name: Verify 12 unique nonredundant posts and fuse
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import glob,json,hashlib,os
+          files=sorted(glob.glob('roles/*.json'))
+          rows=[json.load(open(f)) for f in files]
+          roles=[r['role'] for r in rows]
+          assert len(rows)==12,(len(rows),files)
+          assert len(set(roles))==12,roles
+          assert all(r['status']=='COMPLETED' for r in rows)
+          digest=hashlib.sha256('|'.join(sorted(r['role_sha256'] for r in rows)).encode()).hexdigest()
+          report={
+            'schema':'cerebron-role-multiplication-fusion-v1',
+            'real_parallel_workers':12,
+            'unique_roles':12,
+            'unique_role_names':sorted(roles),
+            'omega_fusion':'PASS',
+            'independent_ai_agents_proven':0,
+            'reason':'This test validates real parallel execution and role separation only; AI independence requires distinct live model/provider evidence.',
+            'fusion_sha256':digest
+          }
+          os.makedirs('omega',exist_ok=True)
+          open('omega/nonredundant-role-report.json','w').write(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nonredundant-role-omega-report
+          path: omega/*.json
