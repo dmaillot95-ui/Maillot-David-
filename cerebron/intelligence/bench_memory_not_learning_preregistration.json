@@ -1,0 +1,57 @@
+{
+  "benchmark_id": "BENCH-C42-MEMORY-001",
+  "title": "MEMORY != LEARNING",
+  "status": "preregistered_not_run",
+  "evidence_ceiling": "E3_verified_simulation",
+  "hypothesis": "If cumulative learning is real at the software architecture level, storing causal boundaries and scars should improve future decisions beyond raw memory volume alone.",
+  "groups": {
+    "A_raw_memory": "Retain raw prior episodes only; nearest-match retrieval allowed; no compressed rule extraction or causal credit.",
+    "B_compressed_rules": "Retain compressed rules extracted from prior episodes; no scars, boundaries, or causal credit.",
+    "C_no_cumulative_memory": "No cross-task memory; solve each task from current evidence only.",
+    "D_verified_experience": "Retain rules + failure scars + transfer boundaries + causal credit with provenance."
+  },
+  "candidate_ordering": "D > B > A > C",
+  "candidate_ordering_is_not_acceptance_criterion": true,
+  "primary_metric": "heldout_future_task_regret_relative_to_oracle_best_action",
+  "secondary_metrics": [
+    "heldout_accuracy",
+    "negative_transfer_rate",
+    "repeat_failure_rate",
+    "calibration_error",
+    "memory_bytes",
+    "retrieval_operations",
+    "decision_cost_units",
+    "VCGC_verified_gain_per_cost"
+  ],
+  "resource_controls": {
+    "same_current_task_observations": true,
+    "same_candidate_action_set": true,
+    "same_decision_budget_units": true,
+    "same_hidden_test_tasks": true,
+    "memory_cost_reported_separately": true,
+    "no_group_may_access_hidden_outcomes_before_decision": true
+  },
+  "anti_leakage": [
+    "training/development episodes and hidden/OOD episodes use disjoint seeds",
+    "hidden family parameters are unavailable to selectors",
+    "future-task outcomes are never used to compile memory",
+    "group D causal credit may use only completed prior episodes",
+    "benchmark code must log exact memory object used per decision"
+  ],
+  "falsification_conditions": [
+    "D does not beat C on aggregate hidden regret",
+    "D gain disappears after equal decision-budget control",
+    "D improvement is explained solely by larger memory footprint without efficiency gain",
+    "D has materially higher negative-transfer or repeat-failure rate",
+    "observed group ordering is unstable across fresh seed banks"
+  ],
+  "promotion_gate": {
+    "D_beats_C": true,
+    "D_beats_A_or_B": true,
+    "positive_seed_majority": true,
+    "no_material_negative_transfer_regression": true,
+    "matched_decision_budget": true,
+    "fresh_reproduction_required": true
+  },
+  "claim_limit": "A positive result would support cumulative software-level learning from verified experience in this benchmark only. It would not prove neural learning, AGI, or superintelligence."
+}
