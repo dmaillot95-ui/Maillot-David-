@@ -1,3 +1,4 @@
+# CEREBRON load-test trigger 2026-09-16
 name: CEREBRON 1000 Tasks Per Worker Test
 
 on:
@@ -29,7 +30,6 @@ jobs:
           h=hashlib.sha256()
           failures=0
           for i in range(1000):
-              # Distinct deterministic CPU task per lane/task.
               payload=f"lane={lane};task={i};x={(lane+1)*(i+1)}".encode()
               digest=hashlib.sha256(payload).digest()
               if len(digest)!=32:
