@@ -70,7 +70,7 @@ jobs:
           python-version: '3.12'
       - name: Install Hugging Face client
         run: pip install --quiet hf-gradio
-      - name: Execute adaptive shard
+      - name: Execute Worker Highway shard
         env:
           SHARD: ${{ matrix.shard }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -92,7 +92,13 @@ jobs:
               Path(out).write_text('',encoding='utf-8')
               print(json.dumps({'shard':shard,'status':'SKIPPED'}))
               raise SystemExit(0)
-          args=['python','cerebron/federation/core/adaptive_shard_worker.py','--shard',str(shard),'--limit',str(cfg.get('limit_per_shard',1)),'--output',out]
+          args=[
+              'python','cerebron/federation/core/worker_highway.py',
+              '--shard',str(shard),
+              '--limit',str(cfg.get('limit_per_shard',12)),
+              '--lanes',str(cfg.get('lanes_per_shard',4)),
+              '--output',out,
+          ]
           if cfg.get('mission_id'):
               args += ['--mission-id', str(cfg['mission_id'])]
           if str(cfg.get('mode','QUEUE')).upper() == 'SMOKE':
