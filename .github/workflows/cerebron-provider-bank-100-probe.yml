@@ -1,0 +1,75 @@
+name: CEREBRON Provider Bank 100 Probe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/providers/**'
+      - 'cerebron/federation/core/provider_adapters*.py'
+      - '.github/workflows/cerebron-provider-bank-100-probe.yml'
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cerebron-provider-bank-100-probe
+  cancel-in-progress: true
+
+jobs:
+  provider-probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CEREBRON_PROVIDER_BANK_OUT: out/provider-bank-runtime.json
+      CEREBRON_PROVIDER_PROBE_OUT: out/provider-probe-runtime.json
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+      COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
+      VERCEL_OIDC_TOKEN: ${{ secrets.VERCEL_OIDC_TOKEN }}
+      SAMBANOVA_API_KEY: ${{ secrets.SAMBANOVA_API_KEY }}
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      ZAI_API_KEY: ${{ secrets.ZAI_API_KEY }}
+      CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+      JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+      FIREWORKS_API_KEY: ${{ secrets.FIREWORKS_API_KEY }}
+      DEEPINFRA_API_KEY: ${{ secrets.DEEPINFRA_API_KEY }}
+      TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+      REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce zero-euro registry
+        run: |
+          mkdir -p out
+          python cerebron/providers/provider_bank.py
+          python - <<'PY'
+          import json
+          p=json.load(open('out/provider-bank-runtime.json'))
+          assert p['provider_count']==100
+          assert p['spend_limit_eur']==0
+          assert p['paid_fallback'] is False
+          assert all(x['allow_paid'] is False for x in p['providers'])
+          print('ZERO_EURO_GATE=PASS')
+          PY
+      - name: Probe implemented free routes
+        run: python cerebron/providers/provider_probe.py
+      - name: Upload provider evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-provider-bank-100-${{ github.run_id }}
+          path: out/*.json
+          retention-days: 14
