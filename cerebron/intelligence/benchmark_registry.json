@@ -1,0 +1,45 @@
+{
+  "registry_version": "2026-09-16-v1",
+  "benchmarks": [
+    {
+      "id": "BENCH-002",
+      "name": "CEREBRON Intelligence Core Benchmark V2",
+      "run_id": 35124135017,
+      "status": "completed",
+      "conclusion": "success",
+      "artifact_id": 10458338994,
+      "benchmark_type": "deterministic_internal_discrimination_test",
+      "evidence_level": "E3",
+      "seed": 20260916,
+      "tasks": 160,
+      "domains": ["linear", "quadratic", "inverse", "piecewise"],
+      "orders_tested": 720,
+      "position_invariant_state_interface": true,
+      "baseline": {"mae": 2.744626, "rmse": 4.21892, "success_rate": 0.15},
+      "best_observed": {
+        "order": ["system_identification", "representation_reuse", "verification", "procedure_refinement", "failure_learning", "deduction"],
+        "mae": 0.230303,
+        "rmse": 0.435977,
+        "success_rate": 0.775
+      },
+      "worst_observed": {
+        "order": ["procedure_refinement", "verification", "representation_reuse", "deduction", "failure_learning", "system_identification"],
+        "mae": 2.787317,
+        "rmse": 4.283472,
+        "success_rate": 0.1625
+      },
+      "mae_spread": 2.557014,
+      "distinct_mae_values": 140,
+      "discriminates_orders": true,
+      "known_confounds": [
+        "deduction accesses latent_a and latent_b",
+        "system_identification accesses domain label",
+        "verification computes error against target",
+        "procedure_refinement can update toward target after verification",
+        "failure_learning can use target-derived error history"
+      ],
+      "claim_limit": "V2 demonstrates that the executable harness can discriminate module order under its synthetic rules. It is not an external benchmark, a clean held-out generalization test, or evidence of AGI/superintelligence.",
+      "next": "BENCH-003 leak-resistant V2.1 with hidden oracle, observable-only module inputs, held-out domains, equal-resource baseline and transfer/ablation tests"
+    }
+  ]
+}
