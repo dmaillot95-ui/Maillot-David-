@@ -70,9 +70,16 @@ jobs:
           python-version: '3.12'
       - name: Install Hugging Face client
         run: pip install --quiet hf-gradio
-      - name: Execute shard
+      - name: Execute adaptive shard
         env:
           SHARD: ${{ matrix.shard }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
         run: |
           python - <<'PY'
           import json, os, subprocess
@@ -85,7 +92,7 @@ jobs:
               Path(out).write_text('',encoding='utf-8')
               print(json.dumps({'shard':shard,'status':'SKIPPED'}))
               raise SystemExit(0)
-          args=['python','cerebron/federation/core/shard_worker.py','--shard',str(shard),'--limit',str(cfg.get('limit_per_shard',1)),'--output',out]
+          args=['python','cerebron/federation/core/adaptive_shard_worker.py','--shard',str(shard),'--limit',str(cfg.get('limit_per_shard',1)),'--output',out]
           if cfg.get('mission_id'):
               args += ['--mission-id', str(cfg['mission_id'])]
           if str(cfg.get('mode','QUEUE')).upper() == 'SMOKE':
