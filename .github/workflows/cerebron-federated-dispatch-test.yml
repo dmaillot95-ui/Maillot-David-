@@ -1,0 +1,55 @@
+name: CEREBRON Federated Dispatch Resume Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/core/federated_mission_dispatcher.py'
+      - 'cerebron/federation/core/federated_scheduler.py'
+      - 'cerebron/federation/topology/federated-hubs-10000.json'
+      - '.github/workflows/cerebron-federated-dispatch-test.yml'
+  workflow_dispatch:
+
+jobs:
+  dispatch-resume-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate persistent dispatch waves
+        run: |
+          python -m py_compile \
+            cerebron/federation/core/federated_scheduler.py \
+            cerebron/federation/core/federated_mission_dispatcher.py
+          python - <<'PY'
+          import json, sys, tempfile
+          from pathlib import Path
+          sys.path.insert(0, 'cerebron/federation/core')
+          import federated_scheduler as fs
+          import federated_mission_dispatcher as fd
+
+          cfg = fs.load_topology(Path('cerebron/federation/topology/federated-hubs-10000.json'))
+          state = fd.ensure_state(cfg, {})
+          w1 = fd.next_wave(cfg, state, 'TEST-MISSION')
+          assert len(w1) == 20
+          assert len({x['address'] for x in w1}) == 20
+          assert state['cursor'] == 20
+          first = [x['address'] for x in w1]
+
+          with tempfile.TemporaryDirectory() as td:
+              p = Path(td) / 'state.json'
+              fd.save_json(p, state)
+              reloaded = fd.ensure_state(cfg, fd.load_json(p, {}))
+              fd.mark_completed(reloaded, first[:3])
+              w2 = fd.next_wave(cfg, reloaded, 'TEST-MISSION')
+              assert len(w2) == 20
+              second = [x['address'] for x in w2]
+              assert len(set(first).intersection(second)) == 0
+              assert reloaded['cursor'] == 40
+              assert len(reloaded['completed']) == 3
+              assert reloaded['logical_total'] == 10000
+              assert reloaded['physical_cap'] == 20
+              print(json.dumps(fd.summary(reloaded), indent=2))
+          PY
