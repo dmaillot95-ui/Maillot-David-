@@ -1,0 +1,92 @@
+name: CEREBRON OpenAI Useful Call
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cerebron-openai-useful-call.yml'
+jobs:
+  useful-call:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - name: Run useful CEREBRON architecture audit
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request, urllib.error
+
+          key = os.environ.get('OPENAI_API_KEY','')
+          assert key, 'OPENAI_API_KEY missing'
+
+          prompt = '''You are auditing CEREBRON, an experimental multi-worker orchestration system.
+Current verified architecture:
+- 12 specialized farms.
+- Target 20 workers per farm = 240 planned jobs.
+- GitHub Actions is the execution substrate; concurrency is bounded and workers may queue.
+- A twin agent API can create logical agents, tasks, sub-agents, status, results and stop operations.
+- A 4-child physical-spawn test already proved 4 distinct GitHub-hosted runners.
+- OpenAI API is now connected as a paid external intelligence route.
+- Rule: CLAIM <= EVIDENCE. Logical workers must never be called physical runners unless runner evidence exists.
+
+Give the 3 highest-value engineering actions to make this system more useful and auditable next. For each action give: objective, implementation, measurable acceptance test. Also name the single biggest architecture risk. Be concise and concrete.'''
+
+          body = {
+            'model': 'gpt-5.6-luna',
+            'input': prompt,
+            'reasoning': {'effort':'low'},
+            'text': {'verbosity':'low'},
+            'max_output_tokens': 450,
+            'store': False
+          }
+          req = urllib.request.Request(
+            'https://api.openai.com/v1/responses',
+            data=json.dumps(body).encode('utf-8'),
+            headers={
+              'Authorization': 'Bearer ' + key,
+              'Content-Type': 'application/json'
+            },
+            method='POST'
+          )
+          try:
+            with urllib.request.urlopen(req, timeout=90) as r:
+              data = json.loads(r.read().decode('utf-8'))
+          except urllib.error.HTTPError as e:
+            err = e.read().decode('utf-8', errors='replace')
+            print('OPENAI_HTTP_ERROR', e.code, err)
+            raise
+
+          text = data.get('output_text')
+          if not text:
+            parts=[]
+            for item in data.get('output',[]):
+              if item.get('type')=='message':
+                for c in item.get('content',[]):
+                  if c.get('type')=='output_text' and c.get('text'):
+                    parts.append(c['text'])
+            text='\n'.join(parts)
+
+          usage=data.get('usage') or {}
+          proof={
+            'engine':'CEREBRON_OPENAI_USEFUL_CALL_V1',
+            'model':data.get('model'),
+            'response_id':data.get('id'),
+            'status':data.get('status'),
+            'output_text':text,
+            'usage':usage,
+            'api_key_exposed':False,
+            'purpose':'CEREBRON architecture audit and next engineering actions'
+          }
+          print(json.dumps(proof, ensure_ascii=False))
+          with open('cerebron-openai-useful-call.json','w',encoding='utf-8') as f:
+            json.dump(proof,f,ensure_ascii=False,indent=2)
+          assert data.get('status') == 'completed', data
+          assert text and len(text.strip()) > 20, proof
+          PY
+      - name: Upload proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-openai-useful-call
+          path: cerebron-openai-useful-call.json
+          retention-days: 7
