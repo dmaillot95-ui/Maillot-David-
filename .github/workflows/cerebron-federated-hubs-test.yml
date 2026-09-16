@@ -1,0 +1,34 @@
+name: CEREBRON Federated Hubs Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/topology/federated-hubs-v1.json'
+      - 'cerebron/federation/core/federated_scheduler.py'
+      - '.github/workflows/cerebron-federated-hubs-test.yml'
+  workflow_dispatch:
+
+jobs:
+  topology-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate federated hub topology
+        run: |
+          python -m py_compile cerebron/federation/core/federated_scheduler.py
+          python cerebron/federation/core/federated_scheduler.py > /tmp/federation.json
+          cat /tmp/federation.json
+          python - <<'PY'
+          import json
+          data=json.load(open('/tmp/federation.json'))
+          assert data['tribes']==5
+          assert data['hubs']==20
+          assert data['logical_shards']==400
+          assert data['unique_addresses']==400
+          assert data['physical_concurrency_cap']==20
+          assert data['active_in_wave']==20
+          PY
