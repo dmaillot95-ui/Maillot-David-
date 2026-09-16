@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cerebron-forge-omega
+    runtime: python
+    plan: free
+    buildCommand: "python -m compileall -q cerebron/forge"
+    startCommand: "CEREBRON_FORGE_BIND=0.0.0.0 CEREBRON_FORGE_PORT=$PORT python -m cerebron.forge.server"
+    healthCheckPath: /status
+    envVars:
+      - key: CEREBRON_FORGE_DB
+        value: /tmp/cerebron-forge.db
+      - key: CEREBRON_FORGE_TOKEN
+        sync: false
+      - key: CEREBRON_FORGE_QUIET
+        value: "1"
