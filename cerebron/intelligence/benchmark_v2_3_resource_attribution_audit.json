@@ -1,0 +1,56 @@
+{
+  "benchmark_id": "BENCH-005",
+  "run": 35128232421,
+  "status": "completed_success",
+  "evidence_level": "E3_verified_simulation",
+  "purpose": "Determine whether A1's local advantage over A0 is explained only by unequal resource/time allocation.",
+  "resource_control": {
+    "wall_clock_used_as_intelligence_metric": false,
+    "deterministic_resource_units_used": true,
+    "equal_resources_within_each_budget": true,
+    "budgets": {
+      "low": 8,
+      "medium": 28,
+      "full": 66
+    }
+  },
+  "results": {
+    "low": {
+      "neutral_mae": 0.2895876885864899,
+      "A0_mae": 0.2908175004840377,
+      "A1_mae": 0.29034737255340837,
+      "A1_minus_A0_mae": -0.0004701279306293382,
+      "A1_seed_wins": 7
+    },
+    "medium": {
+      "neutral_mae": 0.23518976645112183,
+      "A0_mae": 0.24258743465752408,
+      "A1_mae": 0.24097928953669223,
+      "A1_minus_A0_mae": -0.0016081451208318498,
+      "A1_seed_wins": 9
+    },
+    "full": {
+      "neutral_mae": 0.014500047796258127,
+      "A0_mae": 0.02048235989183067,
+      "A1_mae": 0.01829067686679533,
+      "A1_minus_A0_mae": -0.0021916830250353417,
+      "A1_seed_wins": 9
+    }
+  },
+  "family_relative_regression_A1_vs_A0_full": {
+    "chirp_affine": -0.012826478832495603,
+    "saturating_tanh": -0.40694271901408446,
+    "inverse_quadratic": -0.2884602148424079
+  },
+  "findings": {
+    "A1_beats_A0_at_all_budget_levels": true,
+    "equal_full_budget_gate": true,
+    "resource_only_explanation_rejected_within_this_benchmark": true,
+    "neutral_baseline_beats_A1_at_full_budget": true,
+    "A1_promoted": false
+  },
+  "interpretation": "A1's local improvement over A0 survives equal deterministic resource budgets, so unequal compute/time alone does not explain the A1>A0 result in this benchmark. However, the neutral verification-only baseline remains better than both A0 and A1 at full budget, showing that the weighted orchestration layer is still not competitive here.",
+  "critical_limitation": "The test does not isolate real cognitive capabilities such as world modeling, reasoning, failure learning, metacognition or autonomous self-improvement. It remains a deterministic synthetic model-selection harness.",
+  "next_action": "Do not promote A1. Build the six executable capability experiments with matched sham controls and a competitive neutral baseline before any 36-job campaign.",
+  "claim_limit": "This result rejects only a narrow resource-allocation-only explanation for A1>A0 inside BENCH-005. It is not evidence of AGI, superintelligence, autonomous learning, or external generalization."
+}
