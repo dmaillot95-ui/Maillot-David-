@@ -1,0 +1,46 @@
+name: CEREBRON World AI Registry Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/providers/world_ai_registry.py'
+      - '.github/workflows/cerebron-world-ai-registry-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  registry-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build registry and verify zero-euro gate
+        run: |
+          python cerebron/providers/world_ai_registry.py
+          python - <<'PY'
+          import json
+          from cerebron.providers.world_ai_registry import build_registry, choose_specialists
+          r=build_registry()
+          assert r['spend_limit_eur']==0
+          assert r['paid_fallback'] is False
+          assert r['provider_count'] >= 30
+          remote=[p for p in r['providers'] if p['kind']=='remote_api']
+          assert remote
+          assert all(p['zero_euro_approved'] is False for p in remote)
+          assert all(p['routable_zero_euro'] is False for p in remote)
+          proof=choose_specialists('Prove a Collatz theorem with formal proof and verification')
+          for expected in ['qwen_math_local','deepseek_prover_local','lean4','sympy','python_math']:
+              assert expected in proof, (expected, proof)
+          print(json.dumps({
+              'WORLD_AI_REGISTRY':'PASS',
+              'provider_count':r['provider_count'],
+              'remote_blocked_without_zero_euro_approval':len(remote),
+              'math_route':proof,
+              'spend_limit_eur':0
+          }))
+          PY
