@@ -2,7 +2,8 @@
 """Merge immutable shard JSONL artifacts into the persistent queue state.
 
 Only this reducer mutates mission/task status after parallel execution, avoiding
-20 concurrent writers to the same state file.
+20 concurrent writers to the same state file. Retryable failures are bounded by
+the long-run policy and then quarantined; quarantined outputs never count as evidence.
 """
 from __future__ import annotations
 
@@ -16,7 +17,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = ROOT / "state" / "mission-queue.json"
 LATEST_PATH = ROOT / "state" / "latest-state.json"
-TERMINAL = {"COMPLETED", "REJECTED", "CANCELLED"}
+LONGRUN_PATH = ROOT / "control" / "longrun.json"
+TERMINAL = {"COMPLETED", "REJECTED", "CANCELLED", "QUARANTINED"}
 
 
 def now_iso():
@@ -73,10 +75,17 @@ def count_attempts(row):
         total = len(attempts)
         success = sum(1 for a in attempts if a.get("ok"))
         return total, success, total - success
-    # Backward compatibility with pre-fallback shard artifacts.
     if row.get("model_id"):
         return 1, int(bool(row.get("ok"))), int(not bool(row.get("ok")))
     return 0, 0, 0
+
+
+def retry_limit():
+    try:
+        p = load(LONGRUN_PATH)
+        return max(1, int(p.get("max_task_attempts", 8)))
+    except Exception:
+        return 8
 
 
 def main():
@@ -88,12 +97,14 @@ def main():
 
     q = load(QUEUE_PATH)
     rows = read_results(Path(args.results_dir))
+    limit = retry_limit()
     merged = 0
     ignored_smoke = 0
     successful_tasks = 0
     failed_tasks = 0
     deterministic_holds = 0
     quota_holds = 0
+    quarantined_tasks = 0
     external_attempts = 0
     successful_external_calls = 0
     failed_external_calls = 0
@@ -121,18 +132,33 @@ def main():
         t["lease_expires_at"] = None
         t["evidence_status"] = row.get("evidence_status", "UNREVIEWED")
         t["result_ref"] = f"actions://{args.run_id}/{row.get('_artifact_file')}#{tid}"
+
         if status == "COMPLETED" and row.get("ok"):
             t["status"] = "COMPLETED"
             successful_tasks += 1
         elif status == "HOLD_DETERMINISTIC_CHECK":
-            t["status"] = "FAILED_RETRYABLE"
+            # This role requires code/arithmetic validation, not another LLM retry.
+            t["status"] = "QUARANTINED"
+            t["evidence_status"] = "DETERMINISTIC_CHECK_REQUIRED"
+            t["quarantine_reason"] = "HOLD_DETERMINISTIC_CHECK"
             deterministic_holds += 1
+            quarantined_tasks += 1
+        elif int(t.get("attempt", 0)) >= limit:
+            t["status"] = "QUARANTINED"
+            t["evidence_status"] = "NO_EVIDENCE"
+            t["quarantine_reason"] = row.get("error") or status or "RETRY_LIMIT_REACHED"
+            if status == "HOLD_QUOTA_BACKOFF":
+                quota_holds += 1
+            else:
+                failed_tasks += 1
+            quarantined_tasks += 1
         elif status == "HOLD_QUOTA_BACKOFF":
             t["status"] = "FAILED_RETRYABLE"
             quota_holds += 1
         else:
             t["status"] = "FAILED_RETRYABLE"
             failed_tasks += 1
+
         touched_missions.add(t["mission_id"])
         merged += 1
 
@@ -158,7 +184,7 @@ def main():
     atomic_write(LATEST_PATH, latest)
 
     summary = {
-        "schema": "cerebron-shard-run-summary-v2",
+        "schema": "cerebron-shard-run-summary-v3",
         "run_id": str(args.run_id),
         "at": now_iso(),
         "artifact_rows": len(rows),
@@ -168,6 +194,8 @@ def main():
         "failed_tasks": failed_tasks,
         "deterministic_holds": deterministic_holds,
         "quota_holds": quota_holds,
+        "quarantined_tasks": quarantined_tasks,
+        "max_task_attempts": limit,
         "external_call_attempts": external_attempts,
         "successful_external_calls": successful_external_calls,
         "failed_external_calls": failed_external_calls,
