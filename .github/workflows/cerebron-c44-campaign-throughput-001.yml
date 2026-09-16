@@ -1,0 +1,24 @@
+name: CEREBRON C44 Campaign Throughput 001
+
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence/bench_c44_campaign_throughput_001.py'
+      - 'cerebron/intelligence/bench_c44_campaign_throughput_preregistration.json'
+      - '.github/workflows/cerebron-c44-campaign-throughput-001.yml'
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run BENCH-C44-CAMPAIGN-THROUGHPUT-001
+        run: python cerebron/intelligence/bench_c44_campaign_throughput_001.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-c44-campaign-throughput-001-results
+          path: bench_c44_campaign_throughput_001_results.json
