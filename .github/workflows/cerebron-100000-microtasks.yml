@@ -1,0 +1,106 @@
+name: CEREBRON 100000 Microtasks Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cerebron-100000-microtasks.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 40
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
+    steps:
+      - name: Execute 2500 deterministic microtasks
+        shell: bash
+        env:
+          LANE: ${{ matrix.lane }}
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, time
+          lane=int(os.environ['LANE'])
+          started=time.time_ns()
+          chain=hashlib.sha256()
+          failures=0
+          unique=set()
+          for i in range(2500):
+              task_id=f'CEREBRON-100K-L{lane:02d}-T{i:04d}'
+              payload=f'{task_id}|x={(lane+1)*(i+1)}|kind=CPU_CHECK'.encode()
+              digest=hashlib.sha256(payload).digest()
+              unique.add(task_id)
+              if len(digest) != 32:
+                  failures += 1
+              chain.update(digest)
+          finished=time.time_ns()
+          out={
+            'lane': lane,
+            'tasks_requested': 2500,
+            'tasks_completed': 2500-failures,
+            'unique_task_ids': len(unique),
+            'failures': failures,
+            'checksum': chain.hexdigest(),
+            'started_ns': started,
+            'finished_ns': finished,
+            'duration_ms': (finished-started)/1e6,
+            'spend_limit_eur': 0,
+            'paid_api_used': False,
+            'claim': '2500 real deterministic CPU microtasks executed by one GitHub job; not 2500 AI agents'
+          }
+          open(f'worker-{lane}.json','w').write(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out))
+          assert failures == 0
+          assert len(unique) == 2500
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: worker-${{ matrix.lane }}
+          path: worker-${{ matrix.lane }}.json
+
+  omega:
+    needs: worker
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: worker-*
+          merge-multiple: true
+          path: workers
+      - name: Verify 100000 executed microtasks
+        run: |
+          python - <<'PY'
+          import glob, json
+          rows=[json.load(open(f)) for f in glob.glob('workers/worker-*.json')]
+          lanes={r['lane'] for r in rows}
+          total=sum(r['tasks_completed'] for r in rows)
+          unique=sum(r['unique_task_ids'] for r in rows)
+          failures=sum(r['failures'] for r in rows)
+          report={
+            'workers_expected':40,
+            'workers_observed':len(rows),
+            'unique_lanes':len(lanes),
+            'tasks_per_worker':2500,
+            'tasks_expected':100000,
+            'tasks_completed':total,
+            'unique_task_ids':unique,
+            'failures':failures,
+            'spend_limit_eur':0,
+            'paid_api_used':False,
+            'all_completed': len(rows)==40 and len(lanes)==40 and total==100000 and unique==100000 and failures==0,
+            'claim':'100000 CPU microtasks only; not 100000 agents or model calls'
+          }
+          print(json.dumps(report,indent=2))
+          open('cerebron-100000-report.json','w').write(json.dumps(report,indent=2)+'\n')
+          assert report['all_completed'], report
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-100000-report
+          path: cerebron-100000-report.json
