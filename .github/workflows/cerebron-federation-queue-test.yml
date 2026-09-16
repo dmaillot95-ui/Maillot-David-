@@ -42,7 +42,9 @@ jobs:
           assert s['status'] == {'PENDING': 1440}, s['status']
           assert len(s['by_civilization']) == 12, len(s['by_civilization'])
           assert all(v.get('PENDING') == 120 for v in s['by_civilization'].values()), s['by_civilization']
-          assert len(s['by_shard']) <= 20, len(s['by_shard'])
+          cap = int(q.config()['scale']['github_parallel_cap'])
+          assert cap == 36, cap
+          assert len(s['by_shard']) <= cap, (len(s['by_shard']), cap)
 
           # Lease a real queue item from a nonempty shard and complete it.
           shard = sorted(int(k) for k, v in s['by_shard'].items() if v.get('PENDING'))[0]
@@ -53,5 +55,5 @@ jobs:
           s2 = q.status(mid)
           assert s2['status'].get('COMPLETED') == 1, s2['status']
           assert s2['status'].get('PENDING') == 1439, s2['status']
-          print(json.dumps({'PASS': True, 'mission': mid, 'tasks': 1440, 'civilizations': 12, 'teams_per_civilization': 10, 'agents_per_team': 12, 'shards_seen': len(s['by_shard'])}, indent=2))
+          print(json.dumps({'PASS': True, 'mission': mid, 'tasks': 1440, 'civilizations': 12, 'teams_per_civilization': 10, 'agents_per_team': 12, 'configured_parallel_cap': cap, 'shards_seen': len(s['by_shard'])}, indent=2))
           PY
