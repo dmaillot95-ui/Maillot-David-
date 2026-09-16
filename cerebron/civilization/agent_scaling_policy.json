@@ -1,0 +1,51 @@
+{
+  "schema": "cerebron-agent-scaling-policy-v1",
+  "objective": "Scale useful logical-agent capacity while keeping physical execution evidence-based, quota-aware, auditable, and zero-euro by default.",
+  "spend_limit_eur": 0,
+  "floot_allowed": false,
+  "auto_paid_upgrade": false,
+  "logical_agent_targets": [20, 50, 100, 500, 1000, 10000],
+  "rules": {
+    "logical_agents_are_not_physical_workers": true,
+    "agent_count_is_not_intelligence": true,
+    "scale_only_after_measured_gain": true,
+    "claim_leq_evidence": true,
+    "no_quota_bypass": true,
+    "deduplicate_before_expand": true,
+    "verification_capacity_must_scale_with_generation": true
+  },
+  "promotion_gates": [
+    "marginal_novel_result_rate_improves_or_holds",
+    "duplicate_rate_below_threshold",
+    "audit_backlog_within_capacity",
+    "provider_error_rate_acceptable",
+    "zero_euro_policy_preserved",
+    "state_persistence_verified"
+  ],
+  "work_classes": {
+    "RESEARCH": "source discovery and evidence gathering",
+    "PROOF": "symbolic derivation and theorem work",
+    "COMPUTE": "deterministic Python or symbolic computation",
+    "FALSIFY": "counterexamples and adversarial testing",
+    "FORMALIZE": "formal proof translation and proof assistant work",
+    "SYNTHESIZE": "merge, deduplicate, rank residuals",
+    "AUDIT": "independent verification and contradiction checks"
+  },
+  "collatz_template": {
+    "branch_families": [
+      "valuation_words",
+      "rotations",
+      "congruences",
+      "divisibility",
+      "minimum_cycle_constraints",
+      "predecessor_constraints",
+      "exponential_bounds",
+      "symbolic_elimination",
+      "counterexample_search",
+      "formalization"
+    ],
+    "current_verified_checkpoint": "No positive nontrivial accelerated Collatz cycle with 1, 2, 3, or 4 odd terms; only 1->1 for odd period N<=4.",
+    "next_targets": ["N=5", "N=6", "N-independent invariant", "universal lemma candidate"],
+    "do_not_claim": ["general cycle exclusion", "absence of divergence", "full Collatz solution"]
+  }
+}
