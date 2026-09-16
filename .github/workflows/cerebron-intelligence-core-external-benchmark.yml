@@ -1,0 +1,22 @@
+name: CEREBRON Intelligence Core External Benchmark
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence_core_external_benchmark.py'
+      - '.github/workflows/cerebron-intelligence-core-external-benchmark.yml'
+  workflow_dispatch:
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run external objective benchmark
+        run: python cerebron/intelligence_core_external_benchmark.py
+      - name: Upload benchmark report
+        uses: actions/upload-artifact@v4
+        with:
+          name: intelligence-core-external-benchmark
+          path: intelligence_core_external_benchmark.json
