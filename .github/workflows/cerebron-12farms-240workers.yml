@@ -1,0 +1,48 @@
+name: CEREBRON 12 Farms 240 Workers
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cerebron-12farms-240workers.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  worker:
+    name: ${{ matrix.farm }} worker-${{ matrix.worker }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        farm: [FARM-01,FARM-02,FARM-03,FARM-04,FARM-05,FARM-06,FARM-07,FARM-08,FARM-09,FARM-10,FARM-11,FARM-12]
+        worker: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    steps:
+      - name: Execute farm child worker
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, hashlib
+          farm='${{ matrix.farm }}'
+          worker=int('${{ matrix.worker }}')
+          task=f'{farm}:{worker}:CEREBRON'
+          digest=hashlib.sha256(task.encode()).hexdigest()
+          out={
+            'farm': farm,
+            'worker_index': worker,
+            'logical_worker_id': f'{farm}-W{worker:02d}',
+            'github_run_id': os.getenv('GITHUB_RUN_ID'),
+            'github_job': os.getenv('GITHUB_JOB'),
+            'runner_name': os.getenv('RUNNER_NAME'),
+            'runner_os': os.getenv('RUNNER_OS'),
+            'status': 'COMPLETED',
+            'task_digest': digest,
+            'spend_limit_eur': 0,
+            'paid_fallback': False,
+            'claim': 'This is one real GitHub Actions job; distinct physical/ephemeral runner identity must be verified from GitHub jobs API.'
+          }
+          print(json.dumps(out))
+          PY
