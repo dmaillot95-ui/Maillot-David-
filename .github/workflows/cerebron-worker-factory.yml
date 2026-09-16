@@ -1,0 +1,73 @@
+name: CEREBRON Worker Factory Rebuild
+
+on:
+  push:
+    paths:
+      - 'cerebron/worker_factory/**'
+      - 'cerebron/runner_farm/**'
+      - '.github/workflows/cerebron-worker-factory.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  factory-plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Sync verified physical runners from GitHub
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python cerebron/runner_farm/sync_github_runners.py
+      - name: Build 432-worker rebuild plan
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          cfg=json.loads(Path('cerebron/worker_factory/control/factory.json').read_text(encoding='utf-8'))
+          assert cfg.get('spend_limit_eur') == 0
+          assert cfg.get('paid_fallback') is False
+          subprocess.run([
+            'python','cerebron/worker_factory/worker_factory.py',
+            '--mission-id',str(cfg['mission_id']),
+            '--count',str(cfg['requested_logical_workers']),
+            '--max-logical-workers',str(cfg['max_logical_workers']),
+          ],check=True)
+          PY
+      - name: Show evidence-backed capacity
+        run: |
+          cat cerebron/runner_farm/state/runner-farm-status.json
+          cat cerebron/worker_factory/state/worker-plan.json
+      - name: Persist factory and runner state
+        run: |
+          git config user.name 'cerebron-worker-factory'
+          git config user.email 'cerebron-worker-factory@users.noreply.github.com'
+          git add \
+            cerebron/runner_farm/state/runner-registry.json \
+            cerebron/runner_farm/state/runner-farm-status.json \
+            cerebron/worker_factory/state/worker-plan.json
+          if git diff --cached --quiet; then
+            echo 'No state change.'
+          else
+            git commit -m 'Persist CEREBRON worker factory state'
+            git push
+          fi
+      - name: Upload Worker Factory evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-worker-factory-evidence
+          path: |
+            cerebron/runner_farm/state/runner-farm-status.json
+            cerebron/worker_factory/state/worker-plan.json
+          retention-days: 30
