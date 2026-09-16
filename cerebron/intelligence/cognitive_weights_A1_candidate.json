@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "profile_id": "CEREBRON-A1-CANDIDATE",
+  "status": "frozen_candidate_pending_BENCH_004",
+  "derived_from": {
+    "profile": "CEREBRON-A0",
+    "development_evidence": "BENCH-003-R1",
+    "rule": "Only development/source evidence may influence A1. BENCH-004 must not be used to tune this profile."
+  },
+  "scope": "cognitive orchestration meta-parameters only; not neural model weights",
+  "weights": {
+    "verification": 1.0,
+    "contradiction_detection": 0.9,
+    "failure_learning": 0.85,
+    "transfer": 0.85,
+    "world_model": 0.8,
+    "reasoning": 0.9,
+    "self_improvement": 0.75,
+    "metacognition": 0.9,
+    "evidence": 1.0,
+    "uncertainty_penalty": 0.7,
+    "complexity_penalty": 0.25,
+    "compute_penalty": 0.20
+  },
+  "changes_vs_A0": {
+    "transfer": -0.15,
+    "complexity_penalty": -0.15,
+    "compute_penalty": -0.15
+  },
+  "unchanged_due_to_insufficient_evidence": [
+    "verification",
+    "contradiction_detection",
+    "failure_learning",
+    "world_model",
+    "reasoning",
+    "self_improvement",
+    "metacognition",
+    "evidence",
+    "uncertainty_penalty"
+  ],
+  "constraints": {
+    "min_weight": 0.0,
+    "max_weight": 2.0,
+    "max_single_update": 0.15,
+    "require_finite_values": true,
+    "require_versioned_change": true
+  },
+  "promotion_gate": "A1 is not promoted unless BENCH-004 on unseen families and unseen seeds shows matched-resource heldout improvement vs A0, no material family regression, leakage audit pass, and reproducible rerun.",
+  "claim_limit": "A1 is a frozen experimental configuration, not neural-weight learning and not evidence of self-improvement until prospectively validated."
+}
