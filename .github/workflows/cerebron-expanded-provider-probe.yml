@@ -1,0 +1,68 @@
+name: CEREBRON Expanded Zero-Euro Provider Probe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/federation/core/provider_adapters.py'
+      - 'cerebron/federation/core/provider_adapters_extra.py'
+      - 'cerebron/federation/core/adaptive_shard_worker.py'
+      - '.github/workflows/cerebron-expanded-provider-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+      GROQ_MODEL: openai/gpt-oss-20b
+      CLOUDFLARE_AI_MODEL: '@cf/zai-org/glm-4.7-flash'
+      GEMINI_MODEL: gemini-2.5-flash
+      OPENROUTER_MODEL: openrouter/free
+      MISTRAL_MODEL: mistral-small-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Probe connected zero-euro APIs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, sys
+          sys.path.insert(0,'cerebron/federation/core')
+          from provider_adapters import invoke_groq, invoke_cloudflare
+          from provider_adapters_extra import invoke_gemini, invoke_openrouter, invoke_mistral
+
+          probes=[]
+          def run(name, connected, fn):
+              if not connected:
+                  probes.append({'provider':name,'connected':False,'called':False,'ok':False,'error_type':'NOT_CONNECTED'})
+                  return
+              r=fn('Reply only with: CEREBRON_OK', max_tokens=20)
+              probes.append({'provider':name,'connected':True,'called':True,'ok':bool(r.ok),'model':r.model,'status_code':r.status_code,'error_type':r.error_type})
+
+          run('groq_free', bool(os.getenv('GROQ_API_KEY')), invoke_groq)
+          run('cloudflare_workers_ai_free', bool(os.getenv('CLOUDFLARE_API_TOKEN') and os.getenv('CLOUDFLARE_ACCOUNT_ID')), invoke_cloudflare)
+          run('gemini_free', bool(os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')), invoke_gemini)
+          run('openrouter_free', bool(os.getenv('OPENROUTER_API_KEY')), invoke_openrouter)
+          run('mistral_free', bool(os.getenv('MISTRAL_API_KEY')), invoke_mistral)
+          report={'schema':'cerebron-expanded-provider-probe-v1','spend_limit_eur':0,'paid_fallback':False,'providers':probes,'connected_count':sum(p['connected'] for p in probes),'successful_count':sum(p['ok'] for p in probes)}
+          open('/tmp/expanded-provider-probe.json','w').write(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: expanded-provider-probe
+          path: /tmp/expanded-provider-probe.json
