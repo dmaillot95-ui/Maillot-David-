@@ -1,0 +1,187 @@
+name: CEREBRON Chat Control Plane
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/control/control-command.json'
+      - '.github/workflows/cerebron-chat-control.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: cerebron-chat-control
+  cancel-in-progress: false
+
+jobs:
+  control:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Interpret command and enforce zero-euro policy
+        id: control
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          cmd_path=Path('cerebron/control/control-command.json')
+          state_path=Path('cerebron/control/control-state.json')
+          status_path=Path('cerebron/control/control-status.json')
+          federation_path=Path('cerebron/federation/state/federated-multiwave-state.json')
+          retry_path=Path('cerebron/federation/state/retry-request.json')
+
+          cmd=json.load(open(cmd_path))
+          state={
+            'schema':'cerebron-control-state-v1',
+            'paused':False,
+            'last_processed_command_id':None,
+            'last_action':None,
+            'last_result':'BOOTSTRAP'
+          }
+          if state_path.exists():
+            state.update(json.load(open(state_path)))
+
+          cid=str(cmd.get('command_id') or '').strip()
+          action=str(cmd.get('action') or '').strip().upper()
+          constraints=cmd.get('constraints') or {}
+          if not cid:
+            raise SystemExit('command_id required')
+          if constraints.get('spend_limit_eur',0) != 0:
+            raise SystemExit('CEREBRON control refuses spend_limit_eur != 0')
+          if constraints.get('floot_allowed',False):
+            raise SystemExit('CEREBRON control refuses Floot')
+          if int(constraints.get('max_physical_lanes',20)) > 20:
+            raise SystemExit('CEREBRON control refuses >20 physical lanes')
+
+          duplicate = cid == state.get('last_processed_command_id')
+          dispatch=False
+          retry_count=0
+          message=''
+
+          if duplicate:
+            message='Duplicate command ignored.'
+          elif action in {'PAUSE','STOP'}:
+            state['paused']=True
+            message='CEREBRON paused. No new wave dispatched.'
+          elif action in {'RESUME','REPREND'}:
+            state['paused']=False
+            message='CEREBRON resumed. No wave dispatched until GO.'
+          elif action in {'GO','NEXT_WAVE'}:
+            if state.get('paused'):
+              message='GO blocked: CEREBRON is paused.'
+            else:
+              dispatch=True
+              message='One orchestrated wave requested.'
+          elif action in {'RETRY','RETRY_FAILED'}:
+            if state.get('paused'):
+              message='RETRY blocked: CEREBRON is paused.'
+            else:
+              fs=json.load(open(federation_path)) if federation_path.exists() else {}
+              failed=fs.get('failed') or {}
+              params=cmd.get('parameters') or {}
+              requested=params.get('assignment_ids')
+              if requested:
+                ids=[x for x in requested if x in failed]
+              else:
+                wave_filter=params.get('wave_number')
+                rows=list(failed.values())
+                if wave_filter is not None:
+                  rows=[r for r in rows if int(r.get('wave_number',-1)) == int(wave_filter)]
+                rows.sort(key=lambda r:(int(r.get('logical_index',0)),r.get('assignment_id','')))
+                ids=[r['assignment_id'] for r in rows]
+              ids=ids[:20]
+              retry={
+                'schema':'cerebron-retry-request-v1',
+                'status':'REQUESTED',
+                'command_id':cid,
+                'assignment_ids':ids,
+                'requested_at':datetime.now(timezone.utc).isoformat(),
+                'claim_note':'Explicit retry only; no implicit duplicate execution.'
+              }
+              retry_path.parent.mkdir(parents=True,exist_ok=True)
+              retry_path.write_text(json.dumps(retry,ensure_ascii=False,indent=2)+'\n')
+              retry_count=len(ids)
+              dispatch=bool(ids)
+              message=f'{retry_count} failed assignments queued for explicit retry.' if ids else 'No matching failed assignments.'
+          elif action == 'STATUS':
+            message='Status snapshot refreshed.'
+          else:
+            message=f'Unknown action {action}; no execution.'
+
+          if not duplicate:
+            state['last_processed_command_id']=cid
+            state['last_action']=action
+            state['last_result']=message
+            state['updated_at']=datetime.now(timezone.utc).isoformat()
+
+          fs=json.load(open(federation_path)) if federation_path.exists() else {}
+          status={
+            'schema':'cerebron-control-status-v1',
+            'command_id':cid,
+            'action':action,
+            'duplicate':duplicate,
+            'paused':bool(state.get('paused')),
+            'dispatch_requested':dispatch,
+            'retry_count':retry_count,
+            'message':message,
+            'logical_total':fs.get('logical_total'),
+            'physical_cap':fs.get('physical_cap'),
+            'wave_number':fs.get('wave_number'),
+            'inflight':len(fs.get('inflight') or {}),
+            'completed':len(fs.get('completed') or {}),
+            'failed':len(fs.get('failed') or {}),
+            'updated_at':datetime.now(timezone.utc).isoformat(),
+            'zero_euro_policy':True,
+            'floot_allowed':False
+          }
+          state_path.parent.mkdir(parents=True,exist_ok=True)
+          state_path.write_text(json.dumps(state,ensure_ascii=False,indent=2)+'\n')
+          status_path.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n')
+          with open('/tmp/control.env','w') as f:
+            f.write('dispatch='+('true' if dispatch else 'false')+'\n')
+          print(json.dumps(status,ensure_ascii=False,indent=2))
+          PY
+          cat /tmp/control.env >> "$GITHUB_OUTPUT"
+
+      - name: Persist control acknowledgement
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'cerebron-control-bot'
+          git config user.email 'cerebron-control-bot@users.noreply.github.com'
+          git add cerebron/control/control-state.json cerebron/control/control-status.json cerebron/federation/state/retry-request.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo 'No control state change.'
+          else
+            git commit -m 'Acknowledge CEREBRON chat control command'
+            for n in 1 2 3; do
+              git fetch origin main
+              git rebase origin/main || { git rebase --abort || true; sleep $((n*2)); continue; }
+              git push origin HEAD:main && break
+              sleep $((n*2))
+            done
+          fi
+
+      - name: Dispatch one CEREBRON wave
+        if: steps.control.outputs.dispatch == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api \
+            --method POST \
+            -H 'Accept: application/vnd.github+json' \
+            repos/${{ github.repository }}/actions/workflows/cerebron-federated-worker-bridge-test.yml/dispatches \
+            -f ref=main
+          echo 'CEREBRON_WAVE_DISPATCHED'
