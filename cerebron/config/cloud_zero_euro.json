@@ -1,0 +1,26 @@
+{
+  "schema": "cerebron-cloud-zero-euro-v1",
+  "spend_limit_eur": 0,
+  "paid_fallback": false,
+  "allow_volunteer_compute": false,
+  "allow_credit_card_required_providers": false,
+  "providers": {
+    "github_actions": {"role": ["batch", "ci", "deterministic", "local_llm"], "enabled_by_default": true},
+    "cloudflare": {"role": ["gateway", "routing", "lightweight_api"], "enabled_by_default": false},
+    "render": {"role": ["forge_control_plane"], "enabled_by_default": false},
+    "vercel": {"role": ["optional_web", "optional_agents"], "enabled_by_default": false},
+    "floot": {"role": ["optional_dashboard", "status_depository"], "enabled_by_default": false, "compute_provider": false},
+    "scaleway": {"role": ["optional_worker"], "enabled_by_default": false},
+    "alibaba": {"role": ["optional_worker"], "enabled_by_default": false},
+    "digitalocean": {"role": ["disabled_card_required"], "enabled_by_default": false}
+  },
+  "rules": [
+    "CLAIM<=EVIDENCE",
+    "EXTERNAL_EXECUTION_REQUIRES_EXPLICIT_ENABLE",
+    "NO_SECRET_IN_REPOSITORY",
+    "NO_PAID_FALLBACK",
+    "NO_VOLUNTEER_COMPUTE",
+    "WORKER!=MACHINE!=MODEL!=AGENT",
+    "SIMULATION!=TEST"
+  ]
+}
