@@ -1,0 +1,22 @@
+{
+  "id": "C45-RUNG-0200",
+  "status": "PREREGISTERED",
+  "baseline": "same frozen C45 baseline used for prior rungs",
+  "purpose": "Measure whether increasing a campaign from 125 to 200 units preserves quality under the same synthetic deterministic protocol.",
+  "units": 200,
+  "seeds": [20261231,20261301,20261303,20261305,20261307,20261309,20261311,20261313,20261315,20261317,20261319],
+  "families": ["affine","saturating","inverse","piecewise","noisy","shifted","sparse","dense","mixed","adversarial"],
+  "arms": ["baseline","candidate_200","matched_sham"],
+  "resource_parity": "candidate_200 and matched_sham receive identical per-task unit, coordination and verification budgets",
+  "metrics": ["residual","verified_work","vcgc","cost","family_robustness","seed_win_rate"],
+  "gates": {
+    "candidate_beats_baseline_seeds": 0.8,
+    "candidate_beats_sham_seeds": 0.6,
+    "family_non_regression_fraction": 0.9,
+    "resource_parity_required": true
+  },
+  "comparison_note": "Uses same seeds/families as rung 125 to isolate scale under the same harness. This does not model real LLM-message context or orchestration overhead.",
+  "claim_ceiling": "synthetic deterministic benchmark only; no AGI/superintelligence claim",
+  "next_if_pass": "compare 125 vs 200 and decide whether to test a real overhead-aware campaign",
+  "next_if_fail": "prefer 125 under this protocol and diagnose scale sensitivity"
+}
