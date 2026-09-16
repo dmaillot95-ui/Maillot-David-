@@ -1,0 +1,39 @@
+name: CEREBRON Free Cloud Selftest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'render.yaml'
+      - 'cloudflare/cerebron-forge-gateway/**'
+      - '.github/workflows/cerebron-free-cloud-selftest.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  free-cloud-selftest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate Render free blueprint
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('render.yaml').read_text()
+          assert 'plan: free' in text
+          assert 'CEREBRON_FORGE_BIND=0.0.0.0' in text
+          assert 'CEREBRON_FORGE_PORT=$PORT' in text
+          assert 'CEREBRON_FORGE_TOKEN' in text
+          print('render_free_blueprint_ok=true')
+          PY
+      - name: Validate Cloudflare gateway syntax and zero-cost mode
+        run: |
+          node --check cloudflare/cerebron-forge-gateway/src/index.js
+          grep -q 'CEREBRON_ZERO_COST = "1"' cloudflare/cerebron-forge-gateway/wrangler.toml
+          grep -q 'FORGE_ORIGIN_NOT_CONFIGURED' cloudflare/cerebron-forge-gateway/src/index.js
+          echo 'cloudflare_gateway_ok=true'
