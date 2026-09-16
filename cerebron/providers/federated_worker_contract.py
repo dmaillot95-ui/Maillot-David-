@@ -52,10 +52,15 @@ class WorkerResult:
 class Timer:
     def __enter__(self):
         self.started = time.time()
+        self.elapsed_s = 0.0
         return self
 
-    def __exit__(self, exc_type, exc, tb):
+    def elapsed(self) -> float:
         self.elapsed_s = time.time() - self.started
+        return self.elapsed_s
+
+    def __exit__(self, exc_type, exc, tb):
+        self.elapsed()
 
 
 def validate_zero_euro(task: WorkerTask) -> None:
