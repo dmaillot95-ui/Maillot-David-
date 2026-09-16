@@ -1,11 +1,37 @@
 {
   "schema": "cerebron-assistant20-state-v1",
-  "updated_at": null,
-  "last_run_id": null,
-  "mission_nonce": null,
-  "mission_objective": null,
-  "active_agents": [],
-  "completed_agents": 0,
-  "failed_agents": 0,
-  "results": {}
+  "updated_at": "2026-09-16T03:46:57+00:00",
+  "last_run_id": "35053064125",
+  "mission_nonce": "smoke-20260916-a01-a16",
+  "mission_objective": "Vérifier que l'essaim Assistant-20 peut exécuter des agents externes séparés sans modifier la campagne Collatz.",
+  "active_agents": [
+    "A01",
+    "A16"
+  ],
+  "completed_agents": 1,
+  "failed_agents": 1,
+  "results": {
+    "A01": {
+      "specialty": "RECHERCHE",
+      "status": "HOLD_QUOTA_BACKOFF",
+      "ok": false,
+      "model_id": "gemma2b",
+      "model_family": "gemma-2",
+      "response_sha256": null,
+      "response_excerpt": "",
+      "evidence_status": "NO_EVIDENCE",
+      "error_type": "QUOTA"
+    },
+    "A16": {
+      "specialty": "RED_TEAM",
+      "status": "COMPLETED",
+      "ok": true,
+      "model_id": "llama3b",
+      "model_family": "llama-3.2",
+      "response_sha256": "68aaaa2c2ec93f779c1abecf130bec614f44c3fff438b5441ecb27f5f3bbbbcb",
+      "response_excerpt": "**Vérification du fonctionnement de l'Assistant-20**\n\n**Contexte** : L'Assistant-20 est conçu pour exécuter des agents externes séparés sans modifier la campagne Collatz. Cette vérification vise à confirmer que cet aspect fonctionne correctement.\n\n**Étapes de vérification** :\n\n1. **Définition de l'agent externe** : Un agent externe est défini comme un programme qui prend en entrée un nombre et le transforme en un autre nombre en appliquant une règle spécifique.\n2. **Exécution de l'agent externe*",
+      "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
+      "error_type": null
+    }
+  }
 }
