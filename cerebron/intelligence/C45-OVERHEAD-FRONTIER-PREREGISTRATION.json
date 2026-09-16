@@ -1,0 +1,26 @@
+{
+  "id": "C45-OVERHEAD-FRONTIER-001",
+  "status": "PREREGISTERED",
+  "baseline": "same frozen C45 synthetic task generator and surviving candidate mechanisms used at rungs 125 and 200",
+  "purpose": "Estimate the productive campaign-size frontier when coordination, verification, context/fusion burden and error exposure increase with campaign size.",
+  "scales": [50, 75, 100, 125, 150, 175, 200, 225, 250, 300],
+  "seeds": [20261401,20261403,20261405,20261407,20261409,20261411,20261413,20261415,20261417,20261419,20261421,20261423,20261425],
+  "families": ["affine","saturating","inverse","piecewise","noisy","shifted","sparse","dense","mixed","adversarial"],
+  "arms": ["candidate","matched_sham"],
+  "overhead_model": {
+    "coordination": "grows as n*log2(n)",
+    "verification": "grows as n*(1 + 0.0015*n)",
+    "fusion": "grows superlinearly as n^1.18",
+    "context_error_exposure": "quality penalty starts after 100 units and grows quadratically",
+    "same_overhead_envelope_for_candidate_and_sham": true
+  },
+  "metrics": ["net_verified_work","net_vcgc","residual","coordination_cost","verification_cost","fusion_cost","overhead_fraction","seed_win_rate","family_non_regression"],
+  "selection_rule": "best operating point is the scale with maximum mean net_vcgc among scales that pass all gates",
+  "gates": {
+    "candidate_beats_sham_seed_fraction": 0.6,
+    "family_non_regression_fraction": 0.9,
+    "overhead_fraction_max": 0.35,
+    "resource_parity_required": true
+  },
+  "claim_ceiling": "synthetic deterministic overhead model only; does not measure actual LLM context limits or real message throughput"
+}
