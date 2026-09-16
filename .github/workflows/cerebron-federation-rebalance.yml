@@ -1,0 +1,52 @@
+name: CEREBRON Federation Rebalance
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/federation-v1.json'
+      - 'cerebron/federation/core/rebalance_shards.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cerebron-federation-state-writer
+  cancel-in-progress: false
+
+jobs:
+  rebalance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebalance only non-active tasks
+        working-directory: cerebron/federation/core
+        run: python rebalance_shards.py
+      - name: Persist rebalance state
+        run: |
+          git config user.name 'cerebron-federation-bot'
+          git config user.email 'cerebron-federation-bot@users.noreply.github.com'
+          git add cerebron/federation/state/mission-queue.json cerebron/federation/state/latest-state.json
+          if git diff --cached --quiet; then
+            echo 'No rebalance state change.'
+            exit 0
+          fi
+          git commit -m 'Rebalance CEREBRON federation shards'
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              exit 1
+            fi
+            sleep $((attempt * 2))
+          done
+          exit 1
