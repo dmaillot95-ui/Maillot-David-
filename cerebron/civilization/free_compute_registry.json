@@ -1,0 +1,101 @@
+{
+  "schema": "cerebron-free-compute-registry-v1",
+  "updated_at": "2026-09-16",
+  "policy": {
+    "spend_limit_eur": 0,
+    "auto_paid_upgrade": false,
+    "floot_allowed": false,
+    "claim_rule": "Only official-source-confirmed free capacity is VERIFIED_CURRENT. Everything else is NEEDS_VERIFICATION.",
+    "quota_rule": "Do not bypass provider limits; route, cache, back off, or defer instead."
+  },
+  "providers": [
+    {
+      "id": "github_actions_public_standard",
+      "status": "VERIFIED_CURRENT",
+      "role": ["python_cpu", "orchestration", "tests", "batch_jobs"],
+      "cost": "0 EUR for standard GitHub-hosted runners in public repositories",
+      "limits": ["usage limits and abuse policies still apply", "larger runners are chargeable"],
+      "source": "https://docs.github.com/en/billing/concepts/product-billing/github-actions"
+    },
+    {
+      "id": "huggingface_spaces_cpu_basic",
+      "status": "VERIFIED_CURRENT_WITH_ACCOUNT_CONSTRAINT",
+      "role": ["cpu_inference", "public_model_service", "demo_worker"],
+      "cost": "CPU Basic listed FREE: 2 vCPU, 16 GB RAM, 50 GB ephemeral disk",
+      "limits": ["creating a new compute Space may require a paid plan depending on account/Space policy", "ephemeral disk", "provider quotas"],
+      "source": "https://huggingface.co/docs/hub/spaces-overview"
+    },
+    {
+      "id": "huggingface_zerogpu",
+      "status": "VERIFIED_CURRENT_QUOTA_BOUND",
+      "role": ["gpu_inference"],
+      "cost": "listed FREE",
+      "limits": ["dynamic shared capacity", "quota-bound", "availability not guaranteed"],
+      "source": "https://huggingface.co/pricing"
+    },
+    {
+      "id": "cloudflare_workers_free",
+      "status": "VERIFIED_CURRENT_NOT_CONNECTED",
+      "role": ["api_gateway", "router", "webhook", "edge_control_plane"],
+      "cost": "Workers Free",
+      "limits": ["100000 requests/day", "10 ms CPU/request", "128 MB memory", "50 subrequests/request", "5 cron triggers/account"],
+      "source": "https://developers.cloudflare.com/workers/platform/limits/"
+    },
+    {
+      "id": "cloudflare_workers_ai_free_allocation",
+      "status": "VERIFIED_CURRENT_NOT_CONNECTED",
+      "role": ["llm_inference", "embedding", "ai_worker"],
+      "cost": "10000 Neurons/day free allocation",
+      "limits": ["daily allocation", "operations fail after free allocation on Workers Free", "must bind a Cloudflare account"],
+      "source": "https://developers.cloudflare.com/workers-ai/platform/pricing/"
+    },
+    {
+      "id": "supabase_free",
+      "status": "VERIFIED_CURRENT_NOT_CONNECTED",
+      "role": ["postgres_memory", "auth", "seed_bank", "event_log"],
+      "cost": "$0/month",
+      "limits": ["2 active projects", "500 MB database/project", "shared CPU", "500 MB RAM", "5 GB egress", "1 GB file storage", "projects may pause after inactivity"],
+      "source": "https://supabase.com/pricing"
+    },
+    {
+      "id": "netlify_free",
+      "status": "VERIFIED_CURRENT_NOT_CONNECTED",
+      "role": ["web_frontend", "functions", "agent_runners", "database", "blob_storage"],
+      "cost": "$0/month",
+      "limits": ["300 credits/month hard limit", "no auto recharge on Free"],
+      "source": "https://www.netlify.com/pricing/"
+    },
+    {
+      "id": "render_free",
+      "status": "VERIFIED_CURRENT_NOT_CONNECTED",
+      "role": ["python_web_service", "postgres", "key_value", "static_site"],
+      "cost": "free instances available for selected service types",
+      "limits": ["important free-instance limitations", "not recommended for production", "bandwidth/pipeline limits"],
+      "source": "https://render.com/docs/free"
+    },
+    {
+      "id": "vercel_hobby",
+      "status": "NEEDS_VERIFICATION_BEFORE_ROUTING",
+      "role": ["frontend", "serverless_api", "deployment"],
+      "cost": "unknown until official current limits are re-verified",
+      "limits": [],
+      "source": "https://vercel.com/pricing"
+    },
+    {
+      "id": "replit_free",
+      "status": "NEEDS_VERIFICATION_BEFORE_ROUTING",
+      "role": ["development", "app_hosting", "worker"],
+      "cost": "unknown until official current limits are re-verified",
+      "limits": [],
+      "source": "https://replit.com/pricing"
+    },
+    {
+      "id": "hatchable_personal",
+      "status": "PLUGIN_DESCRIPTION_ONLY_NEEDS_EXTERNAL_VERIFICATION",
+      "role": ["full_stack_site", "database", "backend_functions"],
+      "cost": "plugin description states personal projects are free forever",
+      "limits": ["must verify current external terms before treating as guaranteed compute"],
+      "source": "plugin metadata"
+    }
+  ]
+}
