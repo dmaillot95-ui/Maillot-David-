@@ -1,0 +1,31 @@
+name: CEREBRON Fractal Fabric Scale Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/fractal_fabric/test_fractal_fabric_scale.py'
+      - '.github/workflows/cerebron-fractal-fabric-scale.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  scale-1000:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CEREBRON_SCALE_TASKS: '1000'
+      CEREBRON_SCALE_THREADS: '32'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run 1000 logical micro-worker scale test
+        run: python cerebron/fractal_fabric/test_fractal_fabric_scale.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-fractal-fabric-scale-1000
+          path: fractal-fabric-scale.json
+          retention-days: 14
