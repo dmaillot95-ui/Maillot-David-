@@ -37,7 +37,9 @@ SECRET_ENV = {
 "sambanova":["SAMBANOVA_API_KEY"],"nvidia_nim":["NVIDIA_API_KEY"],"zai":["ZAI_API_KEY"],
 "cerebras":["CEREBRAS_API_KEY"],"jina":["JINA_API_KEY"],"fireworks":["FIREWORKS_API_KEY"],
 "deepinfra":["DEEPINFRA_API_KEY"],"together":["TOGETHER_API_KEY"],"replicate":["REPLICATE_API_TOKEN"],
-"deepseek":["DEEPSEEK_API_KEY"],"anthropic":["ANTHROPIC_API_KEY"],"openai":["OPENAI_API_KEY"]
+"deepseek":["DEEPSEEK_API_KEY"],"anthropic":["ANTHROPIC_API_KEY"],"openai":["OPENAI_API_KEY"],
+"alibaba_model_studio":["CEREBRON_ALIBABA_WORKER_URL"],
+"scaleway_genai":["CEREBRON_SCALEWAY_WORKER_URL"]
 }
 LOCAL_COMMAND = {"vllm_self_hosted":"vllm","sglang_self_hosted":"python","bentoml":"bentoml","localai":"local-ai","ollama":"ollama","llama_cpp_server":"llama-server","tgi":"text-generation-launcher","openllm_bentoml":"openllm"}
 
