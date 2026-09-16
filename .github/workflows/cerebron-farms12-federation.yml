@@ -1,0 +1,49 @@
+name: CEREBRON 12 Autonomous Farms
+
+on:
+  workflow_dispatch:
+    inputs:
+      workers_per_farm:
+        description: Logical workers created by each farm
+        required: false
+        default: '4'
+      mission:
+        description: Mission label
+        required: false
+        default: federation-health-check
+  push:
+    paths:
+      - 'cerebron/farms12/**'
+      - '.github/workflows/cerebron-farms12-federation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  farm:
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        farm: [FARM-01,FARM-02,FARM-03,FARM-04,FARM-05,FARM-06,FARM-07,FARM-08,FARM-09,FARM-10,FARM-11,FARM-12]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute autonomous farm controller
+        shell: bash
+        run: |
+          WORKERS='${{ github.event.inputs.workers_per_farm }}'
+          MISSION='${{ github.event.inputs.mission }}'
+          [ -n "$WORKERS" ] || WORKERS=4
+          [ -n "$MISSION" ] || MISSION=federation-health-check
+          python cerebron/farms12/farm_controller.py --farm '${{ matrix.farm }}' --workers "$WORKERS" --mission "$MISSION" | tee farm-result.json
+      - name: Persist farm evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.farm }}-evidence
+          path: farm-result.json
+          retention-days: 7
