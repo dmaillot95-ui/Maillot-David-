@@ -4,8 +4,13 @@ on:
   push:
     paths:
       - 'cerebron/federation/core/federated_worker_bridge.py'
+      - 'cerebron/federation/core/federated_wave_reducer.py'
       - '.github/workflows/cerebron-federated-worker-bridge-test.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
 
 jobs:
   federated-worker:
@@ -36,3 +41,49 @@ jobs:
         with:
           name: federated-worker-${{ matrix.slot }}
           path: out/result-${{ matrix.slot }}.json
+
+  reduce:
+    needs: federated-worker
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download worker artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: federated-worker-*
+          path: wave-artifacts
+          merge-multiple: true
+      - name: Reduce telemetry and update routing memory
+        run: |
+          python cerebron/federation/core/federated_wave_reducer.py \
+            --artifacts wave-artifacts \
+            --runtime cerebron/federation/state/provider-runtime.json \
+            --summary cerebron/federation/state/wave-summary-latest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: federated-wave-summary
+          path: cerebron/federation/state/wave-summary-latest.json
+      - name: Persist learned routing state
+        run: |
+          git config user.name 'cerebron-bot'
+          git config user.email 'cerebron-bot@users.noreply.github.com'
+          git add cerebron/federation/state/provider-runtime.json cerebron/federation/state/wave-summary-latest.json
+          if git diff --cached --quiet; then
+            echo 'No routing state change.'
+            exit 0
+          fi
+          git commit -m 'Persist federated wave routing telemetry'
+          for n in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort || true; sleep $((n*2)); continue; }
+            git push origin HEAD:main && exit 0
+            sleep $((n*2))
+          done
+          exit 1
