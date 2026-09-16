@@ -1,0 +1,30 @@
+{
+  "campaign": "C45",
+  "stage": "0050-R1",
+  "subject": "repair and retest campaign-control mechanisms before rung 100",
+  "baseline": "frozen C43/C44 pre-campaign baseline",
+  "parent": "C45 rung 50 run 35134402906",
+  "evidence_ceiling": "E3 synthetic verified simulation",
+  "frozen_before_results": true,
+  "fresh_seeds": [20261501,20261502,20261503,20261504,20261505,20261506,20261507,20261508,20261509],
+  "fresh_families": ["false_simple","scar_inversion","mixed_shift","high_uncertainty","dependency_spike","tight_budget"],
+  "repairs": {
+    "simple_first": "replace unconditional observed-reducible shortcut with confidence-gated conservative simplification",
+    "negative_knowledge_filter": "replace unit suppression by confidence-gated branch avoidance without shrinking total reasoning budget"
+  },
+  "controls": {
+    "same_frozen_baseline": true,
+    "exact_cost_matched_random_sham": true,
+    "ablations": ["conservative_simple","scar_guard","adaptive_compiler","verification_reservation","router"]
+  },
+  "primary_metrics": ["mean_residual","mean_verified","mean_cost","vcgc_proxy"],
+  "promotion_gate": {
+    "candidate_beats_baseline_on_residual_and_vcgc_seeds_min": 7,
+    "candidate_beats_exact_cost_sham_on_residual_seeds_min": 6,
+    "candidate_beats_exact_cost_sham_on_verified_seeds_min": 6,
+    "family_vcgc_regression_floor": -0.05,
+    "positive_ablation_signals_min": 3,
+    "cost_match_absolute_tolerance": 1e-12
+  },
+  "claim_limit": "Passing permits progression to rung 100 only. It is not evidence of AGI or superintelligence."
+}
