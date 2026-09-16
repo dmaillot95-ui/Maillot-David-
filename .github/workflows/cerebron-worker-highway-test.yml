@@ -1,0 +1,63 @@
+name: CEREBRON Worker Highway Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/federation/core/worker_highway.py'
+      - 'cerebron/federation/core/adaptive_shard_worker.py'
+      - 'cerebron/federation/core/shard_worker.py'
+      - '.github/workflows/cerebron-worker-highway-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  highway-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile Worker Highway
+        run: |
+          python -m py_compile \
+            cerebron/federation/core/worker_highway.py \
+            cerebron/federation/core/adaptive_shard_worker.py \
+            cerebron/federation/core/shard_worker.py
+      - name: Verify bounded parallel lanes and shared queue
+        run: |
+          python - <<'PY'
+          import sys, time
+          from pathlib import Path
+          core=Path('cerebron/federation/core').resolve()
+          sys.path.insert(0,str(core))
+          import worker_highway as h
+
+          def fake_execute(task, mission, civ_map, blocked):
+              time.sleep(0.08)
+              return {
+                  'task_id':task['task_id'],'mission_id':'M','role':task['role'],
+                  'shard':0,'execution_status':'COMPLETED','ok':True,
+                  'provider':'DETERMINISTIC_TEST','model_id':'test','model_family':'test',
+                  'response':'ok','attempted_models':[],'evidence_status':'TESTED'
+              }
+
+          h.shard_worker.execute_one=fake_execute
+          tasks=[{'task_id':f'T-{i:02d}','mission_id':'M','role':'SCOUT','shard':0} for i in range(12)]
+          missions={'M':{'title':'test','objective':'test'}}
+          t0=time.time()
+          results=h.execute_highway(tasks,missions,{},4)
+          elapsed=time.time()-t0
+          lanes={r['highway_lane'] for r in results}
+          assert len(results)==12, len(results)
+          assert all(r['ok'] for r in results)
+          assert len(lanes)==4, lanes
+          # Sequential time is about 0.96 s; four lanes should finish comfortably below it.
+          assert elapsed < 0.65, elapsed
+          assert [r['task_id'] for r in results] == sorted(r['task_id'] for r in results)
+          print({'PASS':True,'tasks':len(results),'lanes':sorted(lanes),'elapsed_s':round(elapsed,3)})
+          PY
