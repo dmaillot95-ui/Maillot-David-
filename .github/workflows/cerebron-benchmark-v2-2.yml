@@ -1,0 +1,25 @@
+name: CEREBRON Benchmark V2.2 Prospective A1 vs A0
+
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence/benchmark_v2_2.py'
+      - 'cerebron/intelligence/cognitive_weights_A1_candidate.json'
+      - '.github/workflows/cerebron-benchmark-v2-2.yml'
+  workflow_dispatch:
+
+jobs:
+  benchmark-v2-2:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run prospective BENCH-004
+        run: python cerebron/intelligence/benchmark_v2_2.py
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-benchmark-v2-2-results
+          path: benchmark_v2_2_results.json
