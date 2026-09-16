@@ -1,0 +1,55 @@
+name: CEREBRON Local CPU 20 Runner Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cerebron-local-cpu-20runner-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  local-cpu:
+    name: local-cpu-${{ matrix.slot }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        slot: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install local inference runtime
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet 'transformers>=4.56,<5' 'torch>=2.4' safetensors
+      - name: Run autonomous local AI worker
+        env:
+          SLOT: ${{ matrix.slot }}
+          CEREBRON_LOCAL_CPU_MODEL: HuggingFaceTB/SmolLM2-135M-Instruct
+          CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS: '16'
+          CEREBRON_LOCAL_CPU_PROMPT: 'Return a short acknowledgement that worker ${{ matrix.slot }} executed independently.'
+          CEREBRON_LOCAL_CPU_OUT: 'out/local-cpu-${{ matrix.slot }}.json'
+        run: |
+          mkdir -p out
+          python cerebron/providers/local_cpu_llm.py
+          python - <<'PY'
+          import json, os
+          slot=os.environ['SLOT']
+          p=json.load(open(f'out/local-cpu-{slot}.json'))
+          assert p['ok'] is True, p
+          assert p['spend_limit_eur']==0
+          assert p['paid_fallback'] is False
+          assert p['api_key_used'] is False
+          print(json.dumps({'slot':slot,'ok':p['ok'],'provider':p['provider'],'elapsed_s':p['elapsed_s'],'answer':p['answer']},ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: local-cpu-20scale-${{ matrix.slot }}
+          path: out/local-cpu-${{ matrix.slot }}.json
+          retention-days: 7
