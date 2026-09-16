@@ -1,4 +1,4 @@
-name: CEREBRON Farm Controller 3x36
+name: CEREBRON Farm Controller EFFERVESCENCE
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - 'cerebron/federation/control/farms.json'
       - 'cerebron/federation/core/farm_worker.py'
       - 'cerebron/federation/core/worker_highway.py'
+      - 'cerebron/federation/core/effervescence_planner.py'
       - '.github/workflows/cerebron-farm-controller.yml'
   workflow_dispatch:
   schedule:
@@ -20,41 +21,67 @@ concurrency:
 
 jobs:
   plan:
-    name: farm-plan
+    name: effervescence-plan
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       should_run: ${{ steps.plan.outputs.should_run }}
       pending_count: ${{ steps.plan.outputs.pending_count }}
+      active_pairs: ${{ steps.plan.outputs.active_pairs }}
+      planned_tasks: ${{ steps.plan.outputs.planned_tasks }}
+      matrix: ${{ steps.plan.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - name: Validate farm topology and pending work
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build dense Effervescence matrix
         id: plan
         run: |
           python - <<'PY'
-          import json, os
+          import json, os, subprocess
           from pathlib import Path
           cfg=json.loads(Path('cerebron/federation/control/farms.json').read_text(encoding='utf-8'))
-          q=json.loads(Path('cerebron/federation/state/mission-queue.json').read_text(encoding='utf-8'))
           assert int(cfg['farm_count']) == 3
           assert int(cfg['shards_per_farm']) == 36
           assert 1 <= int(cfg['lanes_per_shard']) <= 16
           assert float(cfg.get('spend_limit_eur', 0)) == 0
           assert cfg.get('paid_fallback') is False
-          mission=cfg.get('mission_id')
-          pending=[t for t in q.get('tasks',{}).values()
-                   if t.get('status') in {'PENDING','FAILED_RETRYABLE'}
-                   and (not mission or t.get('mission_id') == mission)]
+          subprocess.run([
+              'python','cerebron/federation/core/effervescence_planner.py',
+              '--queue','cerebron/federation/state/mission-queue.json',
+              '--config','cerebron/federation/control/farms.json',
+              '--output','effervescence-plan.json'
+          ],check=True)
+          report=json.loads(Path('effervescence-plan.json').read_text(encoding='utf-8'))
           enabled=bool(cfg.get('enabled', False))
-          should=enabled and bool(pending)
+          should=enabled and int(report['active_pairs']) > 0
+          matrix=json.dumps(report['matrix'],separators=(',',':'))
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
               f.write(f"should_run={'true' if should else 'false'}\n")
-              f.write(f"pending_count={len(pending)}\n")
-          print(json.dumps({'enabled':enabled,'pending_count':len(pending),'farms':3,'shards_per_farm':36,'should_run':should},ensure_ascii=False))
+              f.write(f"pending_count={report['eligible_tasks']}\n")
+              f.write(f"active_pairs={report['active_pairs']}\n")
+              f.write(f"planned_tasks={report['planned_tasks_this_wave']}\n")
+              f.write(f"matrix={matrix}\n")
+          print(json.dumps({
+              'enabled':enabled,
+              'should_run':should,
+              'eligible_tasks':report['eligible_tasks'],
+              'active_pairs':report['active_pairs'],
+              'planned_tasks_this_wave':report['planned_tasks_this_wave'],
+              'empty_pairs_skipped':report['empty_pairs_skipped'],
+              'pending_by_farm':report['pending_by_farm'],
+          },ensure_ascii=False))
           PY
+      - name: Upload Effervescence plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-effervescence-plan
+          path: effervescence-plan.json
+          retention-days: 14
 
   farm-worker:
-    name: farm-${{ matrix.farm }}-shard-${{ matrix.shard }}
+    name: farm-${{ matrix.farm }}-shard-${{ matrix.shard }}-p${{ matrix.planned }}
     needs: plan
     if: needs.plan.outputs.should_run == 'true'
     runs-on: ubuntu-latest
@@ -62,9 +89,7 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: 36
-      matrix:
-        farm: [0,1,2]
-        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -72,10 +97,11 @@ jobs:
           python-version: '3.12'
       - name: Install zero-euro public-space client
         run: pip install --quiet hf-gradio
-      - name: Execute farm shard highway
+      - name: Execute dense farm shard highway
         env:
           FARM: ${{ matrix.farm }}
           SHARD: ${{ matrix.shard }}
+          PLANNED: ${{ matrix.planned }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -89,6 +115,7 @@ jobs:
           from pathlib import Path
           cfg=json.loads(Path('cerebron/federation/control/farms.json').read_text(encoding='utf-8'))
           farm=int(os.environ['FARM']); shard=int(os.environ['SHARD'])
+          planned=max(1,int(os.environ['PLANNED']))
           out=f'out/farm-{farm}-shard-{shard:02d}.jsonl'
           Path('out').mkdir(exist_ok=True)
           args=[
@@ -96,7 +123,7 @@ jobs:
             '--farm-id',str(farm),
             '--farm-count',str(cfg['farm_count']),
             '--shard',str(shard),
-            '--limit',str(cfg['limit_per_farm_shard']),
+            '--limit',str(min(planned,int(cfg['limit_per_farm_shard']))),
             '--lanes',str(cfg['lanes_per_shard']),
             '--output',out,
           ]
@@ -115,7 +142,7 @@ jobs:
           retention-days: 14
 
   reduce:
-    name: central-farm-reducer
+    name: central-effervescence-reducer
     if: always() && needs.plan.outputs.should_run == 'true'
     needs: [plan, farm-worker]
     runs-on: ubuntu-latest
@@ -136,17 +163,28 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          seen={}; duplicates=[]; rows=0; ok=0; farms=set()
+          seen={}; duplicates=[]; rows=0; ok=0; farms=set(); lanes=set()
           for p in Path('farm-results').rglob('*.jsonl'):
               for line in p.read_text(encoding='utf-8').splitlines():
                   if not line.strip(): continue
                   r=json.loads(line); rows+=1
                   tid=r.get('task_id'); farm=r.get('farm_id'); farms.add(farm)
+                  lane=r.get('highway_lane')
+                  if lane is not None: lanes.add((farm,lane))
                   if tid in seen and seen[tid] != farm:
                       duplicates.append((tid,seen[tid],farm))
                   seen[tid]=farm
                   ok += int(bool(r.get('ok')))
-          report={'schema':'cerebron-farm-central-report-v1','rows':rows,'unique_tasks':len(seen),'successful_ai_or_compute_results':ok,'farms_with_results':sorted(x for x in farms if x is not None),'cross_farm_duplicates':duplicates[:20],'duplicate_count':len(duplicates)}
+          report={
+            'schema':'cerebron-effervescence-central-report-v1',
+            'rows':rows,
+            'unique_tasks':len(seen),
+            'successful_results':ok,
+            'farms_with_results':sorted(x for x in farms if x is not None),
+            'active_farm_lanes':len(lanes),
+            'cross_farm_duplicates':duplicates[:20],
+            'duplicate_count':len(duplicates)
+          }
           Path('farm-central-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps(report,ensure_ascii=False,indent=2))
           if duplicates: raise SystemExit('Cross-farm duplicate task ownership detected')
@@ -166,8 +204,8 @@ jobs:
             --report farm-hierarchy-report.json
       - name: Persist central state when changed
         run: |
-          git config user.name 'cerebron-farm-controller'
-          git config user.email 'cerebron-farm-controller@users.noreply.github.com'
+          git config user.name 'cerebron-effervescence-controller'
+          git config user.email 'cerebron-effervescence-controller@users.noreply.github.com'
           git add \
             cerebron/federation/state/mission-queue.json \
             cerebron/federation/state/latest-state.json \
@@ -175,7 +213,7 @@ jobs:
           if git diff --cached --quiet; then
             echo 'No persistent state change.'
           else
-            git commit -m 'Persist CEREBRON farm federation state'
+            git commit -m 'Persist CEREBRON Effervescence state'
             for attempt in 1 2 3; do
               if git push; then exit 0; fi
               git fetch origin main
@@ -184,11 +222,11 @@ jobs:
             done
             exit 1
           fi
-      - name: Upload central farm evidence
+      - name: Upload central Effervescence evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cerebron-farm-central-evidence
+          name: cerebron-effervescence-central-evidence
           path: |
             farm-central-report.json
             farm-execution-summary.json
