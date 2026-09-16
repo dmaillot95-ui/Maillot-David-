@@ -1,0 +1,28 @@
+name: CEREBRON Benchmark V2.1 Leak Resistant
+
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence/benchmark_v2_1.py'
+      - 'cerebron/intelligence/benchmark_v2_1_preregistration.json'
+      - 'cerebron/intelligence/cognitive_weights.json'
+      - '.github/workflows/cerebron-benchmark-v2-1.yml'
+  workflow_dispatch:
+
+jobs:
+  benchmark-v2-1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run leak-resistant benchmark
+        run: python cerebron/intelligence/benchmark_v2_1.py
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-benchmark-v2-1-results
+          path: benchmark_v2_1_results.json
