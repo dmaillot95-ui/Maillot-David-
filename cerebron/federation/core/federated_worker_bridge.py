@@ -7,7 +7,6 @@ CORE=Path(__file__).resolve().parent
 WORKER=CORE/'adaptive_shard_worker.py'
 
 def parse_address(address:str):
-    # T001/H001/S00 -> physical lane is final shard number modulo 20.
     parts=address.split('/')
     if len(parts)!=3 or not parts[2].startswith('S'):
         raise ValueError(f'invalid federated address: {address}')
@@ -18,6 +17,9 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument('--address',required=True)
     p.add_argument('--output',required=True)
+    p.add_argument('--assignment-id')
+    p.add_argument('--mission-id')
+    p.add_argument('--wave-number',type=int)
     p.add_argument('--role',default='PROOF_A')
     p.add_argument('--objective',default='Validate federated execution path. CLAIM<=EVIDENCE.')
     a=p.parse_args()
@@ -30,6 +32,9 @@ def main():
         for line in raw.read_text(encoding='utf-8').splitlines():
             if line.strip(): rows.append(json.loads(line))
     result={
+      'assignment_id':a.assignment_id,
+      'mission_id':a.mission_id,
+      'wave_number':a.wave_number,
       'federated_address':a.address,
       'physical_lane':lane,
       'returncode':cp.returncode,
