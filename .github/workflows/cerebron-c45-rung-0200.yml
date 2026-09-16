@@ -1,0 +1,25 @@
+name: CEREBRON C45 Rung 200
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/intelligence/c45_rung_0200.py'
+      - 'cerebron/intelligence/C45-RUNG-0200-PREREGISTRATION.json'
+      - '.github/workflows/cerebron-c45-rung-0200.yml'
+
+jobs:
+  rung-200:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run C45 rung 200
+        run: python cerebron/intelligence/c45_rung_0200.py
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-c45-rung-0200-results
+          path: artifacts/c45_rung_0200_results.json
