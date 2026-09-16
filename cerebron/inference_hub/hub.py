@@ -8,6 +8,7 @@ import importlib.util
 import json
 import os
 import random
+import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -43,6 +44,90 @@ def load_shard_worker():
     assert spec.loader is not None
     spec.loader.exec_module(mod)
     return mod
+
+
+class RouterSwarm:
+    """Shared zero-cost routing memory for one Hub execution.
+
+    This is an algorithmic router, not an independent AI agent. It tracks
+    success/quota/error observations across concurrent workers and temporarily
+    cools down models that return quota errors.
+    """
+
+    def __init__(self, cfg):
+        self.lock = threading.Lock()
+        self.stats = {}
+        self.quota_cooldown = float(cfg.get("router_quota_cooldown_seconds", 18.0))
+        self.error_cooldown = float(cfg.get("router_error_cooldown_seconds", 4.0))
+
+    def _entry(self, model_id):
+        return self.stats.setdefault(model_id, {
+            "success": 0,
+            "quota": 0,
+            "error": 0,
+            "inflight": 0,
+            "cooldown_until": 0.0,
+            "last_success": 0.0,
+        })
+
+    def order(self, candidates):
+        now = time.monotonic()
+        with self.lock:
+            scored = []
+            for idx, model in enumerate(candidates):
+                mid = model.get("model_id") or f"model-{idx}"
+                s = self._entry(mid)
+                cooling = s["cooldown_until"] > now
+                # Prefer: not cooling, previous success, lower quota/error history,
+                # lower current inflight. Stable original order is final tie-breaker.
+                score = (
+                    0 if cooling else 1000,
+                    s["success"] * 30 - s["quota"] * 20 - s["error"] * 8,
+                    -s["inflight"] * 12,
+                    s["last_success"],
+                    -idx,
+                )
+                scored.append((score, model))
+            scored.sort(key=lambda x: x[0], reverse=True)
+            return [m for _, m in scored]
+
+    def reserve(self, model):
+        mid = model.get("model_id")
+        with self.lock:
+            self._entry(mid)["inflight"] += 1
+
+    def report(self, model, ok, error_type):
+        mid = model.get("model_id")
+        now = time.monotonic()
+        with self.lock:
+            s = self._entry(mid)
+            s["inflight"] = max(0, s["inflight"] - 1)
+            if ok:
+                s["success"] += 1
+                s["last_success"] = now
+                s["cooldown_until"] = 0.0
+            elif error_type == "QUOTA":
+                s["quota"] += 1
+                # Exponential-ish penalty capped to avoid permanent exclusion.
+                factor = min(4, 1 + s["quota"] // 2)
+                s["cooldown_until"] = max(s["cooldown_until"], now + self.quota_cooldown * factor)
+            else:
+                s["error"] += 1
+                s["cooldown_until"] = max(s["cooldown_until"], now + self.error_cooldown)
+
+    def snapshot(self):
+        now = time.monotonic()
+        with self.lock:
+            return {
+                mid: {
+                    "success": s["success"],
+                    "quota": s["quota"],
+                    "error": s["error"],
+                    "inflight": s["inflight"],
+                    "cooldown_remaining_s": round(max(0.0, s["cooldown_until"] - now), 2),
+                }
+                for mid, s in sorted(self.stats.items())
+            }
 
 
 def task_id(mission_id: str, agent_id: str, prompt: str) -> str:
@@ -89,8 +174,8 @@ def provider_task(t):
     return {"task_id": t["task_id"], "role": "DECOMPOSER"}
 
 
-def run_external(t, sw, cfg):
-    candidates = sw.model_candidates(provider_task(t))
+def run_external(t, sw, cfg, router):
+    candidates = router.order(sw.model_candidates(provider_task(t)))
     max_attempts = int(cfg.get("max_attempts_per_task", 3))
     attempts = []
     for model in candidates[:max_attempts]:
@@ -101,7 +186,12 @@ def run_external(t, sw, cfg):
             "RÈGLES: REALITY>COHERENCE; EVIDENCE>CONFIDENCE; CLAIM<=EVIDENCE. "
             "Sépare résultat, hypothèse, inconnue et contradiction."
         )
-        ok, response, meta = sw.invoke(model, prompt)
+        router.reserve(model)
+        try:
+            ok, response, meta = sw.invoke(model, prompt)
+        except Exception as exc:
+            ok, response, meta = False, "", {"error_type": "EXCEPTION", "endpoint": None, "error": repr(exc)}
+        router.report(model, bool(ok), meta.get("error_type"))
         attempts.append({
             "model_id": model.get("model_id"),
             "family": model.get("family"),
@@ -121,8 +211,13 @@ def run_external(t, sw, cfg):
                 "attempts": attempts,
                 "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
             }
-        delay = 2.0 if meta.get("error_type") == "QUOTA" else 0.5
-        time.sleep(delay + random.uniform(0.0, 0.8))
+        delay = 1.0 if meta.get("error_type") == "QUOTA" else 0.35
+        time.sleep(delay + random.uniform(0.0, 0.45))
+        # Re-score remaining candidates after each observation so concurrent quota
+        # discoveries immediately influence the next fallback choice.
+        tried = {a["model_id"] for a in attempts}
+        remaining = [m for m in sw.model_candidates(provider_task(t)) if m.get("model_id") not in tried]
+        candidates = [m for m in candidates if m.get("model_id") in tried] + router.order(remaining)
     all_quota = bool(attempts) and all(a.get("error_type") == "QUOTA" for a in attempts)
     return {
         "ok": False,
@@ -151,12 +246,13 @@ def execute_pending(limit=None):
     max_workers = max(1, min(int(cfg.get("max_parallel_workers", 4)), micro))
     wave_delay = max(0.0, float(cfg.get("wave_delay_seconds", 8)))
     sw = load_shard_worker()
+    router = RouterSwarm(cfg)
     results = []
 
     for start in range(0, len(pending), micro):
         wave = pending[start:start + micro]
         with concurrent.futures.ThreadPoolExecutor(max_workers=min(max_workers, len(wave))) as pool:
-            futs = {pool.submit(run_external, t, sw, cfg): t for t in wave}
+            futs = {pool.submit(run_external, t, sw, cfg, router): t for t in wave}
             for fut in concurrent.futures.as_completed(futs):
                 t = futs[fut]
                 try:
@@ -188,7 +284,7 @@ def execute_pending(limit=None):
     held = sum(1 for r in results if r.get("status") == "HOLD_QUOTA_BACKOFF")
     failed = len(results) - completed - held
     latest = {
-        "schema": "cerebron-inference-hub-state-v1",
+        "schema": "cerebron-inference-hub-state-v2-router-swarm",
         "updated_at": now_iso(),
         "selected": len(results),
         "completed": completed,
@@ -197,6 +293,11 @@ def execute_pending(limit=None):
         "max_parallel_workers": max_workers,
         "micro_batch_size": micro,
         "zero_euro": True,
+        "router_swarm": {
+            "type": "algorithmic_shared_router",
+            "counts_as_independent_ai": False,
+            "stats": router.snapshot(),
+        },
         "results": [{k: v for k, v in r.items() if k != "response"} for r in results],
     }
     atomic_write(LATEST_PATH, latest)
