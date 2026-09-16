@@ -1,4 +1,4 @@
-import json, math, random, statistics
+import json, math, random, hashlib
 from pathlib import Path
 
 SEEDS=[20260916,20260917,20260918,20260919,20260920]
@@ -65,17 +65,29 @@ def fit_model(name,points):
 
 
 def pred(name,beta,x): return sum(a*b for a,b in zip(beta,features(name,x)))
-
 def mae_model(name,beta,pts): return sum(abs(pred(name,beta,x)-y) for x,y in pts)/len(pts)
 
+
 def task(rng,fam):
-    p=gen_params(rng,fam)
-    xs=[]
+    p=gen_params(rng,fam); xs=[]
     while len(xs)<24:
         x=round(rng.uniform(-3,3),6)
         if all(abs(x-z)>1e-4 for z in xs): xs.append(x)
     vals=[(x,f(x,fam,p)) for x in xs]
-    return vals[:14],vals[14:20],vals[20:24]  # final query target remains harness-only
+    return vals[:14],vals[14:20],vals[20:24]
+
+
+def build_target_bank(seed):
+    rng=random.Random(seed*1009+17)
+    bank=[]
+    for fam in TARGET:
+        for _ in range(24): bank.append((fam,task(rng,fam)))
+    return bank
+
+
+def bank_digest(banks):
+    payload=json.dumps(banks,sort_keys=True,separators=(",",":"))
+    return hashlib.sha256(payload.encode()).hexdigest()
 
 
 def score_models(fitpts,valpts,weights,prior=None):
@@ -83,108 +95,93 @@ def score_models(fitpts,valpts,weights,prior=None):
     for name in MODELS:
         beta=fit_model(name,fitpts)
         tr=mae_model(name,beta,fitpts); va=mae_model(name,beta,valpts)
-        complexity=len(beta)
-        instability=abs(va-tr)
-        prior_rank=(prior or {}).get(name,0.0)
-        # Observable-only selector. No final query target, latent params, or family label.
-        score=(
-            weights.get("verification",0)*va +
-            weights.get("contradiction_detection",0)*instability +
-            weights.get("complexity_penalty",0)*0.04*complexity +
-            weights.get("uncertainty_penalty",0)*0.25*instability +
-            weights.get("compute_penalty",0)*0.01*complexity -
-            weights.get("transfer",0)*0.05*prior_rank -
-            weights.get("evidence",0)*0.02*len(valpts)
-        )
+        complexity=len(beta); instability=abs(va-tr); prior_rank=(prior or {}).get(name,0.0)
+        score=(weights.get("verification",0)*va + weights.get("contradiction_detection",0)*instability +
+               weights.get("complexity_penalty",0)*0.04*complexity +
+               weights.get("uncertainty_penalty",0)*0.25*instability +
+               weights.get("compute_penalty",0)*0.01*complexity -
+               weights.get("transfer",0)*0.05*prior_rank -
+               weights.get("evidence",0)*0.02*len(valpts))
         out.append((score,name,beta,va))
     return sorted(out,key=lambda z:(z[0],z[1]))
 
 
-def learn_prior(rng,weights):
+def learn_prior(seed,weights):
+    rng=random.Random(seed*1013+29)
     wins={m:0 for m in MODELS}
-    total=0
     for fam in SOURCE:
         for _ in range(24):
             fitpts,valpts,_=task(rng,fam)
             ranked=score_models(fitpts,valpts,weights,None)
             for rank,(_,name,_,_) in enumerate(ranked): wins[name]+=len(MODELS)-rank
-            total+=1
     mx=max(wins.values()) or 1
     return {m:wins[m]/mx for m in MODELS}
 
 
-def evaluate(weights,use_transfer=True,ablate=None):
+def evaluate(weights,target_banks,use_transfer=True,ablate=None):
     per_seed=[]; family_all={f:[] for f in TARGET}
-    for seed in SEEDS:
-        rng=random.Random(seed)
+    for seed,bank in zip(SEEDS,target_banks):
         w=dict(weights)
         if ablate: w[ablate]=0.0
-        prior=learn_prior(rng,w) if use_transfer else None
+        prior=learn_prior(seed,w) if use_transfer else None
         errs=[]; famerrs={f:[] for f in TARGET}; success=0; n=0
-        for fam in TARGET:
-            for _ in range(24):
-                fitpts,valpts,query=task(rng,fam)
-                ranked=score_models(fitpts,valpts,w,prior)
-                _,name,beta,_=ranked[0]
-                for x,y in query:
-                    e=abs(pred(name,beta,x)-y); errs.append(e); famerrs[fam].append(e); n+=1
-                    if e<=0.5: success+=1
+        for fam,(fitpts,valpts,query) in bank:
+            _,name,beta,_=score_models(fitpts,valpts,w,prior)[0]
+            for x,y in query:
+                e=abs(pred(name,beta,x)-y); errs.append(e); famerrs[fam].append(e); n+=1
+                if e<=0.5: success+=1
         for fam in TARGET: family_all[fam].extend(famerrs[fam])
         per_seed.append({"seed":seed,"mae":sum(errs)/len(errs),"success_rate":success/n})
-    return {
-        "mae":sum(d["mae"] for d in per_seed)/len(per_seed),
-        "success_rate":sum(d["success_rate"] for d in per_seed)/len(per_seed),
-        "per_seed":per_seed,
-        "per_family_mae":{f:sum(v)/len(v) for f,v in family_all.items()}
-    }
+    return {"mae":sum(d["mae"] for d in per_seed)/len(per_seed),
+            "success_rate":sum(d["success_rate"] for d in per_seed)/len(per_seed),
+            "per_seed":per_seed,
+            "per_family_mae":{f:sum(v)/len(v) for f,v in family_all.items()}}
 
 
 def neutral_weights():
-    return {"verification":1.0,"contradiction_detection":0.0,"transfer":0.0,"evidence":0.0,"uncertainty_penalty":0.0,"complexity_penalty":0.0,"compute_penalty":0.0}
+    return {"verification":1.0,"contradiction_detection":0.0,"transfer":0.0,"evidence":0.0,
+            "uncertainty_penalty":0.0,"complexity_penalty":0.0,"compute_penalty":0.0}
 
 
 def main():
-    cfg=json.loads(Path("cerebron/intelligence/cognitive_weights.json").read_text())
-    a0=cfg["weights"]
-    baseline=evaluate(neutral_weights(),False)
-    no_transfer=evaluate(a0,False)
-    full=evaluate(a0,True)
+    cfg=json.loads(Path("cerebron/intelligence/cognitive_weights.json").read_text()); a0=cfg["weights"]
+    target_banks=[build_target_bank(s) for s in SEEDS]
+    digest=bank_digest(target_banks)
+    baseline=evaluate(neutral_weights(),target_banks,False)
+    no_transfer=evaluate(a0,target_banks,False)
+    full=evaluate(a0,target_banks,True)
     used=["verification","contradiction_detection","transfer","evidence","uncertainty_penalty","complexity_penalty","compute_penalty"]
     ablations={}
     for k in used:
-        r=evaluate(a0,True,k)
+        r=evaluate(a0,target_banks,True,k)
         ablations[k]={"mae":r["mae"],"delta_mae_vs_full":r["mae"]-full["mae"]}
-    seed_wins=sum(1 for b,f in zip(baseline["per_seed"],full["per_seed"]) if f["mae"]<b["mae"])
+    seed_wins=sum(1 for b,fv in zip(baseline["per_seed"],full["per_seed"]) if fv["mae"]<b["mae"])
     transfer_gain=no_transfer["mae"]-full["mae"]
-    leakage_audit={
-        "final_target_visible_to_selector":False,
-        "latent_parameters_visible_to_selector":False,
-        "domain_label_visible_to_selector":False,
-        "verification_uses_final_target":False,
-        "transfer_uses_target_tasks_for_prior":False
-    }
     out={
-        "benchmark_id":"BENCH-003",
-        "benchmark_type":"deterministic_synthetic_leak_resistant_meta_weight_test",
-        "evidence_ceiling":"E3_verified_simulation",
-        "seeds":SEEDS,
-        "source_families":SOURCE,
-        "heldout_target_families":TARGET,
-        "same_candidate_model_budget":True,
-        "baseline":baseline,
-        "a0_no_transfer":no_transfer,
-        "a0_full":full,
-        "transfer_gain_mae":transfer_gain,
-        "full_beats_baseline_seed_count":seed_wins,
-        "weight_ablations":ablations,
-        "weight_coverage":{"used":used,"not_exercised":[k for k in a0 if k not in used]},
-        "leakage_audit":leakage_audit,
-        "H1_full_beats_neutral":full["mae"]<baseline["mae"],
-        "H2_transfer_positive":transfer_gain>0,
-        "H3_any_ablation_effect":any(abs(v["delta_mae_vs_full"])>1e-9 for v in ablations.values()),
-        "claim_limit":"Synthetic deterministic benchmark only; not evidence of AGI, superintelligence, neural-weight learning, or external generalization."
+      "benchmark_id":"BENCH-003-R1",
+      "benchmark_type":"deterministic_synthetic_leak_resistant_matched_task_meta_weight_test",
+      "evidence_ceiling":"E3_verified_simulation",
+      "seeds":SEEDS,
+      "target_task_bank_sha256":digest,
+      "source_families":SOURCE,
+      "heldout_target_families":TARGET,
+      "same_candidate_model_budget":True,
+      "same_target_task_bank_for_all_conditions":True,
+      "baseline":baseline,
+      "a0_no_transfer":no_transfer,
+      "a0_full":full,
+      "transfer_gain_mae":transfer_gain,
+      "full_beats_baseline_seed_count":seed_wins,
+      "weight_ablations":ablations,
+      "weight_coverage":{"used":used,"not_exercised":[k for k in a0 if k not in used]},
+      "leakage_audit":{"final_target_visible_to_selector":False,"latent_parameters_visible_to_selector":False,
+        "domain_label_visible_to_selector":False,"verification_uses_final_target":False,
+        "transfer_uses_target_tasks_for_prior":False,"matched_target_tasks":True},
+      "H1_full_beats_neutral":full["mae"]<baseline["mae"],
+      "H2_transfer_positive":transfer_gain>0,
+      "H3_any_ablation_effect":any(abs(v["delta_mae_vs_full"])>1e-9 for v in ablations.values()),
+      "claim_limit":"Synthetic deterministic matched-task benchmark only; not evidence of AGI, superintelligence, neural-weight learning, or external generalization."
     }
-    Path("benchmark_v2_1_results.json").write_text(json.dumps(out,indent=2))
-    print(json.dumps(out,indent=2))
+    Path("benchmark_v2_1_results.json").write_text(json.dumps(out,indent=2)); print(json.dumps(out,indent=2))
 
 if __name__=="__main__": main()
