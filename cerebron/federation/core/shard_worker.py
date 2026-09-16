@@ -1,22 +1,29 @@
 #!/usr/bin/env python3
-"""CÉRÉBRON Ω shard worker.
+"""CÉRÉBRON Ω multi-provider shard worker.
 
-Reads the persistent queue and living Hugging Face model registry, routes tasks to
-zero-euro public Spaces, and writes immutable JSONL execution results. Shard jobs
-do NOT mutate shared queue state; a single reducer merges their artifacts later.
+Reads the persistent queue and routes tasks only through zero-euro paths that are
+actually connected at runtime. GitHub Actions CPU remains orchestration/deterministic
+compute; LLM inference can use connected Groq Free / Cloudflare Workers AI Free
+routes, then zero-euro public Hugging Face Spaces. No paid fallback exists.
 
-Quota policy: never buy capacity. If a free Space is quota/rate limited, try an
-independent compatible family, otherwise return HOLD_QUOTA_BACKOFF so the task
-remains retryable for a later wave.
+Shard jobs do NOT mutate shared queue state; the reducer merges immutable artifacts.
+Quota circuit breakers stop hammering a provider after a shard observes saturation.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import time
 from pathlib import Path
+
+from provider_adapters import (
+    available_zero_euro_routes,
+    invoke_cloudflare,
+    invoke_groq,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = ROOT / "state" / "mission-queue.json"
@@ -77,41 +84,26 @@ def active_models(role: str):
 
 
 def model_candidates(task):
-    """Return deterministic candidates: preferred family first, then independent families.
-
-    One best model per family is tried before a second model from an already tried
-    family. This prioritises independence and avoids hammering a single Space.
-    """
+    """Deterministic HF candidates, one independent family before reuse."""
     role = task["role"]
     models = active_models(role)
     if not models:
         return []
-
     groups = {}
     for m in models:
         groups.setdefault(m["family"], []).append(m)
     families = sorted(groups)
     lane = {
-        "PROOF_A": 0,
-        "PROOF_B": 1,
-        "RED_TEAM": 1,
-        "COUNTER_AUDITOR": 0,
-        "REPLICATOR": 1,
-        "FALSIFIER": 1,
+        "PROOF_A": 0, "PROOF_B": 1, "RED_TEAM": 1,
+        "COUNTER_AUDITOR": 0, "REPLICATOR": 1, "FALSIFIER": 1,
     }.get(role)
     if lane is None:
         lane = int(hashlib.sha256(task["task_id"].encode()).hexdigest(), 16)
     start = lane % len(families)
     family_order = families[start:] + families[:start]
-
     for fam in family_order:
         groups[fam].sort(key=lambda m: (-size_num(m.get("size_class", "0")), m["model_id"]))
-
-    ordered = []
-    # First pass: one model from each independent family.
-    for fam in family_order:
-        ordered.append(groups[fam][0])
-    # Second pass: remaining compatible models in those families.
+    ordered = [groups[fam][0] for fam in family_order]
     for fam in family_order:
         ordered.extend(groups[fam][1:])
     return ordered[:MAX_MODEL_ATTEMPTS_PER_TASK]
@@ -190,7 +182,7 @@ def extract_text(raw: str) -> str:
     return raw
 
 
-def invoke(model, prompt):
+def invoke_hf(model, prompt):
     space = model["space"]
     info = run(["hf-gradio", "info", space], 120)
     if info.returncode != 0:
@@ -211,11 +203,9 @@ def invoke(model, prompt):
             continue
         pred = run(["hf-gradio", "predict", space, endpoint, json.dumps(payload, ensure_ascii=False)], 240)
         if pred.returncode == 0 and (pred.stdout or "").strip():
-            text = extract_text(pred.stdout)
-            return True, text, {"stage": "predict", "endpoint": endpoint, "error_type": None}
+            return True, extract_text(pred.stdout), {"stage": "predict", "endpoint": endpoint, "error_type": None}
         err = (pred.stderr or pred.stdout)[-1200:]
         if is_quota_error(err):
-            # Do not hammer every endpoint of the same quota-limited Space.
             return False, "", {"stage": "predict", "endpoint": endpoint, "error": err, "error_type": "QUOTA"}
         errors.append(f"{endpoint}: {err[-700:]}")
     return False, "", {"stage": "predict", "error": " | ".join(errors[-3:]) or "No compatible endpoint", "error_type": "UPSTREAM"}
@@ -241,67 +231,123 @@ def civilization_map():
     return {c["id"]: c["mission"] for c in cfg.get("civilizations", [])}
 
 
-def execute_one(task, mission, civ_map):
-    candidates = model_candidates(task)
+def provider_order(task) -> list[str]:
+    """Spread connected providers deterministically across tasks to reduce bursts."""
+    available = set(available_zero_euro_routes())
+    external = [r for r in ("groq_free", "cloudflare_workers_ai_free") if r in available]
+    if len(external) > 1:
+        pivot = int(hashlib.sha256(task["task_id"].encode()).hexdigest(), 16) % len(external)
+        external = external[pivot:] + external[:pivot]
+    if "huggingface_public_spaces" in available:
+        external.append("huggingface_public_spaces")
+    return external
+
+
+def _provider_attempt(route: str, prompt: str):
+    if route == "groq_free":
+        r = invoke_groq(prompt, model=os.getenv("GROQ_MODEL", "openai/gpt-oss-20b"))
+        return r.ok, r.text, {
+            "provider": r.provider, "model_id": r.model, "model_family": "groq",
+            "endpoint": "chat/completions", "error_type": r.error_type,
+            "error": r.error, "retry_after": r.retry_after,
+            "remaining_requests": r.remaining_requests, "remaining_tokens": r.remaining_tokens,
+        }
+    if route == "cloudflare_workers_ai_free":
+        r = invoke_cloudflare(prompt, model=os.getenv("CLOUDFLARE_AI_MODEL", "@cf/zai-org/glm-4.7-flash"))
+        return r.ok, r.text, {
+            "provider": r.provider, "model_id": r.model, "model_family": "cloudflare-ai",
+            "endpoint": "workers-ai", "error_type": r.error_type,
+            "error": r.error, "retry_after": r.retry_after,
+        }
+    raise ValueError(route)
+
+
+def execute_one(task, mission, civ_map, blocked_routes: set[str]):
     base = {
         "task_id": task["task_id"], "mission_id": task.get("mission_id"),
         "cycle": task.get("cycle"), "civilization": task.get("civilization"),
         "team": task.get("team"), "role": task["role"], "shard": task.get("shard")
     }
-    if not candidates:
-        return {**base, "execution_status": "HOLD_NO_COMPATIBLE_MODEL", "ok": False,
-                "model_id": None, "model_family": None, "response": "", "error": "No zero-euro HEALTHY/PROBATION compatible model",
-                "attempted_models": [], "evidence_status": "NO_EVIDENCE"}
-
     prompt = role_prompt(task, mission, civ_map.get(task.get("civilization"), ""))
     attempts = []
+
+    # First use connected non-HF free providers. A quota signal opens a per-shard
+    # circuit breaker so subsequent tasks in the same wave do not hammer it.
+    for route in provider_order(task):
+        if route in blocked_routes or route == "huggingface_public_spaces":
+            continue
+        ok, response, meta = _provider_attempt(route, prompt)
+        attempts.append({
+            "provider": route, "model_id": meta.get("model_id"),
+            "model_family": meta.get("model_family"), "ok": bool(ok),
+            "endpoint": meta.get("endpoint"), "error_type": meta.get("error_type"),
+            "error": meta.get("error"), "retry_after": meta.get("retry_after"),
+        })
+        if ok:
+            return {
+                **base, "execution_status": "COMPLETED", "ok": True,
+                "provider": route, "model_id": meta.get("model_id"),
+                "model_family": meta.get("model_family"), "space": None,
+                "endpoint": meta.get("endpoint"), "response": response,
+                "response_sha256": hashlib.sha256(response.encode()).hexdigest() if response else None,
+                "error": None, "attempted_models": attempts,
+                "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
+            }
+        if meta.get("error_type") == "QUOTA":
+            blocked_routes.add(route)
+        time.sleep(0.25)
+
+    # HF fallback remains active only while this shard has not observed an all-quota
+    # failure. This preserves useful free capacity but eliminates repeated dead calls.
+    hf_route = "huggingface_public_spaces"
+    candidates = [] if hf_route in blocked_routes else model_candidates(task)
     final_meta = {}
     for model in candidates:
-        ok, response, meta = invoke(model, prompt)
-        attempt = {
-            "model_id": model["model_id"],
-            "model_family": model["family"],
-            "space": model["space"],
-            "ok": bool(ok),
-            "endpoint": meta.get("endpoint"),
-            "error_type": meta.get("error_type"),
-            "error": meta.get("error"),
-        }
-        attempts.append(attempt)
+        ok, response, meta = invoke_hf(model, prompt)
+        attempts.append({
+            "provider": hf_route, "model_id": model["model_id"],
+            "model_family": model["family"], "space": model["space"],
+            "ok": bool(ok), "endpoint": meta.get("endpoint"),
+            "error_type": meta.get("error_type"), "error": meta.get("error"),
+        })
         final_meta = {"model": model, "meta": meta}
         if ok:
             return {
-                **base,
-                "execution_status": "COMPLETED",
-                "ok": True,
-                "model_id": model["model_id"],
-                "model_family": model["family"],
-                "space": model["space"],
-                "endpoint": meta.get("endpoint"),
-                "response": response,
+                **base, "execution_status": "COMPLETED", "ok": True,
+                "provider": hf_route, "model_id": model["model_id"],
+                "model_family": model["family"], "space": model["space"],
+                "endpoint": meta.get("endpoint"), "response": response,
                 "response_sha256": hashlib.sha256(response.encode()).hexdigest() if response else None,
-                "error": None,
-                "attempted_models": attempts,
+                "error": None, "attempted_models": attempts,
                 "evidence_status": "UNREVIEWED_EXTERNAL_AGENT_OUTPUT",
             }
-        # Small backoff before trying another free family; never purchase capacity.
-        time.sleep(1.5 if meta.get("error_type") == "QUOTA" else 0.5)
+        time.sleep(0.5 if meta.get("error_type") != "QUOTA" else 1.0)
 
-    all_quota = bool(attempts) and all(a.get("error_type") == "QUOTA" for a in attempts)
-    last_model = final_meta.get("model") or candidates[-1]
+    hf_attempts = [a for a in attempts if a.get("provider") == hf_route]
+    if hf_attempts and all(a.get("error_type") == "QUOTA" for a in hf_attempts):
+        blocked_routes.add(hf_route)
+
+    quota_attempts = [a for a in attempts if a.get("error_type") == "QUOTA"]
+    all_attempted_quota = bool(attempts) and len(quota_attempts) == len(attempts)
+    if not attempts:
+        status = "HOLD_NO_CONNECTED_PROVIDER"
+        error = "No connected zero-euro inference provider available in this shard"
+    elif all_attempted_quota:
+        status = "HOLD_QUOTA_BACKOFF"
+        error = "All attempted zero-euro inference routes are quota-limited"
+    else:
+        status = "FAILED_RETRYABLE"
+        error = (final_meta.get("meta") or {}).get("error") or attempts[-1].get("error")
+
+    last_model = (final_meta.get("model") or {})
     return {
-        **base,
-        "execution_status": "HOLD_QUOTA_BACKOFF" if all_quota else "FAILED_RETRYABLE",
-        "ok": False,
-        "model_id": last_model.get("model_id"),
-        "model_family": last_model.get("family"),
-        "space": last_model.get("space"),
-        "endpoint": final_meta.get("meta", {}).get("endpoint"),
-        "response": "",
-        "response_sha256": None,
-        "error": final_meta.get("meta", {}).get("error"),
-        "attempted_models": attempts,
-        "evidence_status": "NO_EVIDENCE",
+        **base, "execution_status": status, "ok": False,
+        "provider": attempts[-1].get("provider") if attempts else None,
+        "model_id": last_model.get("model_id") or (attempts[-1].get("model_id") if attempts else None),
+        "model_family": last_model.get("family") or (attempts[-1].get("model_family") if attempts else None),
+        "space": last_model.get("space"), "endpoint": (final_meta.get("meta") or {}).get("endpoint"),
+        "response": "", "response_sha256": None, "error": error,
+        "attempted_models": attempts, "evidence_status": "NO_EVIDENCE",
     }
 
 
@@ -332,10 +378,10 @@ def main():
     else:
         tasks, missions = queue_tasks(args.shard, args.limit, args.mission_id)
 
-    # Stagger the 20 shards so free public Spaces are not hit at the same instant.
     if tasks and not args.smoke:
         time.sleep(args.shard * 0.25)
 
+    blocked_routes: set[str] = set()
     results = []
     for index, task in enumerate(tasks):
         mission = missions.get(task.get("mission_id"))
@@ -345,19 +391,26 @@ def main():
             result = {"task_id": task["task_id"], "mission_id": task.get("mission_id"), "cycle": task.get("cycle"),
                       "civilization": task.get("civilization"), "team": task.get("team"), "role": task["role"],
                       "shard": args.shard, "execution_status": "HOLD_DETERMINISTIC_CHECK", "ok": False,
-                      "model_id": None, "model_family": None, "response": "HOLD_DETERMINISTIC_CHECK",
+                      "provider": "github_actions_cpu", "model_id": None, "model_family": None, "response": "HOLD_DETERMINISTIC_CHECK",
                       "error": None, "attempted_models": [], "evidence_status": "DETERMINISTIC_CHECK_REQUIRED"}
         else:
-            result = execute_one(task, mission, civ_map)
+            result = execute_one(task, mission, civ_map, blocked_routes)
         results.append(result)
-        print(json.dumps({k: result.get(k) for k in ("task_id","role","ok","execution_status","model_id","model_family","endpoint")}, ensure_ascii=False))
+        print(json.dumps({k: result.get(k) for k in ("task_id","role","ok","execution_status","provider","model_id","model_family","endpoint")}, ensure_ascii=False))
         if index + 1 < len(tasks):
             time.sleep(0.75 + ((args.shard + index) % 3) * 0.25)
 
     with out.open("w", encoding="utf-8") as f:
         for r in results:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
-    print(json.dumps({"shard": args.shard, "selected": len(tasks), "results": len(results), "ok": sum(bool(r.get('ok')) for r in results)}, ensure_ascii=False))
+    print(json.dumps({
+        "shard": args.shard,
+        "selected": len(tasks),
+        "results": len(results),
+        "ok": sum(bool(r.get('ok')) for r in results),
+        "available_zero_euro_routes": available_zero_euro_routes(),
+        "quota_circuit_breakers": sorted(blocked_routes),
+    }, ensure_ascii=False))
 
 
 if __name__ == "__main__":
