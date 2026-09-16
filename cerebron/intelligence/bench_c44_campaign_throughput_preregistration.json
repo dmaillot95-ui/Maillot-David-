@@ -1,0 +1,20 @@
+{
+  "benchmark_id": "BENCH-C44-CAMPAIGN-THROUGHPUT-001",
+  "title": "Single-Interaction Real Work Scaling",
+  "date": "2026-09-16",
+  "evidence_ceiling": "E3_verified_simulation",
+  "objective": "Measure how many real, independently checkable work units CEREBRON can compile, execute, verify and fuse from one human interaction before quality or reliability materially degrades.",
+  "scale_ladder": [10,20,50,100,250,500,1000,2000],
+  "unit_definition": "One real work unit must have unique UNIT_ID, deterministic input, executed computation, independently checkable output, status, evidence hash and contribution to final fusion. Merely generating text or claiming work does not count.",
+  "campaign_pipeline": ["compile","partition","execute","verify","fuse","audit"],
+  "primary_metrics": ["completed_verified_units","verified_unit_rate","fusion_accuracy","failure_rate","duplicate_rate","evidence_integrity","wall_clock_seconds","cpu_seconds","artifact_bytes"],
+  "stop_rules": {
+    "verified_unit_rate_min": 0.99,
+    "fusion_accuracy_min": 0.99,
+    "failure_rate_max": 0.01,
+    "duplicate_rate_max": 0.01,
+    "evidence_integrity_required": true
+  },
+  "interpretation": "Maximum productive scale is the highest rung passing all stop rules. More units only count as more capability if they remain real, useful, verified and correctly fused.",
+  "claim_limit": "This benchmark measures orchestration throughput and reliability, not intelligence, AGI or superintelligence by itself."
+}
