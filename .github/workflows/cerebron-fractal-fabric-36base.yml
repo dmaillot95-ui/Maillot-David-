@@ -1,0 +1,28 @@
+name: CEREBRON Fractal Fabric 36-Base Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/fractal_fabric/test_fractal_fabric_36base.py'
+      - '.github/workflows/cerebron-fractal-fabric-36base.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-36-base:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run canonical 36-base worker test
+        run: python cerebron/fractal_fabric/test_fractal_fabric_36base.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-fractal-fabric-36base
+          path: fractal-fabric-36base.json
+          retention-days: 14
