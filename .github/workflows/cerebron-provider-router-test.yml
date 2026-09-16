@@ -1,0 +1,43 @@
+name: CEREBRON Provider Router Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/core/provider_adapters.py'
+      - 'cerebron/federation/core/shard_worker.py'
+      - '.github/workflows/cerebron-provider-router-test.yml'
+  workflow_dispatch:
+
+jobs:
+  provider-router-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate syntax and zero-euro disconnected behavior
+        run: |
+          python -m py_compile \
+            cerebron/federation/core/provider_adapters.py \
+            cerebron/federation/core/shard_worker.py
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+
+          p = Path('cerebron/federation/core/provider_adapters.py')
+          spec = importlib.util.spec_from_file_location('provider_adapters', p)
+          mod = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+
+          routes = mod.available_zero_euro_routes()
+          assert 'huggingface_public_spaces' in routes
+          assert 'github_actions_cpu' in routes
+
+          g = mod.invoke_groq('ping')
+          c = mod.invoke_cloudflare('ping')
+          assert g.ok is False and g.error_type == 'NOT_CONNECTED'
+          assert c.ok is False and c.error_type == 'NOT_CONNECTED'
+          print({'routes': routes, 'groq': g.error_type, 'cloudflare': c.error_type})
+          PY
