@@ -1,0 +1,58 @@
+name: CEREBRON Scanner Scaler 24000 Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/federation/core/scanner_scaler.py'
+      - '.github/workflows/cerebron-scanner-scaler-24000-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scanner-scaler:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Plan 24000 deterministic microtasks across 240 logical worker slots
+        run: |
+          python cerebron/federation/core/scanner_scaler.py \
+            --mission "multimodal scan proof calculation code research red team replication synthesis" \
+            --target-tasks 24000 \
+            --workers 240 \
+            --output scanner-plan.json
+      - name: Verify planning integrity and zero-paid policy
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('scanner-plan.json', encoding='utf-8'))
+          assert p['tasks_planned'] == 24000
+          assert p['unique_task_ids'] == 24000
+          assert p['workers'] == 240
+          assert p['min_tasks_per_worker'] == 100
+          assert p['max_tasks_per_worker'] == 100
+          assert all(t['status']=='PLANNED' for t in p['tasks'])
+          assert not any(t['execution_evidence'] for t in p['tasks'])
+          assert len({t['worker_slot'] for t in p['tasks']}) == 240
+          print(json.dumps({
+            'PASS': True,
+            'logical_microtasks_planned': p['tasks_planned'],
+            'unique_task_ids': p['unique_task_ids'],
+            'worker_slots': p['workers'],
+            'tasks_per_worker': p['min_tasks_per_worker'],
+            'paid_api_calls': 0,
+            'executed_microtasks_claimed': 0,
+            'independent_agents_claimed': 0,
+            'claim': p['claim']
+          }, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-scanner-plan-24000
+          path: scanner-plan.json
