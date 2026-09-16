@@ -145,9 +145,24 @@ jobs:
             echo 'No persistent state change.'
           else
             git commit -m 'Persist CEREBRON shard and hierarchy state'
-            git push
+            for attempt in 1 2 3; do
+              echo "Push attempt ${attempt}/3"
+              if git push; then
+                exit 0
+              fi
+              git fetch origin main
+              if ! git rebase origin/main; then
+                echo 'Rebase conflict while persisting CEREBRON state.'
+                git rebase --abort || true
+                exit 1
+              fi
+              sleep $((attempt * 2))
+            done
+            echo 'Unable to persist CEREBRON state after 3 attempts.'
+            exit 1
           fi
       - name: Upload federation execution reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cerebron-federation-summary
