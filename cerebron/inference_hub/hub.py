@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
+ROOT = HERE.parents[0]
 CONFIG_PATH = HERE / "config.json"
 QUEUE_PATH = HERE / "state" / "queue.json"
 LATEST_PATH = HERE / "state" / "latest.json"
@@ -86,7 +86,6 @@ def enqueue(mission_id: str, prompt: str, agents: int):
 
 
 def provider_task(t):
-    # General-purpose role for the existing zero-euro model router.
     return {"task_id": t["task_id"], "role": "DECOMPOSER"}
 
 
@@ -177,9 +176,7 @@ def execute_pending(limit=None):
                 current["status"] = r["status"]
                 current["attempts"] = int(current.get("attempts", 0)) + max(1, len(r.get("attempts", [])))
                 current["updated_at"] = now_iso()
-                current["result"] = {
-                    k: v for k, v in r.items() if k != "response"
-                }
+                current["result"] = {k: v for k, v in r.items() if k != "response"}
                 if r.get("ok"):
                     current["result"]["response_excerpt"] = (r.get("response") or "")[:700]
                 results.append({"task_id": t["task_id"], "agent_id": t["agent_id"], **r})
@@ -200,10 +197,7 @@ def execute_pending(limit=None):
         "max_parallel_workers": max_workers,
         "micro_batch_size": micro,
         "zero_euro": True,
-        "results": [
-            {k: v for k, v in r.items() if k != "response"}
-            for r in results
-        ],
+        "results": [{k: v for k, v in r.items() if k != "response"} for r in results],
     }
     atomic_write(LATEST_PATH, latest)
     return latest
