@@ -1,0 +1,145 @@
+name: CEREBRON Local Model Power Benchmark
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cerebron-local-model-power-benchmark.yml'
+      - 'cerebron/providers/local_cpu_llm.py'
+
+permissions:
+  contents: read
+
+jobs:
+  model-benchmark:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - tag: smol135
+            model: HuggingFaceTB/SmolLM2-135M-Instruct
+          - tag: smol360
+            model: HuggingFaceTB/SmolLM2-360M-Instruct
+          - tag: qwen05
+            model: Qwen/Qwen2.5-0.5B-Instruct
+          - tag: qwen15
+            model: Qwen/Qwen2.5-1.5B-Instruct
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CEREBRON_LOCAL_CPU_MODEL: ${{ matrix.model }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install local runtime
+        run: pip install -q 'transformers>=4.46,<5' 'torch>=2.4' safetensors
+      - name: Run answer-verified benchmark
+        env:
+          TAG: ${{ matrix.tag }}
+          MODEL_NAME: ${{ matrix.model }}
+        run: |
+          python - <<'PY'
+          import json, os, re, time
+          from cerebron.providers.local_cpu_llm import invoke_local_cpu
+
+          tasks = [
+            ("Compute 17*23. Return only the integer.", "391", "num"),
+            ("Compute gcd(84,126). Return only the integer.", "42", "num"),
+            ("Sequence: 2, 6, 12, 20, 30, ?. Return only the next integer.", "42", "num"),
+            ("All bloops are razzies. No razzies are tazzies. Can any bloop be a tazzy? Return only yes or no.", "no", "word"),
+            ("Convert binary 101101 to decimal. Return only the integer.", "45", "num"),
+            ("How many vowels are in the lowercase word coordination? Return only the integer.", "6", "num"),
+            ("Compute 12345 mod 97. Return only the integer remainder.", "26", "num"),
+            ("Is this JSON syntactically valid: {\"a\":1,\"b\":[true,false]} ? Return only yes or no.", "yes", "word"),
+            ("If A>B and B>C, which is greatest: A, B, or C? Return only the letter.", "a", "word"),
+            ("Is 221 prime or composite? Return only prime or composite.", "composite", "word"),
+          ]
+
+          def extract(answer, kind):
+            s = answer.strip().lower()
+            if kind == 'num':
+              m = re.search(r'-?\d+', s)
+              return m.group(0) if m else ''
+            if 'composite' in s: return 'composite'
+            if re.search(r'\bprime\b', s): return 'prime'
+            if re.search(r'\byes\b', s): return 'yes'
+            if re.search(r'\bno\b', s): return 'no'
+            m = re.search(r'\b([abc])\b', s)
+            return m.group(1) if m else s.split()[0].strip('.,:;!?') if s else ''
+
+          started=time.time()
+          rows=[]
+          for i,(prompt,expected,kind) in enumerate(tasks,1):
+            r=invoke_local_cpu(prompt,max_new_tokens=32)
+            pred=extract(r.get('answer',''),kind)
+            rows.append({
+              'task':i,'expected':expected,'predicted':pred,
+              'correct': pred==expected,'raw':r.get('answer',''),
+              'elapsed_s':r.get('elapsed_s'), 'ok':r.get('ok')
+            })
+          score=sum(x['correct'] for x in rows)
+          out={
+            'tag':os.environ['TAG'],
+            'model':os.environ['MODEL_NAME'],
+            'score':score,
+            'total':len(rows),
+            'accuracy':score/len(rows),
+            'elapsed_s':round(time.time()-started,3),
+            'rows':rows,
+            'spend_limit_eur':0,
+            'paid_fallback':False,
+            'api_key_used':False,
+          }
+          os.makedirs('out',exist_ok=True)
+          json.dump(out,open(f"out/{os.environ['TAG']}.json",'w'),indent=2)
+          print(json.dumps(out,indent=2))
+          assert out['spend_limit_eur']==0 and not out['paid_fallback'] and not out['api_key_used']
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: model-benchmark-${{ matrix.tag }}
+          path: out/${{ matrix.tag }}.json
+          retention-days: 14
+
+  deterministic-judge:
+    needs: model-benchmark
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: model-benchmark-*
+          path: reports
+          merge-multiple: true
+      - name: Compare verified accuracy
+        run: |
+          python - <<'PY'
+          import json,glob,os
+          rows=[json.load(open(f)) for f in glob.glob('reports/*.json')]
+          assert len(rows)==4, len(rows)
+          rows=sorted(rows,key=lambda x:(-x['score'],x['elapsed_s']))
+          baseline=next(x for x in rows if x['tag']=='smol135')
+          best=rows[0]
+          report={
+            'models_tested':len(rows),
+            'results':[{'tag':x['tag'],'model':x['model'],'score':x['score'],'total':x['total'],'accuracy':x['accuracy'],'elapsed_s':x['elapsed_s']} for x in rows],
+            'baseline_score':baseline['score'],
+            'best_tag':best['tag'],
+            'best_score':best['score'],
+            'absolute_gain_vs_baseline':best['score']-baseline['score'],
+            'all_zero_paid':all(x['spend_limit_eur']==0 and not x['paid_fallback'] and not x['api_key_used'] for x in rows),
+            'claim_superintelligence':False,
+            'interpretation':'Answer-verified 10-task CPU benchmark; measures this narrow task set only.'
+          }
+          os.makedirs('out',exist_ok=True)
+          json.dump(report,open('out/report.json','w'),indent=2)
+          print(json.dumps(report,indent=2))
+          assert report['all_zero_paid'] is True
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-local-model-power-report
+          path: out/report.json
+          retention-days: 14
