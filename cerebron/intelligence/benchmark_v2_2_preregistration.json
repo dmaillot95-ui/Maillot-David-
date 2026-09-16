@@ -1,0 +1,45 @@
+{
+  "benchmark_id": "BENCH-004",
+  "status": "preregistered_before_execution",
+  "purpose": "Prospective validation of frozen CEREBRON-A1-CANDIDATE against A0 under matched resources on unseen seeds and unseen target families.",
+  "profiles": {
+    "control": "cerebron/intelligence/cognitive_weights.json",
+    "candidate": "cerebron/intelligence/cognitive_weights_A1_candidate.json"
+  },
+  "frozen_candidate_commit": "d46ff1cd41347fae72b47dc5763d183ee905a8ac",
+  "test_seeds": [20261001, 20261002, 20261003, 20261004, 20261005, 20261006, 20261007],
+  "heldout_target_families": ["exponential_affine", "log_affine", "damped_sine"],
+  "source_prior_families": ["affine", "quadratic", "cubic"],
+  "candidate_model_library_rule": "Fixed generic observable-only basis library shared identically by A0 and A1; no family label supplied to selector.",
+  "data_visibility": {
+    "final_query_target_visible_to_selector": false,
+    "latent_parameters_visible_to_selector": false,
+    "family_label_visible_to_selector": false,
+    "verification_may_use": "fit and validation observations only",
+    "final_query_targets": "harness scorer only"
+  },
+  "matched_resource_controls": [
+    "same target task bank",
+    "same source prior task bank",
+    "same candidate models",
+    "same fit/validation/query sizes",
+    "same model evaluation count",
+    "same seeds",
+    "same arithmetic implementation"
+  ],
+  "primary_metric": "mean_absolute_error",
+  "secondary_metrics": ["success_rate", "per_seed_mae", "per_family_mae"],
+  "success_rule": {
+    "required": [
+      "A1 mean MAE < A0 mean MAE",
+      "A1 wins at least 5 of 7 seeds",
+      "no heldout family has A1 MAE > A0 MAE by more than 5 percent",
+      "leakage audit passes",
+      "matched resource audit passes"
+    ],
+    "promotion_requires_reproducible_rerun": true
+  },
+  "failure_rule": "If any required prospective criterion fails, do not promote A1. Record the residual and return to development without changing BENCH-004 outcomes.",
+  "evidence_ceiling": "E3_verified_simulation",
+  "claim_limit": "Passing BENCH-004 would validate only this synthetic orchestration-weight change under the preregistered harness. It would not establish AGI, superintelligence, neural-weight learning, or general external transfer."
+}
