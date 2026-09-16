@@ -1,0 +1,13 @@
+{
+  "schema": "cerebron-longrun-policy-v1",
+  "enabled": true,
+  "mission_id": "M-0EFFA3498137",
+  "start_date_utc": "2026-09-16",
+  "end_date_utc": "2026-11-16",
+  "max_cycles": 62,
+  "max_task_attempts": 8,
+  "cycles_per_day": 1,
+  "expand_only_when_previous_cycle_terminal": true,
+  "terminal_statuses": ["COMPLETED", "REJECTED", "CANCELLED", "QUARANTINED"],
+  "notes": "Long-running zero-euro research campaign. Scheduled workers drain the current cycle every 30 minutes; this controller opens at most one new 1440-task cycle per UTC day, through 2026-11-16, only after the prior cycle is terminal. External inference failures are bounded and quarantined rather than retried forever."
+}
