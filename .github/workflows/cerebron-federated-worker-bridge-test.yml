@@ -1,24 +1,70 @@
-name: CEREBRON Federated Worker Bridge Test
+name: CEREBRON Orchestrated Federated Wave
 
 on:
+  workflow_dispatch:
   push:
+    branches: [main]
     paths:
+      - 'cerebron/federation/core/federated_multiwave_orchestrator.py'
       - 'cerebron/federation/core/federated_worker_bridge.py'
+      - 'cerebron/federation/core/federated_wave_commit.py'
       - 'cerebron/federation/core/federated_wave_reducer.py'
       - '.github/workflows/cerebron-federated-worker-bridge-test.yml'
-  workflow_dispatch:
 
 permissions:
   contents: write
   actions: read
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      has_work: ${{ steps.plan.outputs.has_work }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - id: plan
+        name: Plan next 20-address wave
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p plan-out
+          python cerebron/federation/core/federated_multiwave_orchestrator.py --wave-size 20 > plan-out/plan.json
+          cp cerebron/federation/state/federated-multiwave-state.json plan-out/federated-multiwave-state.json
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          p=json.load(open('plan-out/plan.json'))
+          wave=p.get('wave',[])
+          include=[]
+          for x in wave:
+              include.append({
+                  'assignment_id':x['assignment_id'],
+                  'mission_id':x['mission_id'],
+                  'address':x['address'],
+                  'wave_number':x['wave_number'],
+                  'physical_lane':x['physical_lane'],
+              })
+          print('matrix='+json.dumps({'include':include},separators=(',',':')))
+          print('has_work='+('true' if include else 'false'))
+          PY
+          cat plan-out/plan.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: orchestrated-wave-plan
+          path: plan-out/
+
   federated-worker:
+    needs: plan
+    if: needs.plan.outputs.has_work == 'true'
     strategy:
       fail-fast: false
       max-parallel: 20
-      matrix:
-        slot: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -28,23 +74,29 @@ jobs:
           python-version: '3.12'
       - name: Install HF bridge client
         run: pip install hf-gradio
-      - name: Execute federated address through physical worker
+      - name: Execute orchestrated federated assignment
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p out
-          ADDR=$(printf 'T001/H001/S%02d' "${{ matrix.slot }}")
           python cerebron/federation/core/federated_worker_bridge.py \
-            --address "$ADDR" \
-            --output "out/result-${{ matrix.slot }}.json" \
+            --address '${{ matrix.address }}' \
+            --assignment-id '${{ matrix.assignment_id }}' \
+            --mission-id '${{ matrix.mission_id }}' \
+            --wave-number '${{ matrix.wave_number }}' \
+            --output 'out/result-${{ matrix.physical_lane }}.json' \
             --role PROOF_A \
-            --objective 'End-to-end federated CEREBRON execution smoke test. Do not invent evidence.'
+            --objective 'CEREBRON orchestrated federated execution. Produce useful evidence; never invent evidence.'
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: federated-worker-${{ matrix.slot }}
-          path: out/result-${{ matrix.slot }}.json
+          name: orchestrated-worker-${{ matrix.physical_lane }}
+          path: out/*.json
+          if-no-files-found: ignore
 
   reduce:
-    needs: federated-worker
-    if: always()
+    needs: [plan, federated-worker]
+    if: always() && needs.plan.outputs.has_work == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -54,32 +106,65 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Download planned persistent state
+        uses: actions/download-artifact@v4
+        with:
+          name: orchestrated-wave-plan
+          path: plan-in
+      - name: Restore planned state
+        run: cp plan-in/federated-multiwave-state.json cerebron/federation/state/federated-multiwave-state.json
       - name: Download worker artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: federated-worker-*
+          pattern: orchestrated-worker-*
           path: wave-artifacts
           merge-multiple: true
-      - name: Reduce telemetry and update routing memory
+      - name: Commit worker terminal states
+        run: |
+          python cerebron/federation/core/federated_wave_commit.py \
+            --state cerebron/federation/state/federated-multiwave-state.json \
+            --artifacts wave-artifacts \
+            --report cerebron/federation/state/orchestrated-wave-report-latest.json
+      - name: Reduce telemetry and update provider memory
         run: |
           python cerebron/federation/core/federated_wave_reducer.py \
             --artifacts wave-artifacts \
             --runtime cerebron/federation/state/provider-runtime.json \
             --summary cerebron/federation/state/wave-summary-latest.json
+      - name: Verify no stale inflight assignment
+        run: |
+          python - <<'PY'
+          import json
+          s=json.load(open('cerebron/federation/state/federated-multiwave-state.json'))
+          r=json.load(open('cerebron/federation/state/orchestrated-wave-report-latest.json'))
+          assert r['completed_count']+r['failed_count'] == 20, r
+          assert r['state_inflight'] == 0, r
+          print('CEREBRON_ORCHESTRATED_WAVE_TERMINAL_OK', r['completed_count'], r['failed_count'])
+          print('NEXT_WAVE_NUMBER', s['wave_number'])
+          PY
       - uses: actions/upload-artifact@v4
         with:
-          name: federated-wave-summary
-          path: cerebron/federation/state/wave-summary-latest.json
-      - name: Persist learned routing state
+          name: orchestrated-wave-summary
+          path: |
+            cerebron/federation/state/orchestrated-wave-report-latest.json
+            cerebron/federation/state/wave-summary-latest.json
+            cerebron/federation/state/federated-multiwave-state.json
+      - name: Persist orchestrator and routing memory
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name 'cerebron-bot'
           git config user.email 'cerebron-bot@users.noreply.github.com'
-          git add cerebron/federation/state/provider-runtime.json cerebron/federation/state/wave-summary-latest.json
+          git add \
+            cerebron/federation/state/federated-multiwave-state.json \
+            cerebron/federation/state/provider-runtime.json \
+            cerebron/federation/state/wave-summary-latest.json \
+            cerebron/federation/state/orchestrated-wave-report-latest.json
           if git diff --cached --quiet; then
-            echo 'No routing state change.'
+            echo 'No state change.'
             exit 0
           fi
-          git commit -m 'Persist federated wave routing telemetry'
+          git commit -m 'Persist orchestrated federated wave state'
           for n in 1 2 3; do
             git fetch origin main
             git rebase origin/main || { git rebase --abort || true; sleep $((n*2)); continue; }
