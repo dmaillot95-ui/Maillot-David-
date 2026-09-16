@@ -1,0 +1,44 @@
+{
+  "benchmark_id": "BENCH-003-R1",
+  "run_id": 35125349763,
+  "artifact_id": 10459182127,
+  "artifact_sha256": "96a71ec2c56cfe9ea750bfe2e77e5af7923e218d4c9a34b7c96c7449ed715b5b",
+  "target_task_bank_sha256": "31247ee7e2814eabba4d06c79951672340f19acee30a1491e8614c90e2d4ae70",
+  "status": "VALID_MATCHED_SYNTHETIC_TEST",
+  "evidence_level": "E3_verified_simulation",
+  "comparability": {
+    "same_target_task_bank_for_all_conditions": true,
+    "same_candidate_model_budget": true,
+    "final_target_visible_to_selector": false,
+    "latent_parameters_visible_to_selector": false,
+    "domain_label_visible_to_selector": false,
+    "verification_uses_final_target": false,
+    "transfer_uses_target_tasks_for_prior": false
+  },
+  "results": {
+    "neutral_baseline_mae": 0.0007841968132581761,
+    "a0_no_transfer_mae": 0.003051903469952456,
+    "a0_full_mae": 0.0032871584699718003,
+    "a0_full_minus_baseline_mae": 0.002502961656713624,
+    "full_beats_baseline_seed_count": 0,
+    "transfer_gain_mae": -0.0002352550000193441,
+    "H1_full_beats_neutral": false,
+    "H2_transfer_positive": false,
+    "H3_any_ablation_effect": true
+  },
+  "ablation_findings": {
+    "verification": {"delta_mae_when_removed": 0.106007565423926, "direction": "strongly_harmful_to_remove"},
+    "contradiction_detection": {"delta_mae_when_removed": 0.0003265847948976724, "direction": "harmful_to_remove"},
+    "transfer": {"delta_mae_when_removed": -0.0002352550000193441, "direction": "current_weight_hurts"},
+    "evidence": {"delta_mae_when_removed": 0.0, "direction": "no_effect_in_current_harness"},
+    "uncertainty_penalty": {"delta_mae_when_removed": 0.00009282552429665768, "direction": "slightly_harmful_to_remove"},
+    "complexity_penalty": {"delta_mae_when_removed": -0.0015476818542474494, "direction": "current_weight_hurts_strongly"},
+    "compute_penalty": {"delta_mae_when_removed": -0.0002556652201560778, "direction": "current_weight_hurts"}
+  },
+  "decision": {
+    "promote_A0_to_A1": false,
+    "reason": "A0 loses to neutral baseline on all five matched seeds and transfer is negative. Held-out results must not be used directly to tune A1.",
+    "next_allowed_step": "Generate an A1 candidate using source/development-only tasks, preregister BENCH-004 with fresh unseen seeds/families, then compare neutral vs A0 vs frozen A1 at equal resources."
+  },
+  "claim_limit": "This is a valid matched synthetic E3 benchmark of meta-parameter behavior only. It is not evidence of AGI, superintelligence, neural-weight learning, autonomous self-improvement, or external generalization."
+}
