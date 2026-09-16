@@ -1,0 +1,28 @@
+name: CEREBRON Fractal Fabric Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/fractal_fabric/test_fractal_fabric.py'
+      - '.github/workflows/cerebron-fractal-fabric-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fractal-fabric-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run executable Fractal Fabric test
+        run: python cerebron/fractal_fabric/test_fractal_fabric.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-fractal-fabric-test
+          path: fractal-fabric-test.json
+          retention-days: 14
