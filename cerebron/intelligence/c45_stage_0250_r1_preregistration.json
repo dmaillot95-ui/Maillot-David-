@@ -1,0 +1,38 @@
+{
+  "campaign": "C45",
+  "stage": "0250-R1",
+  "status": "PREREGISTERED_BEFORE_EXECUTION",
+  "parent": "0250_FAIL",
+  "evidence_ceiling": "E3 synthetic verified simulation",
+  "purpose": "Separate allocation effects from semantic-policy effects using a preregistered 2x2 factorial design on untouched holdout seeds.",
+  "arms": {
+    "A00": "neutral allocator + neutral semantics",
+    "A10": "candidate allocator + neutral semantics",
+    "A01": "neutral allocator + candidate semantics",
+    "A11": "candidate allocator + candidate semantics"
+  },
+  "causal_contrasts": {
+    "allocation_at_neutral_semantics": "A10 - A00",
+    "semantic_at_neutral_allocation": "A01 - A00",
+    "semantic_at_candidate_allocation": "A11 - A10",
+    "full_vs_neutral": "A11 - A00"
+  },
+  "holdout_seeds": [20261801,20261802,20261803,20261804,20261805,20261806,20261807,20261808,20261809,20261810,20261811,20261812,20261813],
+  "contaminated_seeds_not_allowed": [20261701,20261702,20261703,20261704,20261705,20261706,20261707,20261708,20261709,20261710,20261711,20261712,20261713],
+  "families": ["standard","false_simple","scar_inversion","mixed_shift","high_uncertainty","dependency_spike","tight_budget","duplicate_mismatch","evidence_scarcity","nonreducible_easy","reducible_hard","compound_adversarial","budget_dependency_collision","evidence_inversion","router_trap"],
+  "resource_matching": {
+    "A00_A01": "identical task-level units, coordination and evidence-path resources",
+    "A10_A11": "identical task-level units, coordination and evidence-path resources",
+    "semantic_layer_rule": "Semantics may change how available information is used, but may not change units, coordination, evidence-path count, or total cost within its matched allocator pair."
+  },
+  "gates": {
+    "semantic_seed_wins_at_neutral_allocation_min": 9,
+    "semantic_seed_wins_at_candidate_allocation_min": 9,
+    "semantic_aggregate_vcgc_improvement_required_in_both_allocator_strata": true,
+    "semantic_aggregate_residual_improvement_required_in_both_allocator_strata": true,
+    "pairwise_resource_mismatch_required": 0,
+    "family_semantic_regression_floor": -0.03,
+    "allocation_effect_report_required": true
+  },
+  "promotion_rule": "Only a preregistered 0250-R1 PASS can reopen progression to rung 500. PASS remains synthetic E3 evidence only and is not evidence of AGI or superintelligence."
+}
