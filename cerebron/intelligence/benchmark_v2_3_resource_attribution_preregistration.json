@@ -1,0 +1,53 @@
+{
+  "benchmark_id": "BENCH-005",
+  "name": "RESOURCE-ATTRIBUTION / EQUAL-BUDGET TEST",
+  "date": "2026-09-16",
+  "status": "preregistered_before_execution",
+  "purpose": "Test whether observed A1 gains can be explained by resource/time allocation rather than by the cognitive scoring policy itself.",
+  "principle": "Wall-clock time is not an intelligence metric. Use deterministic cognitive resource units instead.",
+  "profiles": ["CEREBRON-A0", "CEREBRON-A1-CANDIDATE"],
+  "resource_unit": {
+    "definition": "one candidate-model fit plus its validation scoring over a fixed validation subset",
+    "wall_clock_excluded": true,
+    "same_task_bank_required": true,
+    "same_arithmetic_required": true
+  },
+  "sealed_test": {
+    "seeds": [20261101, 20261102, 20261103, 20261104, 20261105, 20261106, 20261107, 20261108, 20261109],
+    "source_families": ["affine", "quadratic", "cubic"],
+    "target_families": ["chirp_affine", "saturating_tanh", "inverse_quadratic"],
+    "target_families_not_used_in_BENCH_003_or_004": true
+  },
+  "conditions": {
+    "equal_budget_full": {
+      "candidate_models": 11,
+      "validation_points": 6,
+      "interpretation": "Primary intelligence comparison at identical resources."
+    },
+    "budget_sweep": [
+      {"candidate_models": 4, "validation_points": 2},
+      {"candidate_models": 7, "validation_points": 4},
+      {"candidate_models": 11, "validation_points": 6}
+    ],
+    "neutral_baseline": {
+      "required": true,
+      "same_budget": true,
+      "weights": "verification only; all other orchestration weights zero"
+    }
+  },
+  "metrics": [
+    "MAE",
+    "success_rate_error_le_0_5",
+    "seed_wins_A1_vs_A0",
+    "A1_minus_A0_MAE_per_budget",
+    "resource_elasticity",
+    "neutral_baseline_comparison"
+  ],
+  "decision_rules": {
+    "supports_not_resource_only": "A1 MAE < A0 MAE at identical full budget and A1 beats A0 on at least 6 of 9 seeds; advantage must not require a larger resource unit count.",
+    "supports_resource_explanation": "A1 advantage disappears or reverses when A0 and A1 receive identical deterministic resource budgets.",
+    "inconclusive": "mixed seed results, material family regression, or advantage only at one budget level"
+  },
+  "claim_limit": "A positive result only rejects a narrow resource-allocation-only explanation inside this synthetic benchmark. It does not demonstrate general intelligence, AGI, superintelligence, or autonomous self-improvement.",
+  "evidence_ceiling": "E3_verified_simulation"
+}
