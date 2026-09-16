@@ -1,17 +1,9 @@
 #!/usr/bin/env python3
 """CEREBRON Ω federated compute adapters.
 
-Providers implemented as safe opt-in HTTP adapters:
-- github_local: existing local CPU inference path inside GitHub Actions
-- vercel_http: user-controlled Vercel endpoint
-- scaleway_http: user-controlled Scaleway endpoint
-- alibaba_http: user-controlled Alibaba endpoint
-- digitalocean_http: user-controlled DigitalOcean worker endpoint
-- cloudflare_http: user-controlled Cloudflare Worker endpoint
-- render_http: user-controlled Render web-service endpoint
-
-No external provider is called unless BOTH CEREBRON_FEDERATION_ENABLE=1 and the
-provider-specific endpoint variable are present. Paid fallback is forbidden.
+Safe opt-in HTTP adapters for heterogeneous free-tier endpoints.
+External execution is disabled unless CEREBRON_FEDERATION_ENABLE=1.
+Paid fallback is forbidden.
 """
 from __future__ import annotations
 
@@ -26,19 +18,17 @@ from cerebron.providers.federated_worker_contract import WorkerTask, WorkerResul
 
 PROVIDERS = {
     "vercel": "CEREBRON_VERCEL_WORKER_URL",
+    "cloudflare": "CEREBRON_CLOUDFLARE_WORKER_URL",
+    "render": "CEREBRON_RENDER_WORKER_URL",
+    "netlify": "CEREBRON_NETLIFY_WORKER_URL",
+    "supabase": "CEREBRON_SUPABASE_WORKER_URL",
+    # Retained for backward compatibility but not approved by zero-euro policy:
     "scaleway": "CEREBRON_SCALEWAY_WORKER_URL",
     "alibaba": "CEREBRON_ALIBABA_WORKER_URL",
     "digitalocean": "CEREBRON_DIGITALOCEAN_WORKER_URL",
-    "cloudflare": "CEREBRON_CLOUDFLARE_WORKER_URL",
-    "render": "CEREBRON_RENDER_WORKER_URL",
 }
 TOKEN_ENV = {
-    "vercel": "CEREBRON_VERCEL_WORKER_TOKEN",
-    "scaleway": "CEREBRON_SCALEWAY_WORKER_TOKEN",
-    "alibaba": "CEREBRON_ALIBABA_WORKER_TOKEN",
-    "digitalocean": "CEREBRON_DIGITALOCEAN_WORKER_TOKEN",
-    "cloudflare": "CEREBRON_CLOUDFLARE_WORKER_TOKEN",
-    "render": "CEREBRON_RENDER_WORKER_TOKEN",
+    provider: f"CEREBRON_{provider.upper()}_WORKER_TOKEN" for provider in PROVIDERS
 }
 
 
@@ -85,6 +75,7 @@ def invoke_http(provider: str, task: WorkerTask, timeout_s: int = 120) -> Worker
             with urllib.request.urlopen(req, timeout=timeout_s) as response:
                 raw = response.read().decode("utf-8", errors="replace")
                 data = json.loads(raw) if raw.lstrip().startswith("{") else {"result": raw}
+            runtime_s = float(data.get("runtime_s") or timer.elapsed())
             return WorkerResult(
                 task_id=task.task_id,
                 provider=provider,
@@ -92,7 +83,7 @@ def invoke_http(provider: str, task: WorkerTask, timeout_s: int = 120) -> Worker
                 ok=bool(data.get("ok", True)),
                 result=str(data.get("result", "")),
                 evidence=data.get("evidence") if isinstance(data.get("evidence"), dict) else None,
-                runtime_s=float(data.get("runtime_s") or timer.elapsed_s),
+                runtime_s=runtime_s,
                 cost_eur=float(data.get("cost_eur") or 0.0),
                 error=data.get("error"),
                 model=data.get("model"),
@@ -105,7 +96,7 @@ def invoke_http(provider: str, task: WorkerTask, timeout_s: int = 120) -> Worker
                 ok=False,
                 result="",
                 evidence=None,
-                runtime_s=timer.elapsed_s,
+                runtime_s=timer.elapsed(),
                 cost_eur=0.0,
                 error=f"{type(exc).__name__}: {exc}",
             )
@@ -116,6 +107,7 @@ def invoke_github_local(task: WorkerTask) -> WorkerResult:
     from cerebron.providers.local_cpu_llm import invoke_local_cpu
     with Timer() as timer:
         r = invoke_local_cpu(task.prompt, max_new_tokens=192)
+        runtime_s = float(r.get("elapsed_s") or timer.elapsed())
     return WorkerResult(
         task_id=task.task_id,
         provider="github_local",
@@ -123,7 +115,7 @@ def invoke_github_local(task: WorkerTask) -> WorkerResult:
         ok=bool(r.get("ok")),
         result=str(r.get("answer", "")),
         evidence={"runtime": "local_cpu", "api_key_used": False, "paid_fallback": False},
-        runtime_s=float(r.get("elapsed_s") or timer.elapsed_s),
+        runtime_s=runtime_s,
         cost_eur=0.0,
         error=r.get("error"),
         model=r.get("model"),
