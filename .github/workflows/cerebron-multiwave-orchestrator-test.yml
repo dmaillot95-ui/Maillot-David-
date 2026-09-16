@@ -1,0 +1,97 @@
+name: CEREBRON Multiwave Orchestrator Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cerebron/federation/core/federated_multiwave_orchestrator.py'
+      - 'cerebron/federation/state/federated-missions.json'
+      - 'cerebron/federation/state/federated-multiwave-state.json'
+      - '.github/workflows/cerebron-multiwave-orchestrator-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  multiwave:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: |
+          python -m py_compile \
+            cerebron/federation/core/federated_scheduler.py \
+            cerebron/federation/core/federated_multiwave_orchestrator.py
+      - name: Validate 500 waves, persistence, anti-dup and retry
+        run: |
+          python - <<'PY'
+          import json, sys, tempfile
+          from pathlib import Path
+
+          core = Path('cerebron/federation/core').resolve()
+          sys.path.insert(0, str(core))
+          import federated_multiwave_orchestrator as o
+          from federated_scheduler import load_topology
+
+          cfg = load_topology(Path('cerebron/federation/topology/federated-hubs-10000.json'))
+          control = json.loads(Path('cerebron/federation/state/federated-missions.json').read_text())
+
+          with tempfile.TemporaryDirectory() as td:
+              sp = Path(td) / 'state.json'
+              st = o.ensure_state(cfg, {})
+              all_ids = []
+
+              # Wave 1 then persist/reload: deterministic resume proof.
+              w1 = o.next_wave(cfg, st, control)
+              assert len(w1) == 20
+              o.save_json(sp, st)
+              st = o.ensure_state(cfg, o.load_json(sp, {}))
+              o.mark_terminal(st, [x['assignment_id'] for x in w1], 'COMPLETED')
+              w2 = o.next_wave(cfg, st, control)
+              assert len(w2) == 20
+              assert not ({x['assignment_id'] for x in w1} & {x['assignment_id'] for x in w2})
+              all_ids.extend(x['assignment_id'] for x in w1)
+              all_ids.extend(x['assignment_id'] for x in w2)
+              o.mark_terminal(st, [x['assignment_id'] for x in w2], 'COMPLETED')
+
+              # Finish first complete logical cycle: total 500 waves.
+              for _ in range(498):
+                  w = o.next_wave(cfg, st, control)
+                  assert len(w) == 20
+                  ids = [x['assignment_id'] for x in w]
+                  assert not (set(ids) & set(all_ids))
+                  all_ids.extend(ids)
+                  o.mark_terminal(st, ids, 'COMPLETED')
+
+              assert len(all_ids) == 10000
+              assert len(set(all_ids)) == 10000
+              assert len(st['completed']) == 10000
+              assert st['missions']['M-A97A56A2852A']['dispatched_count'] == 10000
+
+              # 501st wave must be empty: no implicit recycling/duplication.
+              w501 = o.next_wave(cfg, st, control)
+              assert w501 == []
+
+              # Explicit retry path: move one known assignment to FAILED, unlock, redispatch.
+              victim = all_ids[123]
+              saved = st['completed'].pop(victim)
+              saved['status'] = 'FAILED'
+              st['failed'][victim] = saved
+              ms = st['missions']['M-A97A56A2852A']
+              ms['completed_count'] -= 1
+              ms['failed_count'] += 1
+              ms['status'] = 'EXHAUSTED'
+              n = o.requeue_failed(st, [victim])
+              assert n == 1
+              wretry = o.next_wave(cfg, st, control, wave_size=1)
+              assert len(wretry) == 1
+              assert wretry[0]['assignment_id'] == victim
+
+              s = o.summary(st)
+              print(json.dumps(s, indent=2))
+              print('CEREBRON_MULTIWAVE_10000_OK')
+          PY
