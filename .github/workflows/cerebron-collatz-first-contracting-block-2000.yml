@@ -1,0 +1,29 @@
+name: CEREBRON Collatz First Contracting Block 2000 Funnel
+
+on:
+  push:
+    paths:
+      - 'cerebron/collatz/campaign_first_contracting_block_2000.py'
+      - '.github/workflows/cerebron-collatz-first-contracting-block-2000.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  funnel-2000:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run 2000-candidate focused funnel
+        run: python cerebron/collatz/campaign_first_contracting_block_2000.py
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: collatz-first-contracting-block-funnel
+          path: collatz-first-contracting-block-funnel.json
+          retention-days: 14
