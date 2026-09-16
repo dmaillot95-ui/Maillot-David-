@@ -1,0 +1,40 @@
+{
+  "campaign": "C45",
+  "rung": 50,
+  "title": "Adversarial capability-acquisition stress test",
+  "date": "2026-09-16",
+  "baseline": "frozen C43/C44 pre-campaign baseline",
+  "candidate": "C45 rung-20 mechanism stack, frozen before evaluation",
+  "evidence_ceiling": "E3 synthetic verified simulation",
+  "objective": "Test whether the rung-20 gain survives task-distribution shift, misleading structural cues, explicit mechanism ablation and sham controls.",
+  "fresh_seeds": [20261401,20261402,20261403,20261404,20261405,20261406,20261407],
+  "task_families": ["standard", "misleading_reducibility", "duplicate_trap", "verification_heavy", "dependency_shift", "budget_pressure"],
+  "controls": {
+    "same_task_bank": true,
+    "same_seed_per_condition": true,
+    "frozen_baseline": true,
+    "query_target_hidden_from_policy": true,
+    "sham_same_nominal_budget": true,
+    "no_post_result_parameter_tuning": true
+  },
+  "conditions": [
+    "baseline",
+    "c45_full",
+    "sham_random_policy",
+    "ablate_simple_first",
+    "ablate_adaptive_compiler",
+    "ablate_verification_reservation",
+    "ablate_negative_filter",
+    "ablate_router"
+  ],
+  "primary_metrics": ["mean_residual", "mean_cost", "mean_verified", "vcgc_proxy"],
+  "gates": {
+    "full_beats_baseline_residual": "C45 full lower mean residual than baseline",
+    "full_beats_baseline_vcgc": "C45 full higher VCGC than baseline",
+    "seed_majority": "wins on both primary directions in at least 5 of 7 seeds",
+    "family_robustness": "no task family has more than 10 percent VCGC regression versus baseline",
+    "sham_separation": "C45 full beats sham on residual and VCGC",
+    "ablation_signal": "at least two named ablations worsen residual or VCGC versus full candidate"
+  },
+  "claim_limit": "Synthetic robustness evidence only. Passing does not establish general intelligence, AGI or superintelligence."
+}
