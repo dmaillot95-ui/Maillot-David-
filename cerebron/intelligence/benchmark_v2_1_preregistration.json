@@ -1,0 +1,68 @@
+{
+  "experiment_id": "BENCH-003",
+  "name": "CEREBRON Benchmark V2.1 Leak-Resistant Weight Ablation",
+  "date": "2026-09-16",
+  "evidence_ceiling": "E3_verified_simulation",
+  "purpose": "Test whether CEREBRON cognitive meta-weights change deterministic model-selection performance when final targets, latent parameters and domain labels are inaccessible to candidate logic.",
+  "frozen_before_run": true,
+  "hypotheses": {
+    "H1": "A0 weighted orchestration has lower held-out MAE than a neutral equal-resource selector.",
+    "H2": "Representation transfer learned only from source tasks improves held-out target MAE over no-transfer A0.",
+    "H3": "At least one used meta-weight has a measurable ablation effect on held-out performance.",
+    "H4": "Any A1 candidate is rejected unless it improves held-out performance at equal resource while passing leakage and regression gates."
+  },
+  "leakage_prohibitions": [
+    "candidate logic cannot access final query target",
+    "candidate logic cannot access latent generator parameters",
+    "candidate logic cannot access generator family/domain label",
+    "verification uses only observable support split",
+    "failure signals use only observable validation residuals",
+    "transfer prior is learned only from source tasks"
+  ],
+  "resource_control": {
+    "same_candidate_model_set": true,
+    "same_support_points": true,
+    "same_validation_points": true,
+    "same_number_of_model_evaluations": true,
+    "same_query_points": true
+  },
+  "data_plan": {
+    "fixed_seeds": [20260916, 20260917, 20260918, 20260919, 20260920],
+    "source_families": ["affine", "quadratic", "cubic"],
+    "heldout_target_families": ["absolute_affine", "rational", "mixed_sine"],
+    "tasks_per_family_per_seed": 24,
+    "support_points_per_task": 14,
+    "validation_points_per_task": 6,
+    "query_points_per_task": 4
+  },
+  "candidate_models": [
+    "constant",
+    "linear",
+    "quadratic",
+    "cubic",
+    "absolute_linear",
+    "rational_linear",
+    "sine_linear",
+    "mixed_generic"
+  ],
+  "primary_metric": "heldout_target_MAE",
+  "secondary_metrics": [
+    "heldout_success_rate_at_abs_error_le_0.5",
+    "transfer_gain_MAE",
+    "per_family_MAE",
+    "weight_ablation_delta_MAE",
+    "seed_stability"
+  ],
+  "promotion_gate": {
+    "A1_allowed": false,
+    "requirements": [
+      "heldout MAE strictly lower than A0 on aggregate",
+      "no target or latent leakage",
+      "same evaluation budget",
+      "positive result on at least 4 of 5 seeds",
+      "no heldout family regresses by more than 10 percent",
+      "reproducible rerun"
+    ]
+  },
+  "claim_limit": "This is a synthetic deterministic benchmark of orchestration meta-parameters. Success cannot establish AGI, superintelligence, neural-weight improvement, or external generalization."
+}
