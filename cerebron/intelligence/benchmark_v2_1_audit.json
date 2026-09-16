@@ -1,0 +1,32 @@
+{
+  "benchmark_id": "BENCH-003",
+  "run_id": 35125248080,
+  "artifact_id": 10459610245,
+  "status": "INVALID_FOR_COMPARATIVE_CLAIMS",
+  "date": "2026-09-16",
+  "observed": {
+    "neutral_baseline_mae": 0.0002844260437854784,
+    "a0_no_transfer_mae": 0.003107408813811272,
+    "a0_full_mae": 0.0030605756205851365,
+    "reported_transfer_gain_mae": 0.000046833193226135644,
+    "H1_full_beats_neutral": false,
+    "H2_transfer_positive_reported": true
+  },
+  "critical_residual": {
+    "class": "PROTOCOL_GAP",
+    "description": "Transfer-enabled evaluation consumes RNG while generating source tasks before target tasks; no-transfer/baseline paths do not. Therefore compared systems do not receive identical target task instances despite preregistered same-data requirement.",
+    "impact": "Baseline-vs-A0 and transfer-vs-no-transfer deltas are not valid matched comparisons in this run.",
+    "decision": "Do not promote, tune or infer cognitive-weight superiority from run 35125248080. Preserve it as a failed protocol test."
+  },
+  "repair": {
+    "version": "BENCH-003-R1",
+    "requirements": [
+      "generate held-out target task bank independently of source-transfer RNG",
+      "reuse the exact frozen target task bank for baseline, A0, no-transfer and every ablation",
+      "use separate deterministic RNG namespaces for source and target",
+      "report task-bank digest",
+      "rerun unchanged A0 weights before any tuning"
+    ]
+  },
+  "claim_limit": "Run 35125248080 demonstrates executable leak-resistant plumbing and weight sensitivity only. Comparative performance claims are invalid until repaired matched-data rerun."
+}
