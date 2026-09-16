@@ -2,12 +2,13 @@
 """CÉRÉBRON Ω adaptive shard worker entrypoint.
 
 Loads persisted provider memory read-only and extends the base worker with optional
-zero-euro Gemini, OpenRouter and Mistral adapters. Hugging Face public-space calls
-are globally paced per runner so parallel highway lanes do not stampede the same
-free route. No paid fallback is possible.
+zero-euro external adapters plus a local CPU LLM route. Hugging Face public-space
+calls are globally paced per runner so parallel highway lanes do not stampede the
+same free route. No paid fallback is possible.
 """
 from __future__ import annotations
 
+import importlib.util
 import os
 import sys
 import threading
@@ -18,8 +19,9 @@ CORE = Path(__file__).resolve().parent
 FEDERATION = CORE.parent
 ROUTING = FEDERATION / "routing"
 STATE = FEDERATION / "state" / "provider-runtime.json"
+PROVIDERS = FEDERATION.parent / "providers"
 
-for p in (str(CORE), str(ROUTING)):
+for p in (str(CORE), str(ROUTING), str(PROVIDERS)):
     if p not in sys.path:
         sys.path.insert(0, p)
 
@@ -37,9 +39,6 @@ _BASE_AVAILABLE = shard_worker.available_zero_euro_routes
 _BASE_PROVIDER_ATTEMPT = shard_worker._provider_attempt
 _BASE_INVOKE_HF = shard_worker.invoke_hf
 
-# One runner can expose several Worker Highway lanes. Public HF Spaces are the
-# same upstream capacity, so unlimited per-lane parallelism creates self-inflicted
-# quota bursts. Keep a bounded shared gate and a minimum start interval.
 _HF_PARALLEL = max(1, min(int(os.getenv("CEREBRON_HF_PARALLEL", "1")), 2))
 _HF_MIN_INTERVAL = max(0.0, float(os.getenv("CEREBRON_HF_MIN_INTERVAL_SECONDS", "1.25")))
 _HF_GATE = threading.Semaphore(_HF_PARALLEL)
@@ -47,11 +46,19 @@ _HF_CLOCK_LOCK = threading.Lock()
 _HF_LAST_START = 0.0
 
 
+def _local_cpu_ready() -> bool:
+    if os.getenv("CEREBRON_LOCAL_CPU_ENABLE", "0").strip().lower() not in {"1", "true", "yes", "on"}:
+        return False
+    return importlib.util.find_spec("transformers") is not None and importlib.util.find_spec("torch") is not None
+
+
 def expanded_available_zero_euro_routes() -> list[str]:
     routes = list(_BASE_AVAILABLE())
     for route in available_extra_zero_euro_routes():
         if route not in routes:
             routes.append(route)
+    if _local_cpu_ready() and "github_actions_local_cpu_llm" not in routes:
+        routes.append("github_actions_local_cpu_llm")
     return routes
 
 
@@ -78,11 +85,24 @@ def expanded_provider_attempt(route: str, prompt: str):
             "endpoint": "chat/completions", "error_type": r.error_type,
             "error": r.error, "retry_after": r.retry_after,
         }
+    if route == "github_actions_local_cpu_llm":
+        from local_cpu_llm import invoke_local_cpu
+        r = invoke_local_cpu(prompt, max_new_tokens=int(os.getenv("CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS", "96")))
+        return bool(r.get("ok")), str(r.get("answer") or ""), {
+            "provider": "github_actions_local_cpu_llm",
+            "model_id": r.get("model"),
+            "model_family": "smollm2-local-cpu",
+            "endpoint": "local-process",
+            "error_type": r.get("error_type"),
+            "error": r.get("error"),
+            "elapsed_s": r.get("elapsed_s"),
+            "api_key_used": False,
+            "spend_limit_eur": 0,
+        }
     return _BASE_PROVIDER_ATTEMPT(route, prompt)
 
 
 def paced_invoke_hf(model, prompt):
-    """Serialize/pace HF starts across lanes while preserving the base adapter."""
     global _HF_LAST_START
     with _HF_GATE:
         with _HF_CLOCK_LOCK:
@@ -95,9 +115,12 @@ def paced_invoke_hf(model, prompt):
 
 
 def adaptive_provider_order(task) -> list[str]:
-    """Return learned order, restricted to routes connected in this runtime."""
     available = expanded_available_zero_euro_routes()
-    return ordered_routes(available, ROUTER_STATE)
+    ordered = ordered_routes(available, ROUTER_STATE)
+    # Keep local CPU as a true zero-euro fallback after connected external free routes.
+    if "github_actions_local_cpu_llm" in ordered:
+        ordered = [x for x in ordered if x != "github_actions_local_cpu_llm"] + ["github_actions_local_cpu_llm"]
+    return ordered
 
 
 def router_snapshot() -> dict:
@@ -105,10 +128,11 @@ def router_snapshot() -> dict:
     snap = snapshot(ROUTER_STATE, available)
     snap["hf_parallel_per_runner"] = _HF_PARALLEL
     snap["hf_min_interval_seconds"] = _HF_MIN_INTERVAL
+    snap["local_cpu_ready"] = _local_cpu_ready()
+    snap["local_cpu_model"] = os.getenv("CEREBRON_LOCAL_CPU_MODEL", "HuggingFaceTB/SmolLM2-135M-Instruct")
     return snap
 
 
-# Runtime injection into the existing worker avoids duplicating queue/execution logic.
 shard_worker.available_zero_euro_routes = expanded_available_zero_euro_routes
 shard_worker._provider_attempt = expanded_provider_attempt
 shard_worker.invoke_hf = paced_invoke_hf
