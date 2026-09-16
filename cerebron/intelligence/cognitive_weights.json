@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "profile_id": "CEREBRON-A0",
+  "status": "baseline_unvalidated",
+  "scope": "cognitive orchestration meta-parameters only; not neural model weights",
+  "weights": {
+    "verification": 1.0,
+    "contradiction_detection": 0.9,
+    "failure_learning": 0.85,
+    "transfer": 1.0,
+    "world_model": 0.8,
+    "reasoning": 0.9,
+    "self_improvement": 0.75,
+    "metacognition": 0.9,
+    "evidence": 1.0,
+    "uncertainty_penalty": 0.7,
+    "complexity_penalty": 0.4,
+    "compute_penalty": 0.35
+  },
+  "constraints": {
+    "min_weight": 0.0,
+    "max_weight": 2.0,
+    "max_single_update": 0.15,
+    "require_finite_values": true,
+    "require_versioned_change": true
+  },
+  "acceptance_gates": {
+    "require_equal_resource_baseline": true,
+    "require_heldout_gain": true,
+    "require_transfer_gain": true,
+    "require_ablation": true,
+    "require_no_target_leakage": true,
+    "require_no_material_regression": true,
+    "require_reproducible_rerun": true,
+    "minimum_evidence_level_for_promotion": "E3_verified_simulation"
+  },
+  "promotion_rule": "A candidate profile may replace A0 only after preregistered evaluation shows improvement on withheld domains at matched resources and survives leakage audit and ablation.",
+  "claim_limit": "These values are initial meta-parameters for experimentation. They are not learned neural weights and are not evidence of intelligence gain."
+}
