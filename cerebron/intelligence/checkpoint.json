@@ -1,5 +1,5 @@
 {
-  "checkpoint": "CEREBRON-BENCH-003-R1-MATCHED-CLOSED",
+  "checkpoint": "CEREBRON-BENCH-005-RESOURCE-ATTRIBUTION-CLOSED",
   "date": "2026-09-16",
   "status": "completed",
   "evidence_level": "E3_verified_simulation",
@@ -17,69 +17,77 @@
     "score": 18.06,
     "claim_limit": "Hand-specified structural simulation only."
   },
-  "benchmark_v2": {
-    "run": 35124135017,
-    "status": "closed_with_confounds",
-    "known_confounds": ["latent parameter access","domain-label access","target-derived verification/error","target-directed refinement"]
-  },
   "cognitive_weight_layer": {
-    "profile_file": "cerebron/intelligence/cognitive_weights.json",
-    "governance_file": "cerebron/intelligence/weight_governance.py",
-    "governance_run": 35124831969,
-    "profile": "A0",
+    "A0_file": "cerebron/intelligence/cognitive_weights.json",
+    "A1_file": "cerebron/intelligence/cognitive_weights_A1_candidate.json",
     "meaning": "Versioned cognitive orchestration meta-parameters, not neural model weights.",
-    "status": "schema_valid_but_performance_not_validated"
+    "status": "A1_candidate_not_promoted"
   },
-  "benchmark_v2_1_initial": {
-    "run": 35125248080,
-    "artifact_id": 10459610245,
-    "status": "invalid_for_comparative_claims",
-    "reason": "RNG consumption changed target task instances between transfer and no-transfer paths.",
-    "audit_file": "cerebron/intelligence/benchmark_v2_1_audit.json"
-  },
-  "benchmark_v2_1_r1": {
-    "benchmark_id": "BENCH-003-R1",
+  "benchmark_003_r1": {
     "run": 35125349763,
-    "artifact_id": 10459182127,
-    "artifact_sha256": "96a71ec2c56cfe9ea750bfe2e77e5af7923e218d4c9a34b7c96c7449ed715b5b",
-    "target_task_bank_sha256": "31247ee7e2814eabba4d06c79951672340f19acee30a1491e8614c90e2d4ae70",
     "status": "valid_matched_synthetic_test",
     "neutral_baseline_mae": 0.0007841968132581761,
-    "a0_no_transfer_mae": 0.003051903469952456,
     "a0_full_mae": 0.0032871584699718003,
-    "full_beats_baseline_seed_count": 0,
     "transfer_gain_mae": -0.0002352550000193441,
-    "H1_full_beats_neutral": false,
-    "H2_transfer_positive": false,
-    "H3_any_ablation_effect": true,
-    "audit_file": "cerebron/intelligence/benchmark_v2_1_r1_audit.json"
+    "finding": "A0 loses to neutral baseline and transfer is negative in this harness."
   },
-  "validated_weight_observations": {
-    "verification": "strong positive necessity in this harness",
-    "contradiction_detection": "positive contribution in this harness",
-    "uncertainty_penalty": "small positive contribution in this harness",
-    "transfer": "current A0 setting hurts held-out performance",
-    "complexity_penalty": "current A0 setting hurts held-out performance strongly",
-    "compute_penalty": "current A0 setting hurts held-out performance",
-    "evidence": "no measurable effect in this harness",
-    "not_exercised": ["failure_learning","world_model","reasoning","self_improvement","metacognition"]
+  "benchmark_004": {
+    "status": "historical_informative_not_promotion_grade",
+    "A0_mae": 0.0099723,
+    "A1_mae": 0.0081133,
+    "local_improvement_percent": 18.64,
+    "A1_seed_wins": "7/7",
+    "protocol_issue": "Original leakage gate had Boolean polarity error and neutral baseline was missing.",
+    "repair_pr": 5,
+    "repair_branch": "cerebron-alpha-omega-audit-20260916",
+    "repair_commit": "3ab785abc2101bf72bb0fc05094b815052bc5597",
+    "promotion_allowed": false
+  },
+  "benchmark_005": {
+    "benchmark_id": "BENCH-005",
+    "run": 35128232421,
+    "status": "valid_equal_resource_synthetic_test",
+    "audit_file": "cerebron/intelligence/benchmark_v2_3_resource_attribution_audit.json",
+    "target_task_bank_sha256": "dd6a735b3ab78f51814a25053df171358e86831b1433dfae625da55647e3a34d",
+    "budgets": {
+      "low": {"resource_units": 8, "neutral_mae": 0.2895876885864899, "A0_mae": 0.2908175004840377, "A1_mae": 0.29034737255340837, "A1_seed_wins": 7},
+      "medium": {"resource_units": 28, "neutral_mae": 0.23518976645112183, "A0_mae": 0.24258743465752408, "A1_mae": 0.24097928953669223, "A1_seed_wins": 9},
+      "full": {"resource_units": 66, "neutral_mae": 0.014500047796258127, "A0_mae": 0.02048235989183067, "A1_mae": 0.01829067686679533, "A1_seed_wins": 9}
+    },
+    "all_conditions_equal_resource_within_budget": true,
+    "A1_beats_A0_at_all_budget_levels": true,
+    "equal_full_budget_gate": true,
+    "resource_only_explanation_rejected_within_benchmark": true,
+    "neutral_baseline_beats_A1_at_full_budget": true
   },
   "decision": {
-    "promote_A0_to_A1": false,
-    "reason": "A0 loses to neutral baseline on all five matched seeds and source-only transfer is negative.",
-    "anti_overfit_rule": "Do not tune A1 on BENCH-003-R1 held-out target results."
+    "promote_A1": false,
+    "reason": "A1 beats A0 under equal resource budgets, but a competitive neutral verification-only baseline still beats A1 at full budget. Current harness also does not execute several claimed cognitive capabilities independently.",
+    "important_inference": "The A1>A0 local gain is not attributable solely to unequal compute/time allocation inside BENCH-005, but this does not establish architectural intelligence."
   },
-  "next_stage": "A1_SOURCE_ONLY_PROPOSAL_THEN_BENCH-004_FRESH_HOLDOUT",
+  "capability_funnel": {
+    "micro_capabilities": 36,
+    "families": 12,
+    "experimental_blocks": 6,
+    "blocks": [
+      "representation_world_model",
+      "reasoning_creativity",
+      "planning_experimentation",
+      "verification_metacognition",
+      "learning_transfer",
+      "cooperation_self_improvement"
+    ]
+  },
+  "next_stage": "BENCH-006-SIX-BLOCK-EXECUTABLE-CAPABILITY-EXPERIMENTS",
   "next_requirements": [
-    "construct A1 only from source/development tasks",
-    "freeze A1 before fresh evaluation",
-    "preregister BENCH-004",
-    "use new unseen seeds and held-out families",
-    "same task bank and resource budget for neutral, A0 and A1",
-    "explicit transfer and ablation tests",
-    "test failure-learning without target leakage",
-    "test A0-vs-A1 on withheld domains",
-    "no promotion without reproducible matched-resource gain"
+    "implement six genuinely distinct executable capability experiments",
+    "include matched sham controls at equal deterministic resource budgets",
+    "retain competitive neutral baseline",
+    "measure each capability with its own observable state variables and metrics",
+    "execute failure_learning, world_model, reasoning, self_improvement and metacognition rather than merely naming them",
+    "use fresh sealed task families for promotion-grade reproduction",
+    "launch 36 deterministic jobs only after the six block experiments are validated",
+    "do not equate GitHub jobs with AI agents"
   ],
-  "claim_limit": "BENCH-003-R1 is a valid matched synthetic E3 benchmark of orchestration meta-parameters. It does not demonstrate AGI, superintelligence, neural-weight learning, autonomous self-improvement, or external generalization."
+  "claim_limit": "BENCH-005 rejects only a narrow resource-allocation-only explanation for the local A1>A0 result in this deterministic synthetic harness. It does not demonstrate AGI, superintelligence, autonomous self-improvement, or external generalization."
 }
