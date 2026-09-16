@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 import json
 from dataclasses import dataclass, asdict
+from fractions import Fraction
 
-# CEREBRON Ω — focused symbolic funnel
+# CEREBRON Ω — focused symbolic funnel v2
 # Family: FIRST CONTRACTING BLOCK BARRIER Ω
-# This is a finite falsification/ranking campaign, not a proof engine.
+# Search target: a uniform lower bound on
+# Q=((2^(r+b)-3^(r+1))*t)/(2^(b-1)-1)
+# for exact admissible contracting blocks.
+# Q>1 is exactly the strict valley-descent condition y'<y.
+# FINITE falsification/ranking only; not a proof engine.
 
-R_MAX = 80
-B_MAX = 80
+R_MAX = 120
+T_MAX = 3999
 START = 2000
 FUNNEL = [2000, 1000, 500, 250, 100, 50, 20, 10, 3, 1]
 
@@ -20,90 +25,71 @@ def v2(n: int) -> int:
     return c
 
 
-def block_next(r: int, b: int, t: int) -> int:
-    # y+1 = 2^(r+1)t, t odd
-    num = pow(3, r + 1) * t - 1
-    den = 1 << (b - 1)
-    if num % den:
-        return -1
-    return num // den
-
-
-def y_from(r: int, t: int) -> int:
-    return (1 << (r + 1)) * t - 1
-
-
 @dataclass
 class Candidate:
     cid: int
-    r_cap: int
-    b_cap: int
-    margin_num: int
-    margin_den: int
-    require_exact_v2: bool
-    score: int = 0
+    threshold_num: int
+    threshold_den: int
     tested: int = 0
     falsified: int = 0
-    survivors: int = 0
+    margin_num: int = 0
+    margin_den: int = 1
+    score: int = 0
+
+    @property
+    def threshold(self):
+        return Fraction(self.threshold_num, self.threshold_den)
 
 
 def generate_candidates():
+    # 2000 rational lower-bound candidates from 1.002 to 5.000, step 0.002.
     out = []
-    cid = 0
-    # 20 x 10 x 10 = 2000 structured variants in one proof family.
-    for r_cap in range(4, 84, 4):            # 20
-        for b_cap in range(4, 24, 2):        # 10
-            for margin_num in range(1, 11):  # 10
-                out.append(Candidate(
-                    cid=cid,
-                    r_cap=r_cap,
-                    b_cap=b_cap,
-                    margin_num=margin_num,
-                    margin_den=10,
-                    require_exact_v2=True,
-                ))
-                cid += 1
+    for cid in range(START):
+        num = 1002 + 2 * cid
+        out.append(Candidate(cid=cid, threshold_num=num, threshold_den=1000))
     assert len(out) == START
     return out
 
 
-def evaluate(c: Candidate):
-    # Falsification corpus: admissible local Collatz blocks only.
-    # Candidate claims: for exact 2-adic block data in its region,
-    # if alpha<1 and contraction margin exceeds threshold, next valley falls below start.
-    falsified = 0
-    tested = 0
-    survivors = 0
-    for r in range(1, min(R_MAX, c.r_cap) + 1):
-        for t in range(1, 401, 2):
-            q = pow(3, r + 1) * t - 1
+def corpus():
+    data = []
+    exact_min = None
+    exact_argmin = None
+    for r in range(1, R_MAX + 1):
+        p3 = pow(3, r + 1)
+        for t in range(1, T_MAX + 1, 2):
+            q = p3 * t - 1
             b = 1 + v2(q)
-            if b < 2 or b > min(B_MAX, c.b_cap):
-                continue
-            # contracting block only
-            gap = (1 << (r + b)) - pow(3, r + 1)
+            gap = (1 << (r + b)) - p3
             if gap <= 0:
                 continue
-            tested += 1
-            y = y_from(r, t)
-            yn = block_next(r, b, t)
-            if yn < 0:
-                falsified += 1
-                continue
-            # normalized local contraction pressure
-            lhs = gap * t
-            rhs = (1 << (b - 1)) - 1
-            threshold_ok = lhs * c.margin_den >= rhs * c.margin_num
-            if threshold_ok:
-                survivors += 1
-                # Claim predicts strict descent below current valley.
-                if not (yn < y):
-                    falsified += 1
-    c.tested = tested
+            den = (1 << (b - 1)) - 1
+            Q = Fraction(gap * t, den)
+            data.append((Q, r, b, t))
+            if exact_min is None or Q < exact_min:
+                exact_min = Q
+                exact_argmin = (r, b, t)
+    return data, exact_min, exact_argmin
+
+
+def evaluate(c: Candidate, data):
+    th = c.threshold
+    c.tested = len(data)
+    worst_margin = None
+    falsified = 0
+    for Q, r, b, t in data:
+        if Q < th:
+            falsified += 1
+        margin = Q - th
+        if worst_margin is None or margin < worst_margin:
+            worst_margin = margin
     c.falsified = falsified
-    c.survivors = survivors
-    # reward broad tested region, exactness, and zero falsification
-    c.score = (1000000 if falsified == 0 else 0) + survivors * 10 + tested - falsified * 100000
+    if worst_margin is None:
+        worst_margin = Fraction(0, 1)
+    c.margin_num = worst_margin.numerator
+    c.margin_den = worst_margin.denominator
+    # Prefer zero-falsification, then strongest threshold.
+    c.score = (10**12 if falsified == 0 else 0) + c.threshold_num * 10**4 - falsified
     return c
 
 
@@ -113,7 +99,7 @@ def funnel(cands):
     for target in FUNNEL[1:]:
         current = sorted(
             current,
-            key=lambda c: (c.falsified == 0, c.score, c.survivors, c.tested, -c.cid),
+            key=lambda c: (c.falsified == 0, c.threshold, -c.falsified, c.margin_num / c.margin_den),
             reverse=True,
         )[:target]
         history.append({
@@ -125,10 +111,11 @@ def funnel(cands):
 
 
 def main():
-    cands = [evaluate(c) for c in generate_candidates()]
+    data, qmin, argmin = corpus()
+    cands = [evaluate(c, data) for c in generate_candidates()]
     winner, history = funnel(cands)
     report = {
-        "schema": "cerebron-collatz-first-contracting-block-funnel-v1",
+        "schema": "cerebron-collatz-first-contracting-block-q-funnel-v2",
         "family": "FIRST CONTRACTING BLOCK BARRIER OMEGA",
         "finite_only": True,
         "claim_universal_proof": False,
@@ -136,10 +123,15 @@ def main():
         "funnel": FUNNEL,
         "corpus": {
             "r_max": R_MAX,
-            "b_max": B_MAX,
-            "odd_t_max": 399,
-            "exact_block_relation": "b=1+v2(3^(r+1)t-1)",
+            "odd_t_max": T_MAX,
+            "exact_relation": "b=1+v2(3^(r+1)t-1)",
+            "contracting_only": True,
+            "tested_exact_blocks": len(data),
         },
+        "quantity": "Q=((2^(r+b)-3^(r+1))*t)/(2^(b-1)-1)",
+        "meaning": "Q>1 iff the exact contracting block sends next valley strictly below starting valley",
+        "observed_exact_min_Q": {"num": qmin.numerator, "den": qmin.denominator},
+        "observed_argmin": {"r": argmin[0], "b": argmin[1], "t": argmin[2]},
         "winner": asdict(winner),
         "history": history,
         "paid_api_calls": 0,
