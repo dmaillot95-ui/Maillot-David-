@@ -1,0 +1,25 @@
+name: CEREBRON C45 Overhead Frontier 0055
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/intelligence/c45_overhead_frontier_0055.py'
+      - 'cerebron/intelligence/C45-OVERHEAD-FRONTIER-0055-PREREGISTRATION.json'
+      - '.github/workflows/cerebron-c45-overhead-frontier-0055.yml'
+
+jobs:
+  overhead-frontier-0055:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run overhead frontier 55
+        run: python cerebron/intelligence/c45_overhead_frontier_0055.py
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-c45-overhead-frontier-0055-results
+          path: artifacts/c45_overhead_frontier_0055_results.json
