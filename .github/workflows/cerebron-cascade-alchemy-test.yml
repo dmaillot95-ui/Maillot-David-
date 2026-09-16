@@ -1,0 +1,36 @@
+name: CEREBRON Cascade Alchemy Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/benchmarks/cascade_alchemy_test.py'
+      - '.github/workflows/cerebron-cascade-alchemy-test.yml'
+      - 'cerebron/providers/local_cpu_llm.py'
+
+permissions:
+  contents: read
+
+jobs:
+  cascade-benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install local runtime
+        run: pip install -q 'transformers>=4.46,<5' 'torch>=2.4' safetensors sentencepiece
+      - name: Run cascade versus controls
+        env:
+          MINOR_A: HuggingFaceTB/SmolLM2-135M-Instruct
+          MINOR_B: HuggingFaceTB/SmolLM2-360M-Instruct
+          MAJOR: Qwen/Qwen2.5-1.5B-Instruct
+          OUT: out/cascade-alchemy-report.json
+        run: python cerebron/benchmarks/cascade_alchemy_test.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-cascade-alchemy-report
+          path: out/cascade-alchemy-report.json
+          retention-days: 14
