@@ -1,0 +1,127 @@
+name: CEREBRON Asian Federation Benchmark
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cerebron-asian-federation-benchmark.yml'
+  workflow_dispatch:
+
+jobs:
+  regional-models:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - region: CHINA
+            model: Qwen/Qwen2.5-1.5B-Instruct
+          - region: JAPAN
+            model: llm-jp/llm-jp-3-1.8b-instruct
+          - region: KOREA
+            model: OpenLLM-Korea/EXAONE-3.5-2.4B-Instruct
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      CEREBRON_LOCAL_CPU_MODEL: ${{ matrix.model }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: pip install 'transformers>=4.56,<5' 'torch>=2.4' safetensors accelerate sentencepiece
+      - name: Run exact-answer benchmark
+        env:
+          REGION: ${{ matrix.region }}
+        run: |
+          python - <<'PY'
+          import json, os, re, time
+          from cerebron.providers.local_cpu_llm import invoke_local_cpu
+
+          tests = [
+            ("Compute 17*19. Return only FINAL:<integer>", "323"),
+            ("What is the next integer in 2, 6, 12, 20, 30, ? Return only FINAL:<integer>", "42"),
+            ("A box has 3 red and 2 blue balls. How many unordered pairs of balls can be chosen? Return only FINAL:<integer>", "10"),
+            ("If all A are B and no B are C, can any A be C? Return only FINAL:YES or FINAL:NO", "NO"),
+            ("Compute gcd(84,126). Return only FINAL:<integer>", "42"),
+            ("A train travels 180 km in 2.5 hours. Average speed in km/h? Return only FINAL:<integer>", "72"),
+          ]
+          rows=[]
+          started=time.time()
+          for q, expected in tests:
+            r=invoke_local_cpu(q, max_new_tokens=48)
+            ans=r.get('answer','')
+            m=re.search(r'FINAL\s*:\s*([A-Za-z0-9.-]+)', ans, re.I)
+            pred=(m.group(1).upper() if m else '')
+            rows.append({'question':q,'expected':expected,'pred':pred,'correct':pred==expected,'raw':ans,'ok':r.get('ok',False),'elapsed_s':r.get('elapsed_s')})
+          out={
+            'region':os.environ['REGION'],
+            'model':os.environ['CEREBRON_LOCAL_CPU_MODEL'],
+            'correct':sum(x['correct'] for x in rows),
+            'total':len(rows),
+            'accuracy':sum(x['correct'] for x in rows)/len(rows),
+            'elapsed_total_s':round(time.time()-started,3),
+            'spend_limit_eur':0,
+            'paid_fallback':False,
+            'api_key_used':False,
+            'rows':rows,
+          }
+          os.makedirs('out',exist_ok=True)
+          with open(f"out/{os.environ['REGION']}.json",'w') as f: json.dump(out,f,indent=2)
+          print(json.dumps(out,indent=2))
+          assert out['spend_limit_eur']==0 and not out['paid_fallback'] and not out['api_key_used']
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: federation-${{ matrix.region }}
+          path: out/${{ matrix.region }}.json
+          retention-days: 14
+
+  federation-judge:
+    needs: regional-models
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: federation-*
+          path: results
+          merge-multiple: true
+      - name: Judge federation
+        run: |
+          python - <<'PY'
+          import json, glob, collections, os
+          rows=[json.load(open(f)) for f in sorted(glob.glob('results/*.json'))]
+          assert len(rows)==3, len(rows)
+          assert {r['region'] for r in rows}=={'CHINA','JAPAN','KOREA'}
+          n=rows[0]['total']
+          majority=0
+          oracle=0
+          task_details=[]
+          for i in range(n):
+            expected=rows[0]['rows'][i]['expected']
+            preds=[r['rows'][i]['pred'] for r in rows]
+            counts=collections.Counter(preds)
+            maj=counts.most_common(1)[0][0] if preds else ''
+            majority += int(maj==expected)
+            oracle += int(any(p==expected for p in preds))
+            task_details.append({'task':i+1,'expected':expected,'predictions':dict(zip([r['region'] for r in rows],preds)),'majority':maj,'majority_correct':maj==expected,'any_region_correct':any(p==expected for p in preds)})
+          report={
+            'regions':{r['region']:{'model':r['model'],'correct':r['correct'],'total':r['total'],'accuracy':r['accuracy'],'elapsed_total_s':r['elapsed_total_s']} for r in rows},
+            'federation_majority_correct':majority,
+            'federation_majority_accuracy':majority/n,
+            'federation_oracle_union_correct':oracle,
+            'federation_oracle_union_accuracy':oracle/n,
+            'all_zero_paid':all(r['spend_limit_eur']==0 and not r['paid_fallback'] and not r['api_key_used'] for r in rows),
+            'claim_superintelligence':False,
+            'interpretation':'Majority measures simple federation consensus; oracle union measures complementarity ceiling, not an implemented router.',
+            'tasks':task_details,
+          }
+          os.makedirs('out',exist_ok=True)
+          json.dump(report,open('out/asian-federation-report.json','w'),indent=2)
+          print(json.dumps(report,indent=2))
+          assert report['all_zero_paid'] is True
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-asian-federation-report
+          path: out/asian-federation-report.json
+          retention-days: 14
