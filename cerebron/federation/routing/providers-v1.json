@@ -1,0 +1,62 @@
+{
+  "schema": "cerebron-provider-routing-v1",
+  "updated_at": "2026-09-16",
+  "policy": {
+    "spend_limit_eur": 0,
+    "allow_paid_fallback": false,
+    "auto_upgrade": false,
+    "respect_provider_quotas": true,
+    "deduplicate_before_retry": true,
+    "circuit_breaker_on_quota": true,
+    "max_provider_attempts_per_task": 3
+  },
+  "providers": [
+    {
+      "id": "huggingface_public_spaces",
+      "type": "gradio_public_space",
+      "status": "ACTIVE_QUOTA_BOUND",
+      "credential_mode": "none_for_public_spaces",
+      "cost_class": "ZERO_EURO",
+      "priority": 30,
+      "capabilities": ["llm_inference"],
+      "health_source": "cerebron/federation/state/model-registry.json"
+    },
+    {
+      "id": "groq_free",
+      "type": "openai_compatible_rest",
+      "status": "READY_FOR_CREDENTIAL",
+      "credential_env": "GROQ_API_KEY",
+      "base_url": "https://api.groq.com/openai/v1",
+      "cost_class": "ZERO_EURO_FREE_TIER_ONLY",
+      "priority": 10,
+      "capabilities": ["llm_inference"],
+      "models": ["openai/gpt-oss-20b", "openai/gpt-oss-120b", "qwen/qwen3.8-27b"],
+      "quota_policy": "read rate-limit headers; on 429 obey retry-after; never upgrade automatically",
+      "official_source": "https://console.groq.com/docs/rate-limits"
+    },
+    {
+      "id": "cloudflare_workers_ai_free",
+      "type": "cloudflare_workers_ai_rest",
+      "status": "READY_FOR_CREDENTIAL",
+      "credential_env": "CLOUDFLARE_API_TOKEN",
+      "account_env": "CLOUDFLARE_ACCOUNT_ID",
+      "cost_class": "ZERO_EURO_FREE_ALLOCATION_ONLY",
+      "priority": 20,
+      "capabilities": ["llm_inference", "embedding"],
+      "models": ["@cf/zai-org/glm-4.7-flash", "@cf/google/gemma-4-26b-a4b-it", "@cf/nvidia/nemotron-3-120b-a12b"],
+      "free_allocation": "10000 Neurons/day",
+      "quota_policy": "stop after free allocation; no paid Workers fallback",
+      "official_source": "https://developers.cloudflare.com/workers-ai/platform/pricing/"
+    },
+    {
+      "id": "github_actions_cpu",
+      "type": "deterministic_python",
+      "status": "ACTIVE",
+      "credential_mode": "github_actions",
+      "cost_class": "ZERO_EURO_PUBLIC_REPO_STANDARD_RUNNER",
+      "priority": 5,
+      "capabilities": ["python_cpu", "symbolic_check", "tests", "batch_jobs"],
+      "routing_rule": "use before LLM when task is deterministic or computational"
+    }
+  ]
+}
