@@ -1,0 +1,28 @@
+name: CEREBRON BENCH-005 Resource Attribution
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'cerebron/intelligence/benchmark_v2_3_resource_attribution.py'
+      - 'cerebron/intelligence/benchmark_v2_3_resource_attribution_preregistration.json'
+      - 'cerebron/intelligence/cognitive_weights.json'
+      - 'cerebron/intelligence/cognitive_weights_A1_candidate.json'
+      - '.github/workflows/cerebron-benchmark-v2-3-resource-attribution.yml'
+  workflow_dispatch:
+
+jobs:
+  bench-005:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run BENCH-005
+        run: python cerebron/intelligence/benchmark_v2_3_resource_attribution.py
+      - name: Upload BENCH-005 result
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-bench-005-resource-attribution
+          path: benchmark_v2_3_resource_attribution_results.json
