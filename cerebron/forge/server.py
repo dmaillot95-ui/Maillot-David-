@@ -2,8 +2,9 @@
 """CEREBRON FORGE Ω — minimal distributed HTTP control plane.
 
 Standard-library HTTP server exposing worker registration, task submission,
-claim, completion, and status over JSON. Intended for trusted/private networks
-or a reverse proxy with authentication. No paid provider calls.
+claim, completion, health and status over JSON. No paid provider calls.
+
+Security invariant: if bound to a non-loopback address, a token is mandatory.
 """
 from __future__ import annotations
 
@@ -18,6 +19,18 @@ DB_PATH = os.getenv("CEREBRON_FORGE_DB", "out/cerebron-forge-distributed.db")
 BIND = os.getenv("CEREBRON_FORGE_BIND", "127.0.0.1")
 PORT = int(os.getenv("CEREBRON_FORGE_PORT", "8765"))
 TOKEN = os.getenv("CEREBRON_FORGE_TOKEN", "")
+MAX_BODY_BYTES = int(os.getenv("CEREBRON_FORGE_MAX_BODY_BYTES", "1048576"))
+
+
+def _is_loopback(bind: str) -> bool:
+    return bind in {"127.0.0.1", "localhost", "::1"}
+
+
+def validate_runtime_security() -> None:
+    if not _is_loopback(BIND) and not TOKEN:
+        raise RuntimeError("CEREBRON_FORGE_TOKEN is required for non-loopback/public binding")
+    if MAX_BODY_BYTES < 1024 or MAX_BODY_BYTES > 16 * 1024 * 1024:
+        raise RuntimeError("CEREBRON_FORGE_MAX_BODY_BYTES must be between 1 KiB and 16 MiB")
 
 
 def _json_row(row):
@@ -34,7 +47,7 @@ def _json_row(row):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "CerebronForge/1"
+    server_version = "CerebronForge/2"
 
     def _auth_ok(self):
         if not TOKEN:
@@ -45,21 +58,33 @@ class Handler(BaseHTTPRequestHandler):
         body = json.dumps(obj).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json")
+        self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
 
     def _body(self):
         n = int(self.headers.get("Content-Length", "0") or "0")
+        if n > MAX_BODY_BYTES:
+            raise ValueError("request body too large")
         raw = self.rfile.read(n) if n else b"{}"
         return json.loads(raw.decode("utf-8"))
 
     def do_GET(self):
+        path = urlparse(self.path).path
+        if path == "/health":
+            return self._send(200, {
+                "ok": True,
+                "service": "cerebron-forge",
+                "schema": "cerebron-forge-health-v1",
+                "paid_fallback": False,
+                "spend_limit_eur": 0,
+            })
         if not self._auth_ok():
             return self._send(401, {"ok": False, "error": "unauthorized"})
-        if urlparse(self.path).path == "/status":
+        if path == "/status":
             db = connect(DB_PATH)
-            return self._send(200, {"ok": True, **status(db)})
+            return self._send(200, {"ok": True, **status(db), "spend_limit_eur": 0, "paid_fallback": False})
         return self._send(404, {"ok": False, "error": "not_found"})
 
     def do_POST(self):
@@ -74,7 +99,7 @@ class Handler(BaseHTTPRequestHandler):
                     worker_id=str(data["worker_id"]),
                     machine_id=str(data["machine_id"]),
                     capabilities=list(data.get("capabilities", [])),
-                    max_parallel=int(data.get("max_parallel", 1)),
+                    max_parallel=max(1, int(data.get("max_parallel", 1))),
                     provider=str(data.get("provider", "remote")),
                 )
                 register_worker(db, w)
@@ -111,8 +136,18 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
+    validate_runtime_security()
     server = ThreadingHTTPServer((BIND, PORT), Handler)
-    print(json.dumps({"ok": True, "bind": BIND, "port": PORT, "db": DB_PATH, "token_required": bool(TOKEN)}), flush=True)
+    print(json.dumps({
+        "ok": True,
+        "bind": BIND,
+        "port": PORT,
+        "db": DB_PATH,
+        "token_required": bool(TOKEN),
+        "max_body_bytes": MAX_BODY_BYTES,
+        "spend_limit_eur": 0,
+        "paid_fallback": False,
+    }), flush=True)
     server.serve_forever()
 
 
