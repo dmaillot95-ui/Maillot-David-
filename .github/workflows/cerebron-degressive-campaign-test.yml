@@ -1,0 +1,27 @@
+name: CEREBRON Degressive Campaign Test
+
+on:
+  push:
+    paths:
+      - 'cerebron/fractal_fabric/test_degressive_campaign.py'
+      - '.github/workflows/cerebron-degressive-campaign-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  degressive-campaign:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run 10800 to 1 degressive campaign test
+        run: python cerebron/fractal_fabric/test_degressive_campaign.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-degressive-campaign-test
+          path: degressive-campaign-test.json
+          retention-days: 14
