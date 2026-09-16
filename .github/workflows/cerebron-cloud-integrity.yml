@@ -1,0 +1,85 @@
+name: CEREBRON Cloud Integrity
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cerebron/config/cloud_zero_euro.json'
+      - 'cerebron/forge/**'
+      - 'render.yaml'
+      - 'cloudflare/cerebron-forge-gateway/**'
+      - '.github/workflows/cerebron-cloud-integrity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate zero-euro policy and Forge security
+        run: |
+          python - <<'PY'
+          import json, os, subprocess, sys, tempfile
+          from pathlib import Path
+
+          policy = json.loads(Path('cerebron/config/cloud_zero_euro.json').read_text())
+          assert policy['spend_limit_eur'] == 0
+          assert policy['paid_fallback'] is False
+          assert policy['allow_volunteer_compute'] is False
+          assert policy['allow_credit_card_required_providers'] is False
+          assert policy['providers']['floot']['compute_provider'] is False
+          assert policy['providers']['digitalocean']['enabled_by_default'] is False
+
+          assert Path('render.yaml').exists()
+          assert Path('cloudflare/cerebron-forge-gateway/wrangler.toml').exists()
+          assert Path('cerebron/forge/dashboard_export.py').exists()
+
+          render_text = Path('render.yaml').read_text()
+          assert 'plan: free' in render_text
+          assert 'healthCheckPath: /health' in render_text
+          assert 'CEREBRON_FORGE_TOKEN' in render_text
+
+          # Public binding must fail without a token.
+          env = dict(os.environ)
+          env.update({
+              'CEREBRON_FORGE_BIND': '0.0.0.0',
+              'CEREBRON_FORGE_PORT': '18765',
+              'CEREBRON_FORGE_TOKEN': '',
+          })
+          p = subprocess.run([sys.executable, '-m', 'cerebron.forge.server'], env=env,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=5)
+          assert p.returncode != 0
+          assert 'TOKEN is required' in (p.stdout + p.stderr)
+
+          # Read-only dashboard export must stay zero-euro.
+          with tempfile.TemporaryDirectory() as td:
+              db = str(Path(td) / 'forge.db')
+              out = str(Path(td) / 'dashboard.json')
+              env = dict(os.environ)
+              env.update({'CEREBRON_FORGE_DB': db, 'CEREBRON_DASHBOARD_OUT': out})
+              subprocess.run([sys.executable, '-m', 'cerebron.forge.dashboard_export'], env=env,
+                             check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+              snap = json.loads(Path(out).read_text())
+              assert snap['read_only'] is True
+              assert snap['compute_provider'] is False
+              assert snap['spend_limit_eur'] == 0
+              assert snap['paid_fallback'] is False
+
+          print(json.dumps({
+              'ok': True,
+              'schema': policy['schema'],
+              'spend_limit_eur': 0,
+              'paid_fallback': False,
+              'volunteer_compute': False,
+              'floot_compute_provider': False,
+              'public_bind_requires_token': True,
+          }, indent=2))
+          PY
+      - name: Compile Forge
+        run: python -m compileall -q cerebron/forge
