@@ -1,0 +1,21 @@
+name: CEREBRON C45 Rung 20
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence/c45_stage_0020.py'
+      - '.github/workflows/cerebron-c45-stage-0020.yml'
+  workflow_dispatch:
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run C45 rung 20
+        run: python cerebron/intelligence/c45_stage_0020.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-c45-stage-0020-results
+          path: c45_stage_0020_results.json
