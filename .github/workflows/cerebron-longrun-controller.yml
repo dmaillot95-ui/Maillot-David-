@@ -1,0 +1,44 @@
+name: CEREBRON Long-Run Campaign Controller
+
+on:
+  push:
+    paths:
+      - 'cerebron/federation/control/longrun.json'
+      - 'cerebron/federation/core/longrun_controller.py'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 0 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cerebron-federation-state-writer
+  cancel-in-progress: false
+
+jobs:
+  extend-campaign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Evaluate long-run campaign and expand if eligible
+        run: python cerebron/federation/core/longrun_controller.py
+      - name: Persist long-run state changes
+        run: |
+          git config user.name 'cerebron-federation-bot'
+          git config user.email 'cerebron-federation-bot@users.noreply.github.com'
+          git add \
+            cerebron/federation/state/mission-queue.json \
+            cerebron/federation/state/latest-state.json
+          if git diff --cached --quiet; then
+            echo 'No long-run state change.'
+          else
+            git commit -m 'Extend CEREBRON long-run campaign state'
+            git push
+          fi
