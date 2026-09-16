@@ -1,0 +1,27 @@
+name: CEREBRON C45 Rung 250
+
+on:
+  push:
+    paths:
+      - 'cerebron/intelligence/c45_stage_0250.py'
+      - 'cerebron/intelligence/c45_stage_0250_preregistration.json'
+      - '.github/workflows/cerebron-c45-stage-0250.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run C45 rung 250
+        run: python cerebron/intelligence/c45_stage_0250.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-c45-stage-0250-results
+          path: c45_stage_0250_results.json
