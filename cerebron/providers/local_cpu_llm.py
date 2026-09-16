@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Zero-euro local CPU LLM provider for CEREBRON Ω.
 
-Runs a small public instruction model locally on the current runner.
+Runs a public instruction model locally on the current runner.
 No inference API key is used and no paid fallback is permitted.
-The model/tokenizer are cached once per Python process so multiple tasks can reuse them.
+Remote model code is disabled by default and can only be enabled explicitly
+with CEREBRON_TRUST_REMOTE_CODE=true for repositories that require it.
 """
 from __future__ import annotations
 
@@ -21,6 +22,7 @@ DEFAULT_PROMPT = os.getenv(
 )
 MAX_NEW_TOKENS = int(os.getenv("CEREBRON_LOCAL_CPU_MAX_NEW_TOKENS", "96"))
 OUT = os.getenv("CEREBRON_LOCAL_CPU_OUT", "out/local-cpu-llm.json")
+TRUST_REMOTE_CODE = os.getenv("CEREBRON_TRUST_REMOTE_CODE", "false").strip().lower() in {"1", "true", "yes", "on"}
 
 _MODEL = None
 _TOKENIZER = None
@@ -35,8 +37,8 @@ def _load_runtime():
     with _LOAD_LOCK:
         if _MODEL is None or _TOKENIZER is None:
             from transformers import AutoModelForCausalLM, AutoTokenizer
-            _TOKENIZER = AutoTokenizer.from_pretrained(MODEL)
-            _MODEL = AutoModelForCausalLM.from_pretrained(MODEL)
+            _TOKENIZER = AutoTokenizer.from_pretrained(MODEL, trust_remote_code=TRUST_REMOTE_CODE)
+            _MODEL = AutoModelForCausalLM.from_pretrained(MODEL, trust_remote_code=TRUST_REMOTE_CODE)
     return _TOKENIZER, _MODEL
 
 
@@ -60,6 +62,7 @@ def invoke_local_cpu(prompt: str, max_new_tokens: int | None = None) -> dict[str
             "engine": "CEREBRON_LOCAL_CPU_LLM_V2",
             "provider": "github_actions_local_cpu_llm",
             "model": MODEL,
+            "trust_remote_code": TRUST_REMOTE_CODE,
             "ok": bool(answer),
             "answer": answer,
             "elapsed_s": round(time.time() - started, 3),
@@ -76,6 +79,7 @@ def invoke_local_cpu(prompt: str, max_new_tokens: int | None = None) -> dict[str
             "engine": "CEREBRON_LOCAL_CPU_LLM_V2",
             "provider": "github_actions_local_cpu_llm",
             "model": MODEL,
+            "trust_remote_code": TRUST_REMOTE_CODE,
             "ok": False,
             "answer": "",
             "elapsed_s": round(time.time() - started, 3),
