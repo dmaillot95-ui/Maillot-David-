@@ -1,0 +1,62 @@
+name: CEREBRON Integrations Selftest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'supabase/config.toml'
+      - 'supabase/functions/cerebron-worker/index.ts'
+      - 'cerebron/integrations/opencrane/**'
+      - '.github/workflows/cerebron-integrations-selftest.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  integrations-selftest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate Supabase and OpenCrane safe defaults
+        run: |
+          python - <<'PY'
+          import json, pathlib
+
+          cfg = pathlib.Path('supabase/config.toml').read_text()
+          assert '[functions.cerebron-worker]' in cfg
+          assert 'verify_jwt = false' in cfg
+
+          worker = pathlib.Path('supabase/functions/cerebron-worker/index.ts').read_text()
+          assert 'CEREBRON_WORKER_TOKEN' in worker
+          assert 'cost_eur: 0.0' in worker
+          assert 'paid_fallback: false' in worker
+
+          oc = json.loads(pathlib.Path('cerebron/integrations/opencrane/integration.json').read_text())
+          assert oc['state'] == 'PREPARED'
+          assert oc['counts_as_compute_worker'] is False
+          assert oc['external_execution_enabled'] is False
+          assert oc['paid_fallback'] is False
+          assert oc['spend_limit_eur'] == 0
+
+          out = {
+            'schema': 'cerebron-integrations-selftest-v1',
+            'supabase_prepared': True,
+            'opencrane_prepared': True,
+            'opencrane_counts_as_compute_worker': False,
+            'external_execution_enabled': False,
+            'spend_limit_eur': 0,
+            'paid_fallback': False
+          }
+          pathlib.Path('out').mkdir(exist_ok=True)
+          pathlib.Path('out/integrations-selftest.json').write_text(json.dumps(out, indent=2))
+          print(json.dumps(out, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-integrations-selftest
+          path: out/integrations-selftest.json
+          retention-days: 14
