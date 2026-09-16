@@ -5,6 +5,7 @@ on:
     paths:
       - 'cerebron/federation/control/command.json'
       - 'cerebron/federation/core/queue_engine.py'
+      - 'cerebron/federation/core/mission_admin.py'
   workflow_dispatch:
 
 permissions:
@@ -29,7 +30,7 @@ jobs:
         id: control
         run: |
           python - <<'PY'
-          import json, subprocess, sys
+          import json, subprocess
           from pathlib import Path
 
           cmd_path = Path('cerebron/federation/control/command.json')
@@ -37,6 +38,7 @@ jobs:
           action = str(cmd.get('action', 'NOP')).upper()
           p = cmd.get('parameters') or {}
           engine = ['python', 'cerebron/federation/core/queue_engine.py']
+          admin = ['python', 'cerebron/federation/core/mission_admin.py']
 
           def run(args):
               print('+', ' '.join(args))
@@ -58,6 +60,8 @@ jobs:
               if p.get('cycle') is not None:
                   args += ['--cycle', str(p['cycle'])]
               run(args)
+          elif action == 'CANCEL_MISSION':
+              run(admin + ['cancel', p['mission_id']])
           elif action == 'RECOVER':
               run(engine + ['recover'])
           elif action == 'STATUS':
