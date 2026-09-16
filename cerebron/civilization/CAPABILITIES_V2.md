@@ -127,3 +127,18 @@ Integration requires:
 - reversible decision
 - stored failure modes
 - no claim of superintelligence without benchmark evidence.
+
+### C11 — Campaign Experience Replay
+The civilization must reuse its own verified execution history instead of restarting from zero.
+
+Protocol:
+1. Build a provenance-preserving index from the persistent campaign state.
+2. Separate execution success from scientific or logical validation.
+3. Treat COMPLETED + result_ref records as review candidates until their evidence is audited.
+4. Route recurring FAILED_RETRYABLE and QUARANTINED patterns into failure-memory and redesign work.
+5. Route outcome-divergence groups to PROOF/REDTEAM before generating redundant hypotheses.
+6. Use measured historical role/model outcomes to inform routing, never as a truth score.
+7. Promote a historical strategy to validated Strategy Memory only after PROOF, REDTEAM and EVALUATOR gates.
+8. Preserve result_ref and record hashes so every promoted memory can be traced back to its source.
+
+Experience replay changes orchestration and memory use; it does not modify model weights by itself.
