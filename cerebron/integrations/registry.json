@@ -1,0 +1,21 @@
+{
+  "schema": "cerebron-integrations-v1",
+  "policy": {
+    "spend_limit_eur": 0,
+    "paid_fallback": false,
+    "card_required_allowed": false,
+    "credential_storage": "environment_only",
+    "claim_rule": "CLAIM<=EVIDENCE"
+  },
+  "integrations": {
+    "github": {"role": ["ci", "batch", "repository", "evidence"], "state": "connected"},
+    "supabase": {"role": ["state", "queue", "edge_function", "database"], "state": "prepared_not_connected", "compute_claim": "limited_edge_only"},
+    "infercrane": {"role": ["inference_orchestration", "routing", "observability", "release_guard"], "state": "prepared_optional", "compute_claim": "no_compute_by_itself"},
+    "cloudflare": {"role": ["gateway", "edge", "routing"], "state": "prepared_not_connected"},
+    "render": {"role": ["forge_server"], "state": "prepared_not_connected"},
+    "vercel": {"role": ["serverless_worker"], "state": "connector_present_no_team"},
+    "netlify": {"role": ["serverless_worker"], "state": "prepared_not_connected"},
+    "floot": {"role": ["dashboard", "repository_ui"], "state": "optional", "compute_claim": "not_primary_compute"},
+    "digitalocean": {"state": "excluded", "reason": "card_or_paid_path_not_allowed"}
+  }
+}
