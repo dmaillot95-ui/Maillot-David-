@@ -1,12 +1,14 @@
 {
-  "schema": "cerebron-role-routing-v1",
-  "updated_at": "2026-09-17T02:10:00+02:00",
+  "schema": "cerebron-role-routing-v2",
+  "updated_at": "2026-09-17T02:20:00+02:00",
   "principles": {
     "claim_le_evidence": true,
     "same_family_not_independent": true,
     "critical_claim_requires_cross_family_audit": true,
     "quality_over_uniform_distribution": true,
-    "scores_are_provisional_and_must_be_updated_from_audits": true
+    "scores_are_provisional_and_must_be_updated_from_audits": true,
+    "polymorphic_subject_roles": true,
+    "worker_role_can_change_with_active_lock": true
   },
   "models": {
     "gemma9b": {
@@ -47,6 +49,71 @@
     "DECOMPOSER": ["llama3b", "gemma2b", "gemma9b"],
     "SCOUT": ["gemma2b", "llama3b"]
   },
+  "collatz_polymorphic_roles": {
+    "THEORETICAL_MATHEMATICIAN": {
+      "mission": "build global proof structures, identify invariants, necessary/sufficient conditions, and arbitrary-N arguments",
+      "preferred_workers": ["llama3b", "gemma9b"]
+    },
+    "NUMBER_THEORIST": {
+      "mission": "congruences, valuations, Diophantine constraints, linear forms in logarithms, factor/order arguments",
+      "preferred_workers": ["llama3b", "gemma9b"]
+    },
+    "DYNAMICAL_SYSTEMS_SPECIALIST": {
+      "mission": "orbits, first-return maps, drift, recurrence, excursions, invariant or nonrecyclable quantities",
+      "preferred_workers": ["llama3b", "gemma9b"]
+    },
+    "COMBINATORICS_SPECIALIST": {
+      "mission": "valuation words, run packing, word entropy, automata, admissible histories, prefix/Kraft structures",
+      "preferred_workers": ["llama3b", "gemma2b"]
+    },
+    "ERGODIC_SPECTRAL_SPECIALIST": {
+      "mission": "transfer operators, renewal operators, spectral radius, critical subgraphs, measure-versus-count distinctions",
+      "preferred_workers": ["gemma9b", "llama3b"]
+    },
+    "P_ADIC_SPECIALIST": {
+      "mission": "2-adic reconstruction, residue cylinders, exact valuation classes, CRT compatibility and local realizability",
+      "preferred_workers": ["llama3b", "gemma9b"]
+    },
+    "ARCHIMEDEAN_ANALYST": {
+      "mission": "real interval geometry, dyadic bands, normalized height, analytic inequalities and finite-interval consequences",
+      "preferred_workers": ["gemma9b", "llama3b"]
+    },
+    "DIOPHANTINE_SPECIALIST": {
+      "mission": "lower bounds for logarithmic forms, rational approximation, gap inequalities and minimum-cycle bounds",
+      "preferred_workers": ["gemma9b", "llama3b"]
+    },
+    "FORMAL_PROOF_AUDITOR": {
+      "mission": "check quantifiers, hidden assumptions, circularity, exact domains, implication direction and arbitrary-N validity",
+      "preferred_workers": ["gemma9b", "llama3b"]
+    },
+    "COUNTEREXAMPLE_HUNTER": {
+      "mission": "construct pseudo-orbits, critical families, countermodels and adversarial parameter regimes",
+      "preferred_workers": ["llama3b", "gemma2b"]
+    },
+    "COMPUTATIONAL_EXPERIMENTER": {
+      "mission": "run finite symbolic/numeric experiments only to generate or falsify conjectures; never count computation as proof",
+      "preferred_workers": ["gemma2b", "llama3b"]
+    },
+    "PROOF_SYNTHESIST": {
+      "mission": "merge surviving lemmas into the shortest rigorous proof chain and expose the unique residual",
+      "preferred_workers": ["gemma9b", "llama3b"]
+    },
+    "POLYMORPHIC_MATHEMATICIAN": {
+      "mission": "switch among the above mathematical identities according to the active bottleneck, while preserving the same evidence rules",
+      "preferred_workers": ["llama3b", "gemma9b", "gemma2b"],
+      "routing_rule": "choose specialist persona from the active lock; do not keep a fixed persona when the residual changes"
+    }
+  },
+  "collatz_lock_to_role_router": {
+    "valuation_congruence": ["NUMBER_THEORIST", "P_ADIC_SPECIALIST", "FORMAL_PROOF_AUDITOR"],
+    "cycle_closure": ["THEORETICAL_MATHEMATICIAN", "DIOPHANTINE_SPECIALIST", "FORMAL_PROOF_AUDITOR"],
+    "run_packing": ["COMBINATORICS_SPECIALIST", "DYNAMICAL_SYSTEMS_SPECIALIST", "COUNTEREXAMPLE_HUNTER"],
+    "first_return_excursion": ["DYNAMICAL_SYSTEMS_SPECIALIST", "ARCHIMEDEAN_ANALYST", "ERGODIC_SPECTRAL_SPECIALIST"],
+    "spectral_operator": ["ERGODIC_SPECTRAL_SPECIALIST", "ARCHIMEDEAN_ANALYST", "FORMAL_PROOF_AUDITOR"],
+    "word_entropy": ["COMBINATORICS_SPECIALIST", "P_ADIC_SPECIALIST", "ERGODIC_SPECTRAL_SPECIALIST"],
+    "linear_forms": ["DIOPHANTINE_SPECIALIST", "NUMBER_THEORIST", "FORMAL_PROOF_AUDITOR"],
+    "new_unknown": ["POLYMORPHIC_MATHEMATICIAN", "COUNTEREXAMPLE_HUNTER", "THEORETICAL_MATHEMATICIAN"]
+  },
   "critical_workflow": {
     "primary_prover_family": "llama-3.2",
     "primary_judge_family": "gemma-2",
@@ -54,6 +121,7 @@
       "one explicit proof artifact",
       "one cross-family adversarial audit",
       "one independent replication or counter-audit",
+      "one specialist-role audit matched to the active mathematical lock",
       "assistant formal verification"
     ]
   },
@@ -64,8 +132,10 @@
       "score false-positive closure rate",
       "score successful falsification rate",
       "score replication agreement",
+      "score performance by mathematical specialty",
       "demote roles after repeated unsupported claims",
-      "promote roles after repeated audited successes"
+      "promote roles after repeated audited successes",
+      "allow polymorphic reassignment when the bottleneck changes"
     ]
   }
 }
