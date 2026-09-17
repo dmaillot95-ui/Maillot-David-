@@ -1,0 +1,71 @@
+{
+  "schema": "cerebron-role-routing-v1",
+  "updated_at": "2026-09-17T02:10:00+02:00",
+  "principles": {
+    "claim_le_evidence": true,
+    "same_family_not_independent": true,
+    "critical_claim_requires_cross_family_audit": true,
+    "quality_over_uniform_distribution": true,
+    "scores_are_provisional_and_must_be_updated_from_audits": true
+  },
+  "models": {
+    "gemma9b": {
+      "family": "gemma-2",
+      "preferred_roles": ["JUDGE", "COUNTER_AUDITOR", "PROOF_B", "SYNTHESIZER"],
+      "secondary_roles": ["RED_TEAM", "REPLICATOR", "PROOF_A"],
+      "avoid_roles": ["SCOUT"],
+      "provisional_strengths": ["conservative verdicts", "gap detection", "counter-audit", "proof checking"],
+      "provisional_weaknesses": ["can produce unsupported formal claims when used as sole prover"]
+    },
+    "llama3b": {
+      "family": "llama-3.2",
+      "preferred_roles": ["PROOF_A", "ALTERNATIVE_ROUTE", "FALSIFIER", "DECOMPOSER", "REPLICATOR"],
+      "secondary_roles": ["RED_TEAM", "SYNTHESIZER", "PROOF_B"],
+      "avoid_roles": ["sole final JUDGE"],
+      "provisional_strengths": ["derivation generation", "alternative constructions", "falsification search", "independent replication"],
+      "provisional_weaknesses": ["higher risk of overclaiming closure without external audit"]
+    },
+    "gemma2b": {
+      "family": "gemma-2",
+      "preferred_roles": ["SCOUT", "DECOMPOSER", "RED_TEAM"],
+      "secondary_roles": ["FALSIFIER", "REPLICATOR"],
+      "avoid_roles": ["JUDGE", "sole PROOF_A", "sole PROOF_B"],
+      "provisional_strengths": ["cheap breadth", "first-pass decomposition", "adversarial scanning"],
+      "provisional_weaknesses": ["smaller model", "not independent from gemma9b", "not suitable as sole authority on deep proof"]
+    }
+  },
+  "role_assignment": {
+    "PROOF_A": ["llama3b", "gemma9b"],
+    "PROOF_B": ["gemma9b", "llama3b"],
+    "ALTERNATIVE_ROUTE": ["llama3b", "gemma9b"],
+    "FALSIFIER": ["llama3b", "gemma2b"],
+    "RED_TEAM": ["gemma9b", "llama3b", "gemma2b"],
+    "COUNTER_AUDITOR": ["gemma9b", "llama3b"],
+    "REPLICATOR": ["llama3b", "gemma9b"],
+    "SYNTHESIZER": ["gemma9b", "llama3b"],
+    "JUDGE": ["gemma9b", "llama3b"],
+    "DECOMPOSER": ["llama3b", "gemma2b", "gemma9b"],
+    "SCOUT": ["gemma2b", "llama3b"]
+  },
+  "critical_workflow": {
+    "primary_prover_family": "llama-3.2",
+    "primary_judge_family": "gemma-2",
+    "required_for_acceptance": [
+      "one explicit proof artifact",
+      "one cross-family adversarial audit",
+      "one independent replication or counter-audit",
+      "assistant formal verification"
+    ]
+  },
+  "update_rule": {
+    "after_each_wave": [
+      "score mathematical correctness",
+      "score useful novelty",
+      "score false-positive closure rate",
+      "score successful falsification rate",
+      "score replication agreement",
+      "demote roles after repeated unsupported claims",
+      "promote roles after repeated audited successes"
+    ]
+  }
+}
