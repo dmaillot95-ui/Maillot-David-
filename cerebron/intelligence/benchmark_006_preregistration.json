@@ -163,6 +163,72 @@
       "Solver/grader separation tests pass.",
       "No known syntax, leakage or polarity defect remains."
     ],
-    "current_authorization": "preregistration_only"
+    "current_authorization": "implementation_and_development_tests_only"
+  },
+  "b1_development_protocol": {
+    "status": "frozen_before_implementation",
+    "task": "One-step prediction of fully observed binary controlled dynamical systems.",
+    "state_dimension_bits": 6,
+    "action_dimension_bits": 3,
+    "families": [
+      {
+        "name": "affine_gf2",
+        "equation": "x_next = A*x XOR B*u XOR c over GF(2)",
+        "episodes_per_seed": 40
+      },
+      {
+        "name": "local_xor_ring",
+        "equation": "Each next-state bit is an unknown XOR mask over local state neighbours and action bits plus bias.",
+        "episodes_per_seed": 40
+      }
+    ],
+    "split": {
+      "fit_transitions": 48,
+      "validation_transitions": 24,
+      "query_transitions": 64,
+      "query_pairs_disjoint_from_fit_and_validation": true
+    },
+    "intervention_policy": "Actions are externally sampled and included in the public solver input; latent matrices, masks and query targets remain grader-only.",
+    "horizon": 1,
+    "primary_loss": "Mean next-state bit error on query transitions, averaged per seed then across seeds.",
+    "secondary_metrics": [
+      "exact_next_state_accuracy",
+      "model_size_bits",
+      "primitive_gf2_operations",
+      "fit_operations",
+      "prediction_operations",
+      "cpu_time_ns",
+      "wall_time_ns"
+    ],
+    "conditions": {
+      "active": "Infer a compact GF(2) transition model from fit data, freeze it, choose only among preregistered model classes using validation data, then predict query transitions.",
+      "competitive_baseline": "Validation-selected empirical nearest-neighbour / per-bit majority transition predictor with the same public observations and charged prediction work.",
+      "sham": "Same model representation, dimensions and fitting interface as active, but fit targets are shuffled using a public development-only sham seed independent of task/query seeds.",
+      "ablation": "No persistent fitted model; recompute predictions from the same fit observations for each query and charge every recomputation.",
+      "budget_reallocation": "Baseline may spend the active condition's unused operation allowance on additional preregistered candidate evaluation, never on extra data."
+    },
+    "representation_test": "Apply a consistent invertible permutation of state coordinates to fit, validation and query inputs; retrain each condition; score after inverse mapping. The permutation is fixed per development seed and unavailable as a special feature.",
+    "leakage_canaries": [
+      "query_target_hash",
+      "latent_parameter_hash",
+      "private_family_label_token",
+      "holdout_seed_token"
+    ],
+    "development_seeds": [
+      6101,
+      6102,
+      6103,
+      6104,
+      6105,
+      6106
+    ],
+    "useful_effect_threshold": {
+      "absolute_bit_error_reduction": 0.02,
+      "applies_against": [
+        "competitive_baseline",
+        "sham"
+      ]
+    },
+    "development_decision": "Sensitivity and implementation validation only. Results cannot promote any architecture."
   }
 }
