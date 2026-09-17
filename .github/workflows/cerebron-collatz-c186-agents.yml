@@ -1,0 +1,154 @@
+name: CEREBRON Collatz C186 Agent Wave
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cerebron-collatz-c186-agents.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cerebron-collatz-c186-agent-wave
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      has_work: ${{ steps.plan.outputs.has_work }}
+      family_count: ${{ steps.plan.outputs.family_count }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          roles=['DECOMPOSER','PROOF_A','PROOF_B','ALTERNATIVE_ROUTE','FALSIFIER','RED_TEAM','COUNTER_AUDITOR','REPLICATOR','SYNTHESIZER','JUDGE']
+          focus={
+            'DECOMPOSER':'decompose the joint first-return renewal problem including short and long valuations in one operator',
+            'PROOF_A':'derive an exact renewal/generating function over full symbols b>=2 and prove all convergence steps',
+            'PROOF_B':'seek a spectral-radius bound rho<1 or prove the radius is forced to 1',
+            'ALTERNATIVE_ROUTE':'seek a non-Kraft nonrecyclable resource per excursion or another universal obstruction',
+            'FALSIFIER':'construct formal renewal systems showing why weighted mass or truncation cannot imply finite-band sparsity',
+            'RED_TEAM':'attack any claimed contraction, especially hidden union bounds and finite-interval measure/count confusion',
+            'COUNTER_AUDITOR':'audit the no-go and distinguish true obstructions from artifacts of over-relaxation',
+            'REPLICATOR':'independently rederive any spectral/generating-function claim and constants',
+            'SYNTHESIZER':'extract only proved lemmas, no-go results, exact dependencies and the unique residual',
+            'JUDGE':'classify PROVED/REFUTED/HOLD and reject CYCLES CLOSED without arbitrary-N contradiction'
+          }
+          reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
+          families={}
+          for mid,m in reg.get('models',{}).items():
+            if m.get('status') not in {'HEALTHY','PROBATION'}: continue
+            if m.get('cost_class')!='ZERO_EURO_PUBLIC_SPACE': continue
+            fam=m.get('family') or mid
+            cur=families.get(fam)
+            size=float(str(m.get('size_class','0')).upper().replace('B','') or 0)
+            if cur is None or size>cur[0]: families[fam]=(size,mid,m)
+          selected=[(fam,v[1],v[2]) for fam,v in sorted(families.items())]
+          pairs=[]
+          for role in roles:
+            for fam,mid,m in selected:
+              if role in m.get('roles_allowed',[]):
+                pairs.append({'role':role,'focus':focus[role],'family':fam,'model_id':mid})
+          pairs=pairs[:20]
+          print('matrix='+json.dumps({'include':pairs},separators=(',',':')))
+          print('has_work='+('true' if pairs else 'false'))
+          print('family_count='+str(len(selected)))
+          PY
+
+  external-agent:
+    needs: plan
+    if: needs.plan.outputs.has_work == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free public-space client
+        run: pip install --quiet hf-gradio
+      - name: Execute Collatz external AI agent
+        env:
+          ROLE: ${{ matrix.role }}
+          FOCUS: ${{ matrix.focus }}
+          MODEL_ID: ${{ matrix.model_id }}
+          FAMILY: ${{ matrix.family }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,os,sys,hashlib
+          from pathlib import Path
+          sys.path.insert(0,'cerebron/federation/core')
+          import shard_worker
+          reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
+          mission_text=Path('cerebron/intelligence/COLLATZ-C186-C195-AGENT-MISSION.md').read_text()
+          mid=os.environ['MODEL_ID']; role=os.environ['ROLE']; fam=os.environ['FAMILY']; focus=os.environ['FOCUS']
+          model={'model_id':mid, **reg['models'][mid]}
+          task={'task_id':f'COLLATZ-C186-{role}-{mid}','role':role,'civilization':'CEREBRON','team':'COLLATZ_C186','mission_id':'COLLATZ-C186'}
+          mission={'title':'COLLATZ C186 — JOINT RENEWAL / LONG-DEFECT BALANCE','objective':focus}
+          base=shard_worker.role_prompt(task,mission,'Attack the C185/C186 joint renewal lock')
+          prompt=base+'\n\nCHECKPOINT AND EXACT MISSION:\n'+mission_text+'\n\nYOUR UNIQUE FOCUS:\n'+focus+'\nReturn compact mathematics, not generic advice.'
+          ok,text,meta=shard_worker.invoke_hf(model,prompt)
+          result={'schema':'cerebron-collatz-c186-agent-v1','role':role,'focus':focus,'model_id':mid,'model_family':fam,'provider':'huggingface_public_spaces','ok':bool(ok),'execution_status':'COMPLETED' if ok else 'FAILED_RETRYABLE','endpoint':meta.get('endpoint'),'error_type':meta.get('error_type'),'error':meta.get('error'),'response':text if ok else None,'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'}
+          Path('out/result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: collatz-c186-${{ matrix.role }}-${{ matrix.model_id }}
+          path: out/result.json
+          retention-days: 14
+
+  omega-fusion:
+    needs: [plan, external-agent]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.has_work == 'true'
+        with:
+          pattern: collatz-c186-*
+          path: results
+          merge-multiple: false
+      - name: Build evidence packet and accounting report
+        env:
+          FAMILY_COUNT: ${{ needs.plan.outputs.family_count }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          rows=[]
+          for p in Path('results').rglob('result.json') if Path('results').exists() else []:
+            try: rows.append(json.loads(p.read_text()))
+            except Exception: pass
+          ok=[r for r in rows if r.get('ok')]
+          families=sorted({r.get('model_family') for r in ok if r.get('model_family')})
+          roles=sorted({r.get('role') for r in ok if r.get('role')})
+          packet='\n\n'.join('AGENT '+str(i+1)+' | '+str(r.get('role'))+' | '+str(r.get('model_family'))+' | '+str(r.get('model_id'))+'\n'+str(r.get('response') or '') for i,r in enumerate(ok))
+          report={'schema':'cerebron-collatz-c186-omega-v1','planned_independent_families':int(os.environ.get('FAMILY_COUNT') or 0),'artifact_rows':len(rows),'successful_external_ai_calls':len(ok),'successful_model_families':families,'successful_roles':roles,'independent_engine_count':len(families),'independence_rule':'same model family is not an independent engine','claim_note':'Agent outputs remain unaudited hypotheses until mathematically checked.'}
+          Path('c186-agent-accounting.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          Path('c186-agent-packet.txt').write_text(packet)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: collatz-c186-omega-packet
+          path: |
+            c186-agent-accounting.json
+            c186-agent-packet.txt
+          retention-days: 14
