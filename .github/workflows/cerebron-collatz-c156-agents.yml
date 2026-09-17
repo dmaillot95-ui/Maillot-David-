@@ -1,0 +1,158 @@
+name: CEREBRON Collatz C156 Agent Wave
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cerebron-collatz-c156-agents.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cerebron-collatz-c156-agent-wave
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      has_work: ${{ steps.plan.outputs.has_work }}
+      family_count: ${{ steps.plan.outputs.family_count }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          roles=['DECOMPOSER','PROOF_A','PROOF_B','ALTERNATIVE_ROUTE','FALSIFIER','RED_TEAM','COUNTER_AUDITOR','REPLICATOR','SYNTHESIZER','JUDGE']
+          focus={
+            'DECOMPOSER':'decompose short-b band excursions into minimal independent exit/crossing/reentry lemmas',
+            'PROOF_A':'derive a rigorous minimum excursion cost or non-recyclable log-height/valuation budget per short-b exit',
+            'PROOF_B':'derive an independent exact residue-word coding bound for exit-to-reentry words',
+            'ALTERNATIVE_ROUTE':'seek graph-flow, renewal, transfer-operator, crossing-number, charging, or another independent route to bound excursions',
+            'FALSIFIER':'construct formal words/pseudo-orbits with many short-b exits; distinguish local realizability from true cyclic realizability',
+            'RED_TEAM':'attack every claimed sublinear excursion bound and expose hidden probability/circularity',
+            'COUNTER_AUDITOR':'audit red-team objections and identify false objections/shared blind spots',
+            'REPLICATOR':'independently rederive any candidate excursion-count lemma',
+            'SYNTHESIZER':'extract only supported excursion bounds, counterexamples, residuals, and dependencies',
+            'JUDGE':'classify claims PROVED/REFUTED/HOLD and state exact missing universal step'
+          }
+          reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
+          families={}
+          for mid,m in reg.get('models',{}).items():
+            if m.get('status') not in {'HEALTHY','PROBATION'}: continue
+            if m.get('cost_class')!='ZERO_EURO_PUBLIC_SPACE': continue
+            fam=m.get('family') or mid
+            cur=families.get(fam)
+            size=float(str(m.get('size_class','0')).upper().replace('B','') or 0)
+            if cur is None or size>cur[0]: families[fam]=(size,mid,m)
+          selected=[(fam,v[1],v[2]) for fam,v in sorted(families.items())]
+          pairs=[]
+          for role in roles:
+            for fam,mid,m in selected:
+              if role in m.get('roles_allowed',[]):
+                pairs.append({'role':role,'focus':focus[role],'family':fam,'model_id':mid})
+          pairs=pairs[:20]
+          print('matrix='+json.dumps({'include':pairs},separators=(',',':')))
+          print('has_work='+('true' if pairs else 'false'))
+          print('family_count='+str(len(selected)))
+          PY
+
+  external-agent:
+    needs: plan
+    if: needs.plan.outputs.has_work == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free public-space client
+        run: pip install --quiet hf-gradio
+      - name: Execute Collatz external AI agent
+        env:
+          ROLE: ${{ matrix.role }}
+          FOCUS: ${{ matrix.focus }}
+          MODEL_ID: ${{ matrix.model_id }}
+          FAMILY: ${{ matrix.family }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,os,sys,hashlib
+          from pathlib import Path
+          sys.path.insert(0,'cerebron/federation/core')
+          import shard_worker
+          reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
+          mission_text=Path('cerebron/collatz/C156-C165-EXCURSION-COUNT-MISSION.md').read_text()
+          mid=os.environ['MODEL_ID']; role=os.environ['ROLE']; fam=os.environ['FAMILY']; focus=os.environ['FOCUS']
+          model={'model_id':mid, **reg['models'][mid]}
+          task={'task_id':f'COLLATZ-C156-{role}-{mid}','role':role,'civilization':'CEREBRON','team':'COLLATZ_C156','mission_id':'COLLATZ-C156'}
+          mission={'title':'COLLATZ C156 — SHORT-b BAND EXCURSION COUNT','objective':focus}
+          base=shard_worker.role_prompt(task,mission,'Attack the C155/C156 short-b excursion-count lock')
+          prompt=base+'\n\nCHECKPOINT AND EXACT MISSION:\n'+mission_text+'\n\nYOUR UNIQUE FOCUS:\n'+focus+'\nReturn compact mathematics, not generic advice.'
+          ok,text,meta=shard_worker.invoke_hf(model,prompt)
+          result={'schema':'cerebron-collatz-c156-agent-v1','role':role,'focus':focus,'model_id':mid,'model_family':fam,'provider':'huggingface_public_spaces','ok':bool(ok),'execution_status':'COMPLETED' if ok else 'FAILED_RETRYABLE','endpoint':meta.get('endpoint'),'error_type':meta.get('error_type'),'error':meta.get('error'),'response':text if ok else None,'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'}
+          Path('out/result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps({k:v for k,v in result.items() if k!='response'},ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: collatz-c156-${{ matrix.role }}-${{ matrix.model_id }}
+          path: out/result.json
+          retention-days: 14
+
+  omega-fusion:
+    needs: [plan, external-agent]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.has_work == 'true'
+        with:
+          pattern: collatz-c156-*
+          path: results
+          merge-multiple: false
+      - name: Build evidence packet and accounting report
+        env:
+          FAMILY_COUNT: ${{ needs.plan.outputs.family_count }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          rows=[]
+          root=Path('results')
+          if root.exists():
+            for p in root.rglob('result.json'):
+              try: rows.append(json.loads(p.read_text()))
+              except Exception: pass
+          ok=[r for r in rows if r.get('ok')]
+          families=sorted({r.get('model_family') for r in ok if r.get('model_family')})
+          roles=sorted({r.get('role') for r in ok if r.get('role')})
+          packet='\n\n'.join('AGENT '+str(i+1)+' | '+str(r.get('role'))+' | '+str(r.get('model_family'))+' | '+str(r.get('model_id'))+'\n'+str(r.get('response') or '') for i,r in enumerate(ok))
+          report={'schema':'cerebron-collatz-c156-omega-v1','planned_independent_families':int(os.environ.get('FAMILY_COUNT') or 0),'artifact_rows':len(rows),'successful_external_ai_calls':len(ok),'successful_model_families':families,'successful_roles':roles,'independent_engine_count':len(families),'independence_rule':'calls from the same model family are not independent engines','claim_note':'Agent outputs are hypotheses/evidence candidates until audited; successful calls are real external AI executions.'}
+          Path('c156-agent-accounting.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          Path('c156-agent-packet.txt').write_text(packet)
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: collatz-c156-omega-packet
+          path: |
+            c156-agent-accounting.json
+            c156-agent-packet.txt
+          retention-days: 14
