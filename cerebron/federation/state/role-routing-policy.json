@@ -1,6 +1,6 @@
 {
-  "schema": "cerebron-role-routing-v3",
-  "updated_at": "2026-09-17T04:16:00+02:00",
+  "schema": "cerebron-role-routing-v4",
+  "updated_at": "2026-09-17T04:18:00+02:00",
   "principles": {
     "claim_le_evidence": true,
     "same_family_not_independent": true,
@@ -10,120 +10,85 @@
     "polymorphic_subject_roles": true,
     "worker_role_can_change_with_active_lock": true,
     "assistant_is_active_research_coordinator": true,
-    "assistant_must_not_only_observe": true
+    "assistant_must_not_only_observe": true,
+    "minimum_distinct_functions_per_full_collatz_wave": 20,
+    "add_specialties_before_duplicate_roles_when_capacity_grows": true
   },
   "models": {
-    "gemma9b": {
-      "family": "gemma-2",
-      "preferred_roles": ["JUDGE", "COUNTER_AUDITOR", "PROOF_B", "SYNTHESIZER"],
-      "secondary_roles": ["RED_TEAM", "REPLICATOR", "PROOF_A"],
-      "avoid_roles": ["SCOUT"],
-      "provisional_strengths": ["conservative verdicts", "gap detection", "counter-audit", "proof checking"],
-      "provisional_weaknesses": ["can produce unsupported formal claims when used as sole prover"]
-    },
-    "llama3b": {
-      "family": "llama-3.2",
-      "preferred_roles": ["PROOF_A", "ALTERNATIVE_ROUTE", "FALSIFIER", "DECOMPOSER", "REPLICATOR"],
-      "secondary_roles": ["RED_TEAM", "SYNTHESIZER", "PROOF_B"],
-      "avoid_roles": ["sole final JUDGE"],
-      "provisional_strengths": ["derivation generation", "alternative constructions", "falsification search", "independent replication"],
-      "provisional_weaknesses": ["higher risk of overclaiming closure without external audit"]
-    },
-    "gemma2b": {
-      "family": "gemma-2",
-      "preferred_roles": ["SCOUT", "DECOMPOSER", "RED_TEAM"],
-      "secondary_roles": ["FALSIFIER", "REPLICATOR"],
-      "avoid_roles": ["JUDGE", "sole PROOF_A", "sole PROOF_B"],
-      "provisional_strengths": ["cheap breadth", "first-pass decomposition", "adversarial scanning"],
-      "provisional_weaknesses": ["smaller model", "not independent from gemma9b", "not suitable as sole authority on deep proof"]
-    }
+    "gemma9b": {"family":"gemma-2","preferred_roles":["JUDGE","COUNTER_AUDITOR","PROOF_B","SYNTHESIZER"],"secondary_roles":["RED_TEAM","REPLICATOR","PROOF_A"],"avoid_roles":["SCOUT"],"provisional_strengths":["conservative verdicts","gap detection","counter-audit","proof checking"],"provisional_weaknesses":["can produce unsupported formal claims when used as sole prover"]},
+    "llama3b": {"family":"llama-3.2","preferred_roles":["PROOF_A","ALTERNATIVE_ROUTE","FALSIFIER","DECOMPOSER","REPLICATOR"],"secondary_roles":["RED_TEAM","SYNTHESIZER","PROOF_B"],"avoid_roles":["sole final JUDGE"],"provisional_strengths":["derivation generation","alternative constructions","falsification search","independent replication"],"provisional_weaknesses":["higher risk of overclaiming closure without external audit"]},
+    "gemma2b": {"family":"gemma-2","preferred_roles":["SCOUT","DECOMPOSER","RED_TEAM"],"secondary_roles":["FALSIFIER","REPLICATOR"],"avoid_roles":["JUDGE","sole PROOF_A","sole PROOF_B"],"provisional_strengths":["cheap breadth","first-pass decomposition","adversarial scanning"],"provisional_weaknesses":["smaller model","not independent from gemma9b","not suitable as sole authority on deep proof"]}
   },
+  "minimum_20_role_team": [
+    "1_THEORETICAL_MATHEMATICIAN",
+    "2_NUMBER_THEORIST",
+    "3_DYNAMICAL_SYSTEMS_SPECIALIST",
+    "4_COMBINATORICS_SPECIALIST",
+    "5_ERGODIC_SPECTRAL_SPECIALIST",
+    "6_P_ADIC_SPECIALIST",
+    "7_ARCHIMEDEAN_ANALYST",
+    "8_DIOPHANTINE_SPECIALIST",
+    "9_PROOF_CREATOR_A",
+    "10_PROOF_CREATOR_B",
+    "11_VERIFIER",
+    "12_FORMAL_PROOF_AUDITOR",
+    "13_COUNTER_AUDITOR",
+    "14_FALSIFIER",
+    "15_COUNTEREXAMPLE_HUNTER",
+    "16_REPLICATOR",
+    "17_COMPUTATIONAL_EXPERIMENTER",
+    "18_PROOF_SYNTHESIST",
+    "19_JUDGE",
+    "20_META_COORDINATOR"
+  ],
   "role_assignment": {
-    "PROOF_A": ["llama3b", "gemma9b"],
-    "PROOF_B": ["gemma9b", "llama3b"],
-    "ALTERNATIVE_ROUTE": ["llama3b", "gemma9b"],
-    "FALSIFIER": ["llama3b", "gemma2b"],
-    "RED_TEAM": ["gemma9b", "llama3b", "gemma2b"],
-    "COUNTER_AUDITOR": ["gemma9b", "llama3b"],
-    "REPLICATOR": ["llama3b", "gemma9b"],
-    "SYNTHESIZER": ["gemma9b", "llama3b"],
-    "JUDGE": ["gemma9b", "llama3b"],
-    "DECOMPOSER": ["llama3b", "gemma2b", "gemma9b"],
-    "SCOUT": ["gemma2b", "llama3b"]
+    "PROOF_A":["llama3b","gemma9b"],"PROOF_B":["gemma9b","llama3b"],"ALTERNATIVE_ROUTE":["llama3b","gemma9b"],"FALSIFIER":["llama3b","gemma2b"],"RED_TEAM":["gemma9b","llama3b","gemma2b"],"COUNTER_AUDITOR":["gemma9b","llama3b"],"REPLICATOR":["llama3b","gemma9b"],"SYNTHESIZER":["gemma9b","llama3b"],"JUDGE":["gemma9b","llama3b"],"DECOMPOSER":["llama3b","gemma2b","gemma9b"],"SCOUT":["gemma2b","llama3b"]
   },
   "collatz_polymorphic_roles": {
-    "THEORETICAL_MATHEMATICIAN": {"mission": "build global proof structures, invariants, necessary/sufficient conditions and arbitrary-N arguments", "preferred_workers": ["llama3b", "gemma9b"]},
-    "NUMBER_THEORIST": {"mission": "congruences, valuations, Diophantine constraints, factor/order and modular arguments", "preferred_workers": ["llama3b", "gemma9b"]},
-    "DYNAMICAL_SYSTEMS_SPECIALIST": {"mission": "orbits, first-return maps, recurrence, excursions and nonrecyclable quantities", "preferred_workers": ["llama3b", "gemma9b"]},
-    "COMBINATORICS_SPECIALIST": {"mission": "valuation words, packing, entropy, automata and prefix structures", "preferred_workers": ["llama3b", "gemma2b"]},
-    "ERGODIC_SPECTRAL_SPECIALIST": {"mission": "transfer operators, renewal, spectral radius and measure/count separation", "preferred_workers": ["gemma9b", "llama3b"]},
-    "P_ADIC_SPECIALIST": {"mission": "2-adic reconstruction, residue cylinders, exact valuation classes and CRT compatibility", "preferred_workers": ["llama3b", "gemma9b"]},
-    "ARCHIMEDEAN_ANALYST": {"mission": "real interval geometry, dyadic bands, normalized height and analytic inequalities", "preferred_workers": ["gemma9b", "llama3b"]},
-    "DIOPHANTINE_SPECIALIST": {"mission": "logarithmic forms, approximation, gap inequalities and minimum-cycle bounds", "preferred_workers": ["gemma9b", "llama3b"]},
-    "FORMAL_PROOF_AUDITOR": {"mission": "quantifiers, hidden assumptions, circularity, exact domains and arbitrary-N validity", "preferred_workers": ["gemma9b", "llama3b"]},
-    "COUNTEREXAMPLE_HUNTER": {"mission": "pseudo-orbits, critical families, countermodels and adversarial regimes", "preferred_workers": ["llama3b", "gemma2b"]},
-    "COMPUTATIONAL_EXPERIMENTER": {"mission": "finite experiments to generate/falsify conjectures, never as proof", "preferred_workers": ["gemma2b", "llama3b"]},
-    "PROOF_SYNTHESIST": {"mission": "merge surviving lemmas into the shortest rigorous chain and expose the residual", "preferred_workers": ["gemma9b", "llama3b"]},
-    "POLYMORPHIC_MATHEMATICIAN": {"mission": "switch specialty according to the active bottleneck while preserving evidence rules", "preferred_workers": ["llama3b", "gemma9b", "gemma2b"], "routing_rule": "choose specialist persona from active lock; do not keep a fixed persona when residual changes"}
+    "THEORETICAL_MATHEMATICIAN":{"mission":"build global proof structures, invariants, necessary/sufficient conditions and arbitrary-N arguments","preferred_workers":["llama3b","gemma9b"]},
+    "NUMBER_THEORIST":{"mission":"congruences, valuations, Diophantine constraints, factor/order and modular arguments","preferred_workers":["llama3b","gemma9b"]},
+    "DYNAMICAL_SYSTEMS_SPECIALIST":{"mission":"orbits, first-return maps, recurrence, excursions and nonrecyclable quantities","preferred_workers":["llama3b","gemma9b"]},
+    "COMBINATORICS_SPECIALIST":{"mission":"valuation words, packing, entropy, automata and prefix structures","preferred_workers":["llama3b","gemma2b"]},
+    "ERGODIC_SPECTRAL_SPECIALIST":{"mission":"transfer operators, renewal, spectral radius and measure/count separation","preferred_workers":["gemma9b","llama3b"]},
+    "P_ADIC_SPECIALIST":{"mission":"2-adic reconstruction, residue cylinders, exact valuation classes and CRT compatibility","preferred_workers":["llama3b","gemma9b"]},
+    "ARCHIMEDEAN_ANALYST":{"mission":"real interval geometry, dyadic bands, normalized height and analytic inequalities","preferred_workers":["gemma9b","llama3b"]},
+    "DIOPHANTINE_SPECIALIST":{"mission":"logarithmic forms, approximation, gap inequalities and minimum-cycle bounds","preferred_workers":["gemma9b","llama3b"]},
+    "FORMAL_PROOF_AUDITOR":{"mission":"quantifiers, hidden assumptions, circularity, exact domains and arbitrary-N validity","preferred_workers":["gemma9b","llama3b"]},
+    "COUNTEREXAMPLE_HUNTER":{"mission":"pseudo-orbits, critical families, countermodels and adversarial regimes","preferred_workers":["llama3b","gemma2b"]},
+    "COMPUTATIONAL_EXPERIMENTER":{"mission":"finite experiments to generate/falsify conjectures, never as proof","preferred_workers":["gemma2b","llama3b"]},
+    "PROOF_SYNTHESIST":{"mission":"merge surviving lemmas into the shortest rigorous chain and expose the residual","preferred_workers":["gemma9b","llama3b"]},
+    "POLYMORPHIC_MATHEMATICIAN":{"mission":"switch specialty according to the active bottleneck while preserving evidence rules","preferred_workers":["llama3b","gemma9b","gemma2b"],"routing_rule":"choose specialist persona from active lock; do not keep a fixed persona when residual changes"}
   },
   "team_composition": {
-    "mandatory_functions": ["CREATOR", "VERIFIER", "AUDITOR", "COUNTER_AUDITOR", "FALSIFIER", "SYNTHESIZER"],
-    "independence_rule": "VERIFIER or AUDITOR of a critical claim must be from an independent model family whenever available",
-    "subject_rule": "specialist identities are selected from the active mathematical lock",
-    "recomposition_rule": "rebuild the team when the residual changes, while preserving checkpoint and accepted lemmas"
+    "mandatory_functions":["CREATOR","VERIFIER","AUDITOR","COUNTER_AUDITOR","FALSIFIER","SYNTHESIZER"],
+    "minimum_distinct_functions":20,
+    "assistant_counts_as_active_researcher":true,
+    "role_count_not_equal_agent_count":true,
+    "one_worker_may_hold_multiple_polymorphic_roles":true,
+    "independence_rule":"VERIFIER or AUDITOR of a critical claim must be from an independent model family whenever available",
+    "subject_rule":"specialist identities are selected from the active mathematical lock",
+    "recomposition_rule":"rebuild the team when the residual changes, while preserving checkpoint and accepted lemmas",
+    "scaling_rule":"when additional independent AI workers become available, create new specialist roles first; duplicate existing roles only after coverage of useful specialties",
+    "capacity_examples":{"18_external_plus_assistant":"19 active researchers, minimum 20 distinct functions; at least one participant carries multiple functions","20_external_plus_assistant":"21 active researchers; retain at least 20 roles and add one or more specialist roles if useful","more_than_20_external":"expand specialties, independent replication lanes, theorem-specific auditors and alternative-route teams"}
   },
   "assistant_role": {
-    "title": "ACTIVE_RESEARCH_COORDINATOR_AND_CO_PROVER",
-    "must": [
-      "derive mathematics independently",
-      "challenge agent claims",
-      "recompute key equations",
-      "search for counterexamples",
-      "perform formal verification",
-      "merge only surviving claims",
-      "define the next unique residual",
-      "redistribute roles when team strengths or the active lock change"
-    ],
-    "must_not": [
-      "act as a passive observer",
-      "accept consensus as truth",
-      "treat agent output as evidence without audit",
-      "delegate final mathematical responsibility to external agents"
-    ]
+    "title":"ACTIVE_RESEARCH_COORDINATOR_AND_CO_PROVER",
+    "must":["derive mathematics independently","challenge agent claims","recompute key equations","search for counterexamples","perform formal verification","merge only surviving claims","define the next unique residual","redistribute roles when team strengths or active lock change","fill uncovered critical role when external capacity is insufficient"],
+    "must_not":["act as a passive observer","accept consensus as truth","treat agent output as evidence without audit","delegate final mathematical responsibility to external agents"]
   },
   "collatz_lock_to_role_router": {
-    "valuation_congruence": ["NUMBER_THEORIST", "P_ADIC_SPECIALIST", "FORMAL_PROOF_AUDITOR"],
-    "cycle_closure": ["THEORETICAL_MATHEMATICIAN", "DIOPHANTINE_SPECIALIST", "FORMAL_PROOF_AUDITOR"],
-    "run_packing": ["COMBINATORICS_SPECIALIST", "DYNAMICAL_SYSTEMS_SPECIALIST", "COUNTEREXAMPLE_HUNTER"],
-    "first_return_excursion": ["DYNAMICAL_SYSTEMS_SPECIALIST", "ARCHIMEDEAN_ANALYST", "ERGODIC_SPECTRAL_SPECIALIST"],
-    "spectral_operator": ["ERGODIC_SPECTRAL_SPECIALIST", "ARCHIMEDEAN_ANALYST", "FORMAL_PROOF_AUDITOR"],
-    "word_entropy": ["COMBINATORICS_SPECIALIST", "P_ADIC_SPECIALIST", "ERGODIC_SPECTRAL_SPECIALIST"],
-    "linear_forms": ["DIOPHANTINE_SPECIALIST", "NUMBER_THEORIST", "FORMAL_PROOF_AUDITOR"],
-    "new_unknown": ["POLYMORPHIC_MATHEMATICIAN", "COUNTEREXAMPLE_HUNTER", "THEORETICAL_MATHEMATICIAN"]
+    "valuation_congruence":["NUMBER_THEORIST","P_ADIC_SPECIALIST","FORMAL_PROOF_AUDITOR"],
+    "cycle_closure":["THEORETICAL_MATHEMATICIAN","DIOPHANTINE_SPECIALIST","FORMAL_PROOF_AUDITOR"],
+    "run_packing":["COMBINATORICS_SPECIALIST","DYNAMICAL_SYSTEMS_SPECIALIST","COUNTEREXAMPLE_HUNTER"],
+    "first_return_excursion":["DYNAMICAL_SYSTEMS_SPECIALIST","ARCHIMEDEAN_ANALYST","ERGODIC_SPECTRAL_SPECIALIST"],
+    "spectral_operator":["ERGODIC_SPECTRAL_SPECIALIST","ARCHIMEDEAN_ANALYST","FORMAL_PROOF_AUDITOR"],
+    "word_entropy":["COMBINATORICS_SPECIALIST","P_ADIC_SPECIALIST","ERGODIC_SPECTRAL_SPECIALIST"],
+    "linear_forms":["DIOPHANTINE_SPECIALIST","NUMBER_THEORIST","FORMAL_PROOF_AUDITOR"],
+    "new_unknown":["POLYMORPHIC_MATHEMATICIAN","COUNTEREXAMPLE_HUNTER","THEORETICAL_MATHEMATICIAN"]
   },
   "critical_workflow": {
-    "primary_prover_family": "llama-3.2",
-    "primary_judge_family": "gemma-2",
-    "required_for_acceptance": [
-      "one explicit proof artifact",
-      "one cross-family verifier",
-      "one formal auditor",
-      "one counter-auditor or falsifier",
-      "one synthesis of surviving claims",
-      "assistant independent derivation and formal verification"
-    ]
+    "primary_prover_family":"llama-3.2","primary_judge_family":"gemma-2",
+    "required_for_acceptance":["one explicit proof artifact","one cross-family verifier","one formal auditor","one counter-auditor or falsifier","one synthesis of surviving claims","assistant independent derivation and formal verification"]
   },
-  "update_rule": {
-    "after_each_wave": [
-      "score mathematical correctness",
-      "score useful novelty",
-      "score false-positive closure rate",
-      "score successful falsification rate",
-      "score replication agreement",
-      "score performance by mathematical specialty",
-      "demote after repeated unsupported claims",
-      "promote after repeated audited successes",
-      "allow polymorphic reassignment when bottleneck changes"
-    ]
-  }
+  "update_rule": {"after_each_wave":["score mathematical correctness","score useful novelty","score false-positive closure rate","score successful falsification rate","score replication agreement","score performance by mathematical specialty","demote after repeated unsupported claims","promote after repeated audited successes","allow polymorphic reassignment when bottleneck changes","expand role diversity when additional independent workers become available"]}
 }
