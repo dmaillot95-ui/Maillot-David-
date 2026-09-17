@@ -1,0 +1,129 @@
+name: CEREBRON Collatz C246 Polymorphic Wave
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cerebron-collatz-c246-agents.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: plan
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          A=[
+          ('THEORETICAL_MATHEMATICIAN','PROOF_A','llama3b','global theorem on normalized first-return windows'),
+          ('NUMBER_THEORIST','PROOF_A','llama3b','exact alpha=log2(3) coding and arithmetic constraints'),
+          ('DYNAMICAL_SYSTEMS_SPECIALIST','PROOF_A','llama3b','first-exit/stay-out/first-reentry dynamics'),
+          ('COMBINATORICS_SPECIALIST','DECOMPOSER','llama3b','mechanical/Sturmian word structure and episode lengths'),
+          ('ERGODIC_ROTATION_SPECIALIST','PROOF_B','gemma9b','irrational rotation return-time bounds on arcs'),
+          ('P_ADIC_SPECIALIST','PROOF_A','llama3b','carry residue criterion into positive-width consequence'),
+          ('ARCHIMEDEAN_ANALYST','PROOF_B','gemma9b','derive c_W and affine-offset asymptotics'),
+          ('DIOPHANTINE_SPECIALIST','ALTERNATIVE_ROUTE','gemma9b','continued fractions/return times for log2(3)'),
+          ('FORMAL_PROOF_AUDITOR','COUNTER_AUDITOR','gemma9b','audit all quantifiers and asymptotic passages'),
+          ('COUNTEREXAMPLE_HUNTER','FALSIFIER','llama3b','seek arbitrarily long positive-width balanced episodes'),
+          ('COMPUTATIONAL_EXPERIMENTER','FALSIFIER','gemma2b','finite search only to falsify return-time claims'),
+          ('PROOF_SYNTHESIST','SYNTHESIZER','gemma9b','merge audited results'),
+          ('POLYMORPHIC_MATHEMATICIAN','ALTERNATIVE_ROUTE','llama3b','switch representation at hardest residual'),
+          ('CREATOR_A','PROOF_A','llama3b','independent constructive family attempt'),
+          ('CREATOR_B','PROOF_B','gemma9b','independent obstruction theorem attempt'),
+          ('VERIFIER','REPLICATOR','gemma9b','rederive strongest constants and theorem'),
+          ('AUDITOR','COUNTER_AUDITOR','gemma9b','audit strongest proof end-to-end'),
+          ('COUNTER_AUDITOR','RED_TEAM','llama3b','attack proof and audit'),
+          ('JUDGE','JUDGE','gemma9b','PROVED/REFUTED/HOLD; reject unsupported closure'),
+          ('META_COORDINATOR','SYNTHESIZER','gemma9b','compare evidence and identify unique nextlock')]
+          inc=[]
+          for fr,br,mid,focus in A:
+            fam='llama-3.2' if mid=='llama3b' else 'gemma-2'
+            inc.append({'functional_role':fr,'base_role':br,'model_id':mid,'family':fam,'focus':focus})
+          print('matrix='+json.dumps({'include':inc},separators=(',',':')))
+          PY
+
+  external-agent:
+    needs: plan
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install --quiet hf-gradio
+      - name: Execute polymorphic Collatz agent
+        env:
+          FUNCTIONAL_ROLE: ${{ matrix.functional_role }}
+          BASE_ROLE: ${{ matrix.base_role }}
+          MODEL_ID: ${{ matrix.model_id }}
+          FAMILY: ${{ matrix.family }}
+          FOCUS: ${{ matrix.focus }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,os,sys,hashlib
+          from pathlib import Path
+          sys.path.insert(0,'cerebron/federation/core')
+          import shard_worker
+          reg=json.loads(Path('cerebron/federation/state/model-registry.json').read_text())
+          mission_text=Path('cerebron/intelligence/COLLATZ-C246-C255-AGENT-MISSION.md').read_text()
+          mid=os.environ['MODEL_ID']; br=os.environ['BASE_ROLE']; fr=os.environ['FUNCTIONAL_ROLE']; fam=os.environ['FAMILY']; focus=os.environ['FOCUS']
+          model={'model_id':mid, **reg['models'][mid]}
+          task={'task_id':f'COLLATZ-C246-{fr}-{mid}','role':br,'civilization':'CEREBRON','team':'COLLATZ_C246','mission_id':'COLLATZ-C246'}
+          mission={'title':'COLLATZ C246 — NORMALIZED WINDOW / ROTATION','objective':focus}
+          base=shard_worker.role_prompt(task,mission,'Attack the C246 normalized-window rotation lock')
+          prompt=base+'\n\nPOLYMORPHIC SPECIALTY: '+fr+'\nFOCUS: '+focus+'\n\nCHECKPOINT:\n'+mission_text+'\nReturn compact mathematics with explicit proof status.'
+          ok,text,meta=shard_worker.invoke_hf(model,prompt)
+          result={'schema':'cerebron-collatz-c246-agent-v1','functional_role':fr,'base_role':br,'model_id':mid,'model_family':fam,'ok':bool(ok),'execution_status':'COMPLETED' if ok else 'FAILED_RETRYABLE','response':text if ok else None,'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'}
+          Path('out/result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: collatz-c246-${{ matrix.functional_role }}-${{ matrix.model_id }}
+          path: out/result.json
+          retention-days: 14
+
+  omega-fusion:
+    needs: external-agent
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: collatz-c246-*
+          path: results
+          merge-multiple: false
+      - shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=[]
+          for p in Path('results').rglob('result.json'):
+            try: rows.append(json.loads(p.read_text()))
+            except: pass
+          ok=[r for r in rows if r.get('ok')]
+          Path('c246-agent-accounting.json').write_text(json.dumps({'schema':'cerebron-collatz-c246-omega-v1','artifact_rows':len(rows),'successful_external_ai_calls':len(ok),'successful_model_families':sorted({r.get('model_family') for r in ok}),'successful_functional_roles':sorted({r.get('functional_role') for r in ok}),'independent_engine_count':len({r.get('model_family') for r in ok}),'claim_note':'Unaudited until assistant verification.'},ensure_ascii=False,indent=2)+'\n')
+          Path('c246-agent-packet.txt').write_text('\n\n'.join('ROLE '+str(r.get('functional_role'))+' | '+str(r.get('model_family'))+'\n'+str(r.get('response') or '') for r in ok))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: collatz-c246-omega-packet
+          path: |
+            c246-agent-accounting.json
+            c246-agent-packet.txt
+          retention-days: 14
