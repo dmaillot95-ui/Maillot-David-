@@ -144,7 +144,12 @@ def main():
     no_material_family_regression=all(v<=0.05 for v in family_reg.values())
     leakage={"final_query_target_visible_to_selector":False,"latent_parameters_visible_to_selector":False,"family_label_visible_to_selector":False,"same_target_task_bank":True,"same_source_prior_task_bank":True}
     matched={"same_candidate_models":True,"same_fit_validation_query_sizes":True,"same_model_evaluation_count":True,"same_seeds":True,"same_arithmetic":True}
-    leakage_ok=(not leakage["final_query_target_visible_to_selector"]\n                and not leakage["latent_parameters_visible_to_selector"]\n                and not leakage["family_label_visible_to_selector"]\n                and leakage["same_target_task_bank"]\n                and leakage["same_source_prior_task_bank"])\n    passed=(r1["mae"]<r0["mae"] and wins>=5 and no_material_family_regression and leakage_ok and all(matched.values()))
+    leakage_ok=(not leakage["final_query_target_visible_to_selector"]
+                and not leakage["latent_parameters_visible_to_selector"]
+                and not leakage["family_label_visible_to_selector"]
+                and leakage["same_target_task_bank"]
+                and leakage["same_source_prior_task_bank"])
+    passed=(r1["mae"]<r0["mae"] and wins>=5 and no_material_family_regression and leakage_ok and all(matched.values()))
     out={"benchmark_id":"BENCH-004","benchmark_type":"prospective_frozen_A1_vs_A0_matched_task_test","evidence_ceiling":"E3_verified_simulation","candidate_profile":"CEREBRON-A1-CANDIDATE","candidate_frozen_before_test":True,"seeds":SEEDS,"heldout_target_families":TARGET,"source_prior_families":SOURCE,"target_task_bank_sha256":bank_hash,"A0":r0,"A1":r1,"A1_minus_A0_mae":r1["mae"]-r0["mae"],"A1_seed_wins":wins,"family_relative_regression":family_reg,"no_material_family_regression":no_material_family_regression,"leakage_audit":leakage,"leakage_gate_passed":leakage_ok,"matched_resource_audit":matched,"prospective_success":passed,"promotion_decision":"eligible_for_reproducibility_rerun" if passed else "REJECT_A1_NO_PROMOTION","claim_limit":"Synthetic prospective benchmark only; not evidence of AGI, superintelligence, neural-weight learning, or external generalization."}
     Path("benchmark_v2_2_results.json").write_text(json.dumps(out,indent=2))
     print(json.dumps(out,indent=2))
