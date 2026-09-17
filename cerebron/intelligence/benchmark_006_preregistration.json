@@ -1,0 +1,168 @@
+{
+  "benchmark_id": "BENCH-006-CAPABILITY-MECHANISMS",
+  "version": "0.1.0-preregistered-development",
+  "status": "development_only",
+  "date": "2026-09-17",
+  "evidence_ceiling": "E3_verified_simulation",
+  "purpose": "Test six distinct executable mechanisms with observable state changes, matched sham controls, competitive baselines, ablations, and deterministic resource accounting.",
+  "non_claims": [
+    "Does not demonstrate AGI or superintelligence.",
+    "GitHub jobs are deterministic compute jobs, not AI agents.",
+    "Repeated seeds are not independent methodological replications.",
+    "A module name is not evidence that the corresponding capability exists."
+  ],
+  "historical_data_policy": {
+    "already_observed": [
+      "BENCH-002",
+      "BENCH-003",
+      "BENCH-003-R1",
+      "BENCH-004",
+      "BENCH-005"
+    ],
+    "use": "development_and_regression_only",
+    "promotion_holdout": "Must be generated only after implementations, metrics, budgets, thresholds, dependencies and candidate hashes are frozen."
+  },
+  "blocks": [
+    {
+      "id": "B1",
+      "name": "representation_world_model",
+      "mechanism": "Infer a compact transition model from observations and predict interventions.",
+      "primary_metric": "heldout_intervention_prediction_error",
+      "active_control": "learned transition model",
+      "sham_control": "same-size shuffled transition table",
+      "ablation": "no persistent model",
+      "failure_condition": "No gain over sham at matched budget or gain disappears under symbol permutation."
+    },
+    {
+      "id": "B2",
+      "name": "reasoning_creativity",
+      "mechanism": "Construct valid derivations or novel procedures for constraint tasks.",
+      "primary_metric": "verified_solution_rate_at_fixed_expansions",
+      "active_control": "typed derivation and procedure composition",
+      "sham_control": "random valid-interface proposal ordering",
+      "ablation": "direct search only",
+      "failure_condition": "No gain over competitive search or proposed novelty is only surface diversity."
+    },
+    {
+      "id": "B3",
+      "name": "planning_experimentation",
+      "mechanism": "Choose actions or experiments that reduce uncertainty and reach goals.",
+      "primary_metric": "goal_success_minus_interaction_cost",
+      "active_control": "information-aware planning",
+      "sham_control": "random action selection with same interaction count",
+      "ablation": "fixed passive plan",
+      "failure_condition": "No improvement in regret or information gain over matched random control."
+    },
+    {
+      "id": "B4",
+      "name": "verification_metacognition",
+      "mechanism": "Detect invalid candidates, calibrate confidence and abstain selectively.",
+      "primary_metric": "balanced_verification_accuracy_at_fixed_coverage",
+      "active_control": "independent checker plus calibrated confidence",
+      "sham_control": "interface-matched plausibility score",
+      "ablation": "accept-first candidate",
+      "failure_condition": "False-positive rate not reduced, or apparent accuracy comes only from lower coverage."
+    },
+    {
+      "id": "B5",
+      "name": "learning_transfer",
+      "mechanism": "Update strategy after verified failures and transfer to structurally related but surface-different tasks.",
+      "primary_metric": "paired_transfer_gain_on_new_instances",
+      "active_control": "persistent typed strategy update",
+      "sham_control": "same-capacity memory with shuffled feedback",
+      "ablation": "state reset and transfer disabled",
+      "failure_condition": "Gain limited to replay, nearest-neighbour retrieval, or becomes negative out of family."
+    },
+    {
+      "id": "B6",
+      "name": "cooperation_self_improvement",
+      "mechanism": "Propose a reversible process modification, freeze it, and test it against the prior version.",
+      "primary_metric": "A1_minus_A0_gain_on_fresh_tasks_at_equal_total_budget",
+      "active_control": "transactional propose-test-rollback loop",
+      "sham_control": "random modifications from the same search space and budget",
+      "ablation": "frozen A0",
+      "failure_condition": "Gain disappears against random search, uses holdout feedback, or causes material domain regression."
+    }
+  ],
+  "matrix": {
+    "jobs": 36,
+    "construction": "6 blocks x 6 seed partitions",
+    "seeds_per_block": 24,
+    "seeds_per_job": 4,
+    "families_per_block": 2,
+    "episodes_per_family_per_seed": 40,
+    "paired_conditions": [
+      "competitive_baseline",
+      "active_mechanism",
+      "sham_interface_control",
+      "ablation",
+      "budget_reallocation_control"
+    ],
+    "note": "Each job executes all paired conditions on the same tasks. max-parallel is a scheduling ceiling, not proof of simultaneous execution."
+  },
+  "resource_accounting": {
+    "vector": [
+      "model_id",
+      "input_items",
+      "output_items",
+      "solver_calls",
+      "grader_calls",
+      "primitive_operations",
+      "fit_operations",
+      "prediction_operations",
+      "tool_calls",
+      "memory_peak_bytes",
+      "persistent_state_bytes",
+      "cpu_time_ns",
+      "wall_time_ns",
+      "human_interventions"
+    ],
+    "rule": "All learning, selection, source-prior construction, coordination and verification costs count.",
+    "limitation": "Counters approximate work and must not be described as exact FLOP equality unless separately instrumented."
+  },
+  "isolation": {
+    "solver_input_excludes": [
+      "expected_answer",
+      "latent_parameters",
+      "private_family_label",
+      "holdout_seed"
+    ],
+    "grader_process_separate": true,
+    "predictions_frozen_before_grading": true,
+    "canary_access_test_required": true,
+    "access_log_required": true,
+    "network_disabled_during_holdout_if_supported": true
+  },
+  "statistics": {
+    "unit": "seed",
+    "primary_analysis": "paired effect by seed with confidence interval",
+    "multiple_testing": "Holm correction across six primary block hypotheses at familywise alpha 0.05",
+    "minimum_useful_effect": "Must be fixed per block during development before holdout generation.",
+    "regression_rule": "No prespecified material regression in either holdout family.",
+    "outcomes": [
+      "KEEP",
+      "NARROW",
+      "KILL",
+      "UNKNOWN"
+    ]
+  },
+  "promotion_gate": [
+    "Implementation and tests pass before holdout generation.",
+    "Candidate, baseline, sham, grader, dependencies and budgets are frozen by hashes.",
+    "Active mechanism beats competitive baseline and sham by the preregistered useful margin.",
+    "Ablation removes the measured effect without changing information access or total budget.",
+    "Isolation canaries and access logs pass.",
+    "No material family regression.",
+    "Prospective replication uses fresh tasks not consulted during development."
+  ],
+  "launch_gate": {
+    "jobs_may_launch_when": [
+      "All six block implementations exist.",
+      "Each block detects injected positive and negative controls.",
+      "Resource counters are tested.",
+      "Solver/grader separation tests pass.",
+      "No known syntax, leakage or polarity defect remains."
+    ],
+    "current_authorization": "preregistration_only"
+  }
+}
