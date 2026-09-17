@@ -1,6 +1,6 @@
 {
-  "schema": "cerebron-role-routing-v2",
-  "updated_at": "2026-09-17T02:20:00+02:00",
+  "schema": "cerebron-role-routing-v3",
+  "updated_at": "2026-09-17T04:16:00+02:00",
   "principles": {
     "claim_le_evidence": true,
     "same_family_not_independent": true,
@@ -8,7 +8,10 @@
     "quality_over_uniform_distribution": true,
     "scores_are_provisional_and_must_be_updated_from_audits": true,
     "polymorphic_subject_roles": true,
-    "worker_role_can_change_with_active_lock": true
+    "worker_role_can_change_with_active_lock": true,
+    "teams_are_formed_by_subject": true,
+    "teams_must_mix_creation_falsification_audit_and_synthesis": true,
+    "team_composition_changes_when_residual_changes": true
   },
   "models": {
     "gemma9b": {
@@ -99,9 +102,9 @@
       "preferred_workers": ["gemma9b", "llama3b"]
     },
     "POLYMORPHIC_MATHEMATICIAN": {
-      "mission": "switch among the above mathematical identities according to the active bottleneck, while preserving the same evidence rules",
+      "mission": "switch among mathematical identities according to the active bottleneck while preserving evidence rules",
       "preferred_workers": ["llama3b", "gemma9b", "gemma2b"],
-      "routing_rule": "choose specialist persona from the active lock; do not keep a fixed persona when the residual changes"
+      "routing_rule": "choose specialist persona from active lock; do not keep a fixed persona when the residual changes"
     }
   },
   "collatz_lock_to_role_router": {
@@ -114,6 +117,80 @@
     "linear_forms": ["DIOPHANTINE_SPECIALIST", "NUMBER_THEORIST", "FORMAL_PROOF_AUDITOR"],
     "new_unknown": ["POLYMORPHIC_MATHEMATICIAN", "COUNTEREXAMPLE_HUNTER", "THEORETICAL_MATHEMATICIAN"]
   },
+  "subject_team_templates": {
+    "VALUATION_TEAM": {
+      "subjects": ["valuation_congruence", "2_adic", "CRT"],
+      "roles": ["NUMBER_THEORIST", "P_ADIC_SPECIALIST", "COUNTEREXAMPLE_HUNTER", "FORMAL_PROOF_AUDITOR", "PROOF_SYNTHESIST"],
+      "worker_distribution": {
+        "llama3b": ["NUMBER_THEORIST", "P_ADIC_SPECIALIST", "COUNTEREXAMPLE_HUNTER"],
+        "gemma9b": ["FORMAL_PROOF_AUDITOR", "PROOF_SYNTHESIST"],
+        "gemma2b": ["COMPUTATIONAL_EXPERIMENTER"]
+      }
+    },
+    "DYNAMICS_TEAM": {
+      "subjects": ["first_return_excursion", "trajectory", "recurrence", "divergence"],
+      "roles": ["DYNAMICAL_SYSTEMS_SPECIALIST", "ARCHIMEDEAN_ANALYST", "THEORETICAL_MATHEMATICIAN", "COUNTEREXAMPLE_HUNTER", "FORMAL_PROOF_AUDITOR"],
+      "worker_distribution": {
+        "llama3b": ["DYNAMICAL_SYSTEMS_SPECIALIST", "THEORETICAL_MATHEMATICIAN", "COUNTEREXAMPLE_HUNTER"],
+        "gemma9b": ["ARCHIMEDEAN_ANALYST", "FORMAL_PROOF_AUDITOR"],
+        "gemma2b": ["COMPUTATIONAL_EXPERIMENTER"]
+      }
+    },
+    "SPECTRAL_TEAM": {
+      "subjects": ["spectral_operator", "renewal", "transfer_operator", "Kraft"],
+      "roles": ["ERGODIC_SPECTRAL_SPECIALIST", "ARCHIMEDEAN_ANALYST", "COMBINATORICS_SPECIALIST", "COUNTEREXAMPLE_HUNTER", "FORMAL_PROOF_AUDITOR"],
+      "worker_distribution": {
+        "gemma9b": ["ERGODIC_SPECTRAL_SPECIALIST", "ARCHIMEDEAN_ANALYST", "FORMAL_PROOF_AUDITOR"],
+        "llama3b": ["COMBINATORICS_SPECIALIST", "COUNTEREXAMPLE_HUNTER"],
+        "gemma2b": ["COMPUTATIONAL_EXPERIMENTER"]
+      }
+    },
+    "DIOPHANTINE_TEAM": {
+      "subjects": ["linear_forms", "gap", "minimum_cycle", "rational_approximation"],
+      "roles": ["DIOPHANTINE_SPECIALIST", "NUMBER_THEORIST", "THEORETICAL_MATHEMATICIAN", "FORMAL_PROOF_AUDITOR", "PROOF_SYNTHESIST"],
+      "worker_distribution": {
+        "gemma9b": ["DIOPHANTINE_SPECIALIST", "FORMAL_PROOF_AUDITOR", "PROOF_SYNTHESIST"],
+        "llama3b": ["NUMBER_THEORIST", "THEORETICAL_MATHEMATICIAN"],
+        "gemma2b": ["COMPUTATIONAL_EXPERIMENTER"]
+      }
+    },
+    "COMBINATORIAL_TEAM": {
+      "subjects": ["run_packing", "word_entropy", "automata", "valuation_words"],
+      "roles": ["COMBINATORICS_SPECIALIST", "P_ADIC_SPECIALIST", "DYNAMICAL_SYSTEMS_SPECIALIST", "COUNTEREXAMPLE_HUNTER", "FORMAL_PROOF_AUDITOR"],
+      "worker_distribution": {
+        "llama3b": ["COMBINATORICS_SPECIALIST", "P_ADIC_SPECIALIST", "COUNTEREXAMPLE_HUNTER"],
+        "gemma9b": ["DYNAMICAL_SYSTEMS_SPECIALIST", "FORMAL_PROOF_AUDITOR"],
+        "gemma2b": ["COMPUTATIONAL_EXPERIMENTER"]
+      }
+    },
+    "CLOSURE_TEAM": {
+      "subjects": ["cycle_closure", "arbitrary_N", "final_contradiction"],
+      "roles": ["THEORETICAL_MATHEMATICIAN", "NUMBER_THEORIST", "DIOPHANTINE_SPECIALIST", "FORMAL_PROOF_AUDITOR", "PROOF_SYNTHESIST", "COUNTEREXAMPLE_HUNTER"],
+      "worker_distribution": {
+        "llama3b": ["THEORETICAL_MATHEMATICIAN", "NUMBER_THEORIST", "COUNTEREXAMPLE_HUNTER"],
+        "gemma9b": ["DIOPHANTINE_SPECIALIST", "FORMAL_PROOF_AUDITOR", "PROOF_SYNTHESIST"],
+        "gemma2b": ["COMPUTATIONAL_EXPERIMENTER"]
+      }
+    },
+    "UNKNOWN_LOCK_TEAM": {
+      "subjects": ["new_unknown", "unclassified_residual"],
+      "roles": ["POLYMORPHIC_MATHEMATICIAN", "THEORETICAL_MATHEMATICIAN", "COUNTEREXAMPLE_HUNTER", "FORMAL_PROOF_AUDITOR", "COMPUTATIONAL_EXPERIMENTER"],
+      "worker_distribution": {
+        "llama3b": ["POLYMORPHIC_MATHEMATICIAN", "THEORETICAL_MATHEMATICIAN", "COUNTEREXAMPLE_HUNTER"],
+        "gemma9b": ["FORMAL_PROOF_AUDITOR"],
+        "gemma2b": ["COMPUTATIONAL_EXPERIMENTER"]
+      }
+    }
+  },
+  "team_formation_engine": {
+    "trigger": "classify active residual into subject; instantiate matching team template",
+    "minimum_team_functions": ["creator", "independent_checker", "falsifier", "formal_auditor", "synthesizer"],
+    "cross_family_rule": "at least one critical producer and one critical auditor must come from different model families",
+    "polymorphic_rule": "workers may change specialist identity between waves or within a campaign when the mathematical lock changes",
+    "anti_groupthink_rule": "do not assign all proving, auditing and judging functions to one family",
+    "reconfiguration_rule": "if a residual changes category, dissolve the old specialist team and instantiate the new subject team while preserving artifacts and checkpoints",
+    "evidence_rule": "team consensus never upgrades an unproved claim; only audited derivation does"
+  },
   "critical_workflow": {
     "primary_prover_family": "llama-3.2",
     "primary_judge_family": "gemma-2",
@@ -121,7 +198,7 @@
       "one explicit proof artifact",
       "one cross-family adversarial audit",
       "one independent replication or counter-audit",
-      "one specialist-role audit matched to the active mathematical lock",
+      "one specialist-role audit matched to active mathematical lock",
       "assistant formal verification"
     ]
   },
@@ -133,9 +210,11 @@
       "score successful falsification rate",
       "score replication agreement",
       "score performance by mathematical specialty",
+      "score performance by team subject",
       "demote roles after repeated unsupported claims",
       "promote roles after repeated audited successes",
-      "allow polymorphic reassignment when the bottleneck changes"
+      "allow polymorphic reassignment when bottleneck changes",
+      "rebuild subject team when residual class changes"
     ]
   }
 }
