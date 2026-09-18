@@ -1,6 +1,6 @@
 {
   "schema": "cerebron-model-registry-v1",
-  "updated_at": "2026-09-18T03:26:55+00:00",
+  "updated_at": "2026-09-18T06:31:36+00:00",
   "policy": {
     "spend_limit_eur": 0,
     "allow_paid_providers": false,
@@ -14,10 +14,10 @@
       "space": "huggingface-projects/llama-3.2-3B-Instruct",
       "family": "llama-3.2",
       "size_class": "3B",
-      "status": "HEALTHY",
-      "last_known_result": "SUCCESS",
-      "consecutive_successes": 5,
-      "consecutive_failures": 0,
+      "status": "DEGRADED",
+      "last_known_result": "FAILURE",
+      "consecutive_successes": 0,
+      "consecutive_failures": 1,
       "roles_allowed": [
         "SCOUT",
         "DECOMPOSER",
@@ -33,14 +33,11 @@
       ],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-18T03:26:19+00:00",
+      "last_probe_at": "2026-09-18T06:31:27+00:00",
       "last_probe": {
-        "ok": true,
+        "ok": false,
         "stage": "predict",
-        "endpoint": "/generate",
-        "semantic_ok": true,
-        "response_excerpt": "{\n  \"Response\": \"CEREBRON_HF_OK\\n\\n19 \\u00d7 23 = 437\"\n}",
-        "error": null
+        "error": "/generate:              \u001b[31m│\u001b[0m\n\u001b[31m│\u001b[0m   \u001b[2m1286 \u001b[0m\u001b[2m│   │   │   │   \u001b[0moutput = result[\u001b[33m\"\u001b[0m\u001b[33mdata\u001b[0m\u001b[33m\"\u001b[0m]                               \u001b[31m│\u001b[0m\n\u001b[31m╰──────────────────────────────────────────────────────────────────────────────╯\u001b[0m\n\u001b[1;91mAppError: \u001b[0mYou have exceeded your ZeroGPU quota \u001b[1m(\u001b[0m135s requested vs. 0s left\u001b[1m)\u001b[0m. Try\nagain in \u001b[1;92m0:00:00\u001b[0m. Authenticate with a Hugging Face token for more quota - \n\u001b[4;94mhttps://huggingface.co/settings/tokens\u001b[0m\n"
       },
       "last_endpoint": "/generate"
     },
@@ -48,10 +45,10 @@
       "space": "huggingface-projects/gemma-2-2b-it",
       "family": "gemma-2",
       "size_class": "2B",
-      "status": "HEALTHY",
-      "last_known_result": "SUCCESS",
-      "consecutive_successes": 5,
-      "consecutive_failures": 0,
+      "status": "DEGRADED",
+      "last_known_result": "FAILURE",
+      "consecutive_successes": 0,
+      "consecutive_failures": 1,
       "roles_allowed": [
         "SCOUT",
         "DECOMPOSER",
@@ -63,14 +60,11 @@
       ],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-18T03:26:44+00:00",
+      "last_probe_at": "2026-09-18T06:31:30+00:00",
       "last_probe": {
-        "ok": true,
+        "ok": false,
         "stage": "predict",
-        "endpoint": "/generate",
-        "semantic_ok": true,
-        "response_excerpt": "{\n  \"Response\": \"CEREBRON_HF_OK 437 \\n\"\n}",
-        "error": null
+        "error": "/generate:              \u001b[31m│\u001b[0m\n\u001b[31m│\u001b[0m   \u001b[2m1286 \u001b[0m\u001b[2m│   │   │   │   \u001b[0moutput = result[\u001b[33m\"\u001b[0m\u001b[33mdata\u001b[0m\u001b[33m\"\u001b[0m]                               \u001b[31m│\u001b[0m\n\u001b[31m╰──────────────────────────────────────────────────────────────────────────────╯\u001b[0m\n\u001b[1;91mAppError: \u001b[0mYou have exceeded your ZeroGPU quota \u001b[1m(\u001b[0m90s requested vs. 0s left\u001b[1m)\u001b[0m. Try \nagain in \u001b[1;92m0:00:00\u001b[0m. Authenticate with a Hugging Face token for more quota - \n\u001b[4;94mhttps://huggingface.co/settings/tokens\u001b[0m\n"
       },
       "last_endpoint": "/generate"
     },
@@ -81,7 +75,7 @@
       "status": "QUARANTINED",
       "last_known_result": "FAILURE",
       "consecutive_successes": 0,
-      "consecutive_failures": 2,
+      "consecutive_failures": 3,
       "roles_allowed": [
         "DECOMPOSER",
         "PROOF_A",
@@ -96,7 +90,7 @@
       ],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-18T03:26:47+00:00",
+      "last_probe_at": "2026-09-18T06:31:32+00:00",
       "last_probe": {
         "ok": false,
         "stage": "predict",
@@ -111,7 +105,7 @@
       "status": "QUARANTINED",
       "last_known_result": "FAILURE",
       "consecutive_successes": 0,
-      "consecutive_failures": 39,
+      "consecutive_failures": 40,
       "roles_allowed": [
         "SCOUT",
         "DECOMPOSER",
@@ -127,7 +121,7 @@
       ],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-18T03:26:51+00:00",
+      "last_probe_at": "2026-09-18T06:31:34+00:00",
       "last_probe": {
         "ok": false,
         "stage": "predict",
@@ -141,11 +135,11 @@
       "status": "QUARANTINED",
       "last_known_result": "FAILURE",
       "consecutive_successes": 0,
-      "consecutive_failures": 40,
+      "consecutive_failures": 41,
       "roles_allowed": [],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-18T03:26:54+00:00",
+      "last_probe_at": "2026-09-18T06:31:36+00:00",
       "last_probe": {
         "ok": false,
         "stage": "predict",
@@ -159,11 +153,11 @@
       "status": "QUARANTINED",
       "last_known_result": "FAILURE",
       "consecutive_successes": 0,
-      "consecutive_failures": 40,
+      "consecutive_failures": 41,
       "roles_allowed": [],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-18T03:26:55+00:00",
+      "last_probe_at": "2026-09-18T06:31:36+00:00",
       "last_probe": {
         "ok": false,
         "stage": "predict",
@@ -173,19 +167,19 @@
   },
   "last_probe_summary": {
     "tested": 6,
-    "healthy": 2,
-    "failed": 4,
+    "healthy": 0,
+    "failed": 6,
     "results": {
       "llama3b": {
-        "ok": true,
-        "status": "HEALTHY",
-        "endpoint": "/generate",
+        "ok": false,
+        "status": "DEGRADED",
+        "endpoint": null,
         "stage": "predict"
       },
       "gemma2b": {
-        "ok": true,
-        "status": "HEALTHY",
-        "endpoint": "/generate",
+        "ok": false,
+        "status": "DEGRADED",
+        "endpoint": null,
         "stage": "predict"
       },
       "gemma9b": {
