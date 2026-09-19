@@ -1,0 +1,36 @@
+{
+  "schema": "cerebron-inference-hub-config-v1",
+  "spend_limit_eur": 0,
+  "max_logical_agents": 10000,
+  "default_logical_agents": 20,
+  "max_parallel_workers": 4,
+  "micro_batch_size": 4,
+  "wave_delay_seconds": 8,
+  "max_attempts_per_task": 3,
+  "providers": {
+    "huggingface_spaces": {
+      "enabled": true,
+      "cost_class": "ZERO_EURO_PUBLIC_SPACE",
+      "adapter": "federation_shard_worker"
+    },
+    "github_cpu": {
+      "enabled": true,
+      "cost_class": "ZERO_EURO_PUBLIC_RUNNER",
+      "adapter": "deterministic_cpu"
+    },
+    "cloudflare_workers_ai": {
+      "enabled": false,
+      "cost_class": "FREE_TIER_ONLY",
+      "adapter": "cloudflare_workers_ai",
+      "reason_disabled": "Requires explicit Cloudflare account binding before use"
+    }
+  },
+  "rules": [
+    "REALITY > COHERENCE",
+    "EVIDENCE > CONFIDENCE",
+    "CLAIM <= EVIDENCE",
+    "NEVER_AUTO_UPGRADE_TO_PAID",
+    "QUOTA_IS_RETRYABLE_NOT_SUCCESS",
+    "LOGICAL_AGENT_COUNT != PHYSICAL_PARALLELISM"
+  ]
+}
