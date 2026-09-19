@@ -1,6 +1,6 @@
 {
   "schema": "cerebron-model-registry-v1",
-  "updated_at": "2026-09-19T01:25:42+00:00",
+  "updated_at": "2026-09-19T06:30:15+00:00",
   "policy": {
     "spend_limit_eur": 0,
     "allow_paid_providers": false,
@@ -16,7 +16,7 @@
       "size_class": "3B",
       "status": "HEALTHY",
       "last_known_result": "SUCCESS",
-      "consecutive_successes": 4,
+      "consecutive_successes": 5,
       "consecutive_failures": 0,
       "roles_allowed": [
         "SCOUT",
@@ -33,7 +33,7 @@
       ],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-19T01:25:27+00:00",
+      "last_probe_at": "2026-09-19T06:30:05+00:00",
       "last_probe": {
         "ok": true,
         "stage": "predict",
@@ -50,7 +50,7 @@
       "size_class": "2B",
       "status": "HEALTHY",
       "last_known_result": "SUCCESS",
-      "consecutive_successes": 4,
+      "consecutive_successes": 5,
       "consecutive_failures": 0,
       "roles_allowed": [
         "SCOUT",
@@ -63,7 +63,7 @@
       ],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-19T01:25:32+00:00",
+      "last_probe_at": "2026-09-19T06:30:09+00:00",
       "last_probe": {
         "ok": true,
         "stage": "predict",
@@ -78,10 +78,10 @@
       "space": "huggingface-projects/gemma-2-9b-it",
       "family": "gemma-2",
       "size_class": "9B",
-      "status": "HEALTHY",
-      "last_known_result": "SUCCESS",
-      "consecutive_successes": 4,
-      "consecutive_failures": 0,
+      "status": "DEGRADED",
+      "last_known_result": "FAILURE",
+      "consecutive_successes": 0,
+      "consecutive_failures": 1,
       "roles_allowed": [
         "DECOMPOSER",
         "PROOF_A",
@@ -96,14 +96,11 @@
       ],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-19T01:25:35+00:00",
+      "last_probe_at": "2026-09-19T06:30:11+00:00",
       "last_probe": {
-        "ok": true,
+        "ok": false,
         "stage": "predict",
-        "endpoint": "/generate",
-        "semantic_ok": true,
-        "response_excerpt": "{\n  \"Response\": \"CEREBRON_HF_OK 19*23=437 \\n\"\n}",
-        "error": null
+        "error": "/generate:              \u001b[31m│\u001b[0m\n\u001b[31m│\u001b[0m   \u001b[2m1289 \u001b[0m\u001b[2m│   │   │   │   \u001b[0moutput = result[\u001b[33m\"\u001b[0m\u001b[33mdata\u001b[0m\u001b[33m\"\u001b[0m]                               \u001b[31m│\u001b[0m\n\u001b[31m╰──────────────────────────────────────────────────────────────────────────────╯\u001b[0m\n\u001b[1;91mAppError: \u001b[0mYou have exceeded your ZeroGPU quota \u001b[1m(\u001b[0m135s requested vs. 0s left\u001b[1m)\u001b[0m. Try\nagain in \u001b[1;92m0:00:00\u001b[0m. Authenticate with a Hugging Face token for more quota - \n\u001b[4;94mhttps://huggingface.co/settings/tokens\u001b[0m\n"
       },
       "last_endpoint": "/generate"
     },
@@ -114,7 +111,7 @@
       "status": "QUARANTINED",
       "last_known_result": "FAILURE",
       "consecutive_successes": 0,
-      "consecutive_failures": 44,
+      "consecutive_failures": 45,
       "roles_allowed": [
         "SCOUT",
         "DECOMPOSER",
@@ -130,7 +127,7 @@
       ],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-19T01:25:38+00:00",
+      "last_probe_at": "2026-09-19T06:30:13+00:00",
       "last_probe": {
         "ok": false,
         "stage": "predict",
@@ -144,11 +141,11 @@
       "status": "QUARANTINED",
       "last_known_result": "FAILURE",
       "consecutive_successes": 0,
-      "consecutive_failures": 45,
+      "consecutive_failures": 46,
       "roles_allowed": [],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-19T01:25:41+00:00",
+      "last_probe_at": "2026-09-19T06:30:15+00:00",
       "last_probe": {
         "ok": false,
         "stage": "predict",
@@ -162,11 +159,11 @@
       "status": "QUARANTINED",
       "last_known_result": "FAILURE",
       "consecutive_successes": 0,
-      "consecutive_failures": 45,
+      "consecutive_failures": 46,
       "roles_allowed": [],
       "quality_tier": "UNBENCHMARKED",
       "cost_class": "ZERO_EURO_PUBLIC_SPACE",
-      "last_probe_at": "2026-09-19T01:25:42+00:00",
+      "last_probe_at": "2026-09-19T06:30:15+00:00",
       "last_probe": {
         "ok": false,
         "stage": "predict",
@@ -176,8 +173,8 @@
   },
   "last_probe_summary": {
     "tested": 6,
-    "healthy": 3,
-    "failed": 3,
+    "healthy": 2,
+    "failed": 4,
     "results": {
       "llama3b": {
         "ok": true,
@@ -192,9 +189,9 @@
         "stage": "predict"
       },
       "gemma9b": {
-        "ok": true,
-        "status": "HEALTHY",
-        "endpoint": "/generate",
+        "ok": false,
+        "status": "DEGRADED",
+        "endpoint": null,
         "stage": "predict"
       },
       "mistral7b": {
