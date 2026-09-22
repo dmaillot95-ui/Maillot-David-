@@ -1,10 +1,10 @@
 {
   "schema": "cerebron-hierarchy-state-v1",
-  "run_id": "35708187729",
-  "updated_at": "2026-09-22T09:07:27+00:00",
+  "run_id": "35711233474",
+  "updated_at": "2026-09-22T09:37:43+00:00",
   "semantic_chief_agents_enabled": false,
-  "source_rows": 206,
-  "queue_rows": 206,
+  "source_rows": 151,
+  "queue_rows": 151,
   "smoke": {
     "rows": 0,
     "successful_external_calls": 0,
@@ -28,14 +28,13 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "COUNTER_AUDITOR"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
+        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
@@ -63,22 +62,12 @@
         {
           "task_id": "T-D41B6890AB173D7E319A",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
-        },
-        {
-          "task_id": "T-D7B0EABF4EA6D2A67841",
-          "role": "COUNTER_AUDITOR",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "5e3176081836d8c7941df1db00fba2212774b7547f5885c3f7904cd8ce6faba9",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
+          "response_sha256": "17159f1ee3979d5920b615e55e7f654f6546bd4e2cc205bc78f9cf303d42bf17",
+          "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -89,7 +78,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C01:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -100,22 +89,19 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "REPLICATOR"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
+        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -123,22 +109,12 @@
       },
       "result_refs": [
         {
-          "task_id": "T-BE30128F6EF53110E84E",
-          "role": "REPLICATOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "2c2b1e20ea9048b070e3338d47fd163b2382590f0d6348ed7680109eb966498d",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
-        },
-        {
           "task_id": "T-F269B6F8C763D439DE9F",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
@@ -200,129 +176,6 @@
     },
     "M-A97A56A2852A:CYCLE-7:C01:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "gemma-2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-93FE37F9D0EB013354F7",
-          "role": "SCOUT",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": "d09d6bab1d81ef8380bbfcf2baecc2d7888763157e77ea17a7ffac58c89bfe16",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
-        },
-        {
-          "task_id": "T-FD367E12D808CAB3186E",
-          "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C01",
-      "team": 4,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C01:TEAM-05": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "REPLICATOR"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-A04CB53EE902961BECDD",
-          "role": "REPLICATOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "0066c5c20c853b2c3e91697784ec1b84e63fb9b1bd8b391bd298806be5a1a280",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
-        },
-        {
-          "task_id": "T-C4071C513C49E1ACDAF2",
-          "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C01",
-      "team": 5,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C01:TEAM-06": {
-      "status": "WAITING",
       "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
@@ -354,32 +207,146 @@
       },
       "result_refs": [
         {
-          "task_id": "T-FB558D925BFD4E5E268F",
-          "role": "ALTERNATIVE_ROUTE",
+          "task_id": "T-FD367E12D808CAB3186E",
+          "role": "RED_TEAM",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C01",
+      "team": 4,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C01:TEAM-05": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-C4071C513C49E1ACDAF2",
+          "role": "COUNTER_AUDITOR",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "fa04bfbac4641f2fe1942ddaff4100a1de2bfbfe4157fe3e4bbc4346187a84ea",
+          "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C01",
+      "team": 5,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C01:TEAM-06": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-F57AF3A15FA526A25DCC",
+          "role": "REPLICATOR",
           "status": "HOLD_NO_CONNECTED_PROVIDER",
           "ok": false,
           "model_id": null,
           "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
+        },
+        {
+          "task_id": "T-FB558D925BFD4E5E268F",
+          "role": "ALTERNATIVE_ROUTE",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
         {
           "task_id": "T-E413ACDB41F2BA466924",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "1c765189118a1a97c73f0704f33f1cd489d363e25f77f9ea3fedfdd61cd40ecc",
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         },
         {
           "task_id": "T-EDA1006336326BE56629",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         }
@@ -445,7 +412,17 @@
         {
           "task_id": "T-B3AF9DA8206643843541",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
+        },
+        {
+          "task_id": "T-C82D519FB845ACDB5270",
+          "role": "COMPUTE_CHECKER",
+          "status": "HOLD_DETERMINISTIC_CHECK",
           "ok": false,
           "model_id": null,
           "model_family": null,
@@ -459,223 +436,7 @@
       "team": 7,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C01:TEAM-08": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "COUNTER_AUDITOR"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-D7F3EA295D964DA2FBDC",
-          "role": "COUNTER_AUDITOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "d4e319d15e07465f6578a544cb2e9951a815bf66bf3f4a468930c975aa10c334",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C01",
-      "team": 8,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
     "M-A97A56A2852A:CYCLE-7:C01:TEAM-09": {
-      "status": "WAITING",
-      "successful_outputs": 2,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "REPLICATOR",
-        "JUDGE"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "SYNTHESIZER"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-C788E2C6597227A957F1",
-          "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
-        },
-        {
-          "task_id": "T-8C4816DEB6313F5D160D",
-          "role": "JUDGE",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "468e0b9dd4ecf6fbe41a08c2e5683f21a573e054680ff6a289dc77b8f78aea48",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
-        },
-        {
-          "task_id": "T-B5B7B08FDB180B9996A0",
-          "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
-        },
-        {
-          "task_id": "T-D503BAC362BBB3A0C7C7",
-          "role": "REPLICATOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "5b1e5fcf9b4ef03e7a38bd0c5954846f48d622f4b70d9a139cb0b7e6635f8214",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C01",
-      "team": 9,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C01:TEAM-10": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "COUNTER_AUDITOR"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-9F08B24B9FB3233493DA",
-          "role": "COUNTER_AUDITOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "ad472dc06a287ce8effd4efc7a742291e22df7267d92615522ec102b535aecd2",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
-        },
-        {
-          "task_id": "T-C6FF3F4070D49EB830FC",
-          "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
-        },
-        {
-          "task_id": "T-E3EA961554E1125D21C0",
-          "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
-        },
-        {
-          "task_id": "T-BAD8C4DEF25D52E6CCEF",
-          "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C01",
-      "team": 10,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C02:TEAM-01": {
       "status": "WAITING",
       "successful_outputs": 0,
       "required_roles": [
@@ -708,23 +469,154 @@
       },
       "result_refs": [
         {
-          "task_id": "T-F64893C806E45BE764E5",
-          "role": "DECOMPOSER",
+          "task_id": "T-C788E2C6597227A957F1",
+          "role": "RED_TEAM",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
+        },
+        {
+          "task_id": "T-B5B7B08FDB180B9996A0",
+          "role": "PROOF_A",
           "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C01",
+      "team": 9,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C01:TEAM-10": {
+      "status": "WAITING",
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-C6FF3F4070D49EB830FC",
+          "role": "ALTERNATIVE_ROUTE",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
+        },
+        {
+          "task_id": "T-E3EA961554E1125D21C0",
+          "role": "DECOMPOSER",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
+        },
+        {
+          "task_id": "T-BAD8C4DEF25D52E6CCEF",
+          "role": "JUDGE",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C01",
+      "team": 10,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C02:TEAM-01": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
+      "missing_required_roles": [
+        "PROOF_A",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-F64893C806E45BE764E5",
+          "role": "DECOMPOSER",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         },
         {
           "task_id": "T-B061815D39E3E1BC9066",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "a5d86ef74c65679cb6f6fff6c0f15acfa9cc6773916b1c484e076f35c1f75a67",
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
       ],
@@ -785,7 +677,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C02:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -796,38 +688,25 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "RED_TEAM"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
+        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
         "minimum_independent_model_families_met": false
       },
       "result_refs": [
-        {
-          "task_id": "T-B78CD3CB019F12A21B13",
-          "role": "RED_TEAM",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "a9cf66d2016a3c183a060bbbbaa265124b4b5f185d7f80de56f39eb554e41bbc",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
-        },
         {
           "task_id": "T-DA7C62FCDCB990A4C328",
           "role": "PROOF_A",
@@ -859,19 +738,19 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "JUDGE"
+        "COUNTER_AUDITOR"
       ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER"
+        "SYNTHESIZER",
+        "JUDGE"
       ],
       "independent_model_families": [
-        "llama-3.2"
+        "gemma-2"
       ],
       "independent_family_count": 1,
       "promotion_checks": {
@@ -883,22 +762,12 @@
         {
           "task_id": "T-FA3213FB930D7C86DA50",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
-        },
-        {
-          "task_id": "T-F780AEA2974256D5AB40",
-          "role": "JUDGE",
           "status": "COMPLETED",
           "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "c0ac6ec2fb407f46cf62c0a32506abe1174958d066743d2eb8a3d45260650960",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "be48c4d4646febf1ff026d69c3c1d62d48f6ca478a08011f59c4188f0a849038",
+          "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -909,7 +778,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C02:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -920,22 +789,19 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "FALSIFIER"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
+        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -951,16 +817,6 @@
           "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
-        },
-        {
-          "task_id": "T-B22A6851C4BF7780A344",
-          "role": "FALSIFIER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "c3974c02e5b7ac80e155280765a2a32a2d82c0227691923da53d81c6ba78cd68",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -971,7 +827,56 @@
     },
     "M-A97A56A2852A:CYCLE-7:C02:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 2,
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-B8FF9C620657A5EC7436",
+          "role": "RED_TEAM",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C02",
+      "team": 6,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C02:TEAM-07": {
+      "status": "WAITING",
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1005,75 +910,6 @@
       },
       "result_refs": [
         {
-          "task_id": "T-F43E3AFA1C19060DCCDA",
-          "role": "PROOF_B",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "7c268b88c129d478adde11812343111c61ea336d44516f32293b37adae3ccc66",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
-        },
-        {
-          "task_id": "T-FC655D6E8301A66A89A4",
-          "role": "ALTERNATIVE_ROUTE",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "12a0d8e750d45e08d6bdbd05001eb482b68e0712c8945fb75a3c2ab9b008c008",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-25/farm-1-shard-25.jsonl"
-        },
-        {
-          "task_id": "T-B8FF9C620657A5EC7436",
-          "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C02",
-      "team": 6,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C02:TEAM-07": {
-      "status": "WAITING",
-      "successful_outputs": 0,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
           "task_id": "T-BDF03981B56AA4FD6266",
           "role": "RED_TEAM",
           "status": "HOLD_QUOTA_BACKOFF",
@@ -1086,11 +922,11 @@
         {
           "task_id": "T-E46ED4DCC5E89252A7F6",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "89866b6032f372d8d38f1c0b0b3d85482f3c6b9064c33174241e14eb798ca7f9",
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
       ],
@@ -1184,10 +1020,10 @@
         {
           "task_id": "T-DB57390142EF80319C29",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         }
@@ -1199,6 +1035,68 @@
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C02:TEAM-10": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-99E48BCF0B299F8308F5",
+          "role": "REPLICATOR",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "705623dcbf40b7185644fbde2f506fcc349f7cebe36cf3fac344f8270ab5f3c2",
+          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
+        },
+        {
+          "task_id": "T-C0AD72AC5FFAC658A6ED",
+          "role": "COUNTER_AUDITOR",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C02",
+      "team": 10,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C03:TEAM-01": {
       "status": "WAITING",
       "successful_outputs": 0,
       "required_roles": [
@@ -1231,67 +1129,6 @@
       },
       "result_refs": [
         {
-          "task_id": "T-99E48BCF0B299F8308F5",
-          "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
-        },
-        {
-          "task_id": "T-C0AD72AC5FFAC658A6ED",
-          "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C02",
-      "team": 10,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C03:TEAM-01": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "gemma-2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
           "task_id": "T-DAC7E1E3ABB740AA7CEE",
           "role": "SYNTHESIZER",
           "status": "HOLD_NO_CONNECTED_PROVIDER",
@@ -1300,16 +1137,6 @@
           "model_family": null,
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
-        },
-        {
-          "task_id": "T-9E8D76C196A1AFD7C38D",
-          "role": "DECOMPOSER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": "3a37481cd2367575d12ed4e38d12c9a5640b36d9e847cffc136efb52eb81db01",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -1320,7 +1147,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C03:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1342,10 +1169,8 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "gemma-2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1363,22 +1188,12 @@
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
         {
-          "task_id": "T-CDA89F2DF4B2A421E69A",
-          "role": "SCOUT",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": "fa9f537a12243f38a89e2a9c7454e40886e4cbf15bf6d5dafc8df0a9051cc72f",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
-        },
-        {
           "task_id": "T-FA672DE7F96676F83985",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
         }
@@ -1390,114 +1205,6 @@
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C03:TEAM-04": {
-      "status": "WAITING",
-      "successful_outputs": 0,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-D573CCAEDD7B1E17132A",
-          "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C03",
-      "team": 4,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C03:TEAM-05": {
-      "status": "WAITING",
-      "successful_outputs": 0,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-F8CB216A5288EDDCAA3C",
-          "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
-        },
-        {
-          "task_id": "T-EFBDE4E7B1FABDF18EDB",
-          "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C03",
-      "team": 5,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C03:TEAM-06": {
       "status": "WAITING",
       "successful_outputs": 1,
       "required_roles": [
@@ -1511,15 +1218,15 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "SYNTHESIZER"
+        "PROOF_A"
       ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
+        "SYNTHESIZER",
         "JUDGE"
       ],
       "independent_model_families": [
@@ -1533,15 +1240,115 @@
       },
       "result_refs": [
         {
-          "task_id": "T-A9648D3CA80FB1695979",
-          "role": "SYNTHESIZER",
+          "task_id": "T-D573CCAEDD7B1E17132A",
+          "role": "PROOF_A",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "b627bba301c5f4af0de57d1aef843ed4306ad1ee5ca3d7f02ca1907634bcfe86",
+          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C03",
+      "team": 4,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C03:TEAM-05": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-F8CB216A5288EDDCAA3C",
+          "role": "SCOUT",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": "c85cdf865405426c4e5e8110e56ff3cf79e7469a5e39d5020a0fd61188da1639",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
+          "response_sha256": "b8bb797b6081ba6b4711153261532459f63e35234d83f293e903e8835c314107",
+          "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
+        {
+          "task_id": "T-EFBDE4E7B1FABDF18EDB",
+          "role": "JUDGE",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C03",
+      "team": 5,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C03:TEAM-06": {
+      "status": "WAITING",
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
         {
           "task_id": "T-CD95FDF48434CFF6A706",
           "role": "DECOMPOSER",
@@ -1592,12 +1399,22 @@
       },
       "result_refs": [
         {
-          "task_id": "T-B7769138B5DE91D2AB9A",
-          "role": "FALSIFIER",
+          "task_id": "T-DA2C159700DA549845A9",
+          "role": "REPLICATOR",
           "status": "HOLD_NO_CONNECTED_PROVIDER",
           "ok": false,
           "model_id": null,
           "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
+        },
+        {
+          "task_id": "T-B7769138B5DE91D2AB9A",
+          "role": "FALSIFIER",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
@@ -1609,6 +1426,57 @@
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C03:TEAM-08": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-F8A6FB7086275F5F6715",
+          "role": "SCOUT",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": "010432515429203a43961580702cd209948e5f140a5c1d8d68d7ab69fe85d9b9",
+          "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C03",
+      "team": 8,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C04:TEAM-01": {
       "status": "WAITING",
       "successful_outputs": 0,
       "required_roles": [
@@ -1634,109 +1502,6 @@
       ],
       "independent_model_families": [],
       "independent_family_count": 0,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-F8A6FB7086275F5F6715",
-          "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C03",
-      "team": 8,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C03:TEAM-10": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "gemma-2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-D763BDBAAC545AF25C82",
-          "role": "SCOUT",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": "403cbc097ea22ebe0533346a6bac9003d248a240d4625ad9701b3fcd94c901f4",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C03",
-      "team": 10,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C04:TEAM-01": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "SYNTHESIZER"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "gemma-2"
-      ],
-      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1752,16 +1517,6 @@
           "model_family": null,
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
-        },
-        {
-          "task_id": "T-C8A4C60E79F230D64B59",
-          "role": "SYNTHESIZER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": "b367b3fcb7c555399c393410a4558b8370cf96b5af900b3ea1e3b6f64c988296",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -1772,7 +1527,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C04:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1783,19 +1538,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1807,19 +1565,19 @@
           "role": "ALTERNATIVE_ROUTE",
           "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
           "task_id": "T-C8BF940B8E139A74ABD3",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "752c5063a308cbae8db3dd578fb7db6b0b3c4d6063d1aea39ca905ab503a8d16",
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
@@ -1851,7 +1609,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C04:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1863,55 +1621,46 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "COUNTER_AUDITOR"
+        "PROOF_A",
+        "REPLICATOR"
       ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "REPLICATOR",
+        "COUNTER_AUDITOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
       "independent_model_families": [
+        "gemma-2",
         "llama-3.2"
       ],
-      "independent_family_count": 1,
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       },
       "result_refs": [
         {
           "task_id": "T-D27B3968C5AE36286140",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
-        },
-        {
-          "task_id": "T-DEE75A086E85935ABFD4",
-          "role": "COUNTER_AUDITOR",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "17556c0ac0d5d8b2bb62e1061b28d82774f2f1933bba7d6a54aba03e588a1c63",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
+          "response_sha256": "2e345984129a6d5fffa058d344cbe01a1bf9647b534323bc34e40c24c2a89318",
+          "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         },
         {
           "task_id": "T-E1C5D887FC89DB11D683",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "adb7283122c63d42a07aecf2a901a2017493fcfb3cce240d939327657ea49062",
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         }
       ],
@@ -1921,9 +1670,9 @@
       "team": 3,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C04:TEAM-05": {
+    "M-A97A56A2852A:CYCLE-7:C04:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1934,22 +1683,68 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "RED_TEAM"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
+        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-E5E47BE7A8D03EF77EFA",
+          "role": "SCOUT",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
+        }
       ],
-      "independent_family_count": 1,
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C04",
+      "team": 4,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C04:TEAM-05": {
+      "status": "WAITING",
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1961,8 +1756,8 @@
           "role": "ALTERNATIVE_ROUTE",
           "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
@@ -1975,16 +1770,6 @@
           "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
-        },
-        {
-          "task_id": "T-F9D030A3139C7AE4C442",
-          "role": "RED_TEAM",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "93e1ce51f65b010ee78229ef1ed77c5811aa845f5bf4c73d3c02c220cdd7fba5",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -2028,20 +1813,20 @@
         {
           "task_id": "T-FC620D43462D7107F22A",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
           "task_id": "T-F6FA311E08A2E078A868",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         }
@@ -2089,8 +1874,8 @@
           "role": "ALTERNATIVE_ROUTE",
           "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
@@ -2109,6 +1894,55 @@
       "cycle": 7,
       "civilization": "C04",
       "team": 7,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C04:TEAM-09": {
+      "status": "WAITING",
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-EFC1B41AB206044C1717",
+          "role": "FALSIFIER",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C04",
+      "team": 9,
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C04:TEAM-10": {
@@ -2205,10 +2039,10 @@
         {
           "task_id": "T-E5288B9DD41022C0ABD0",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         }
@@ -2221,7 +2055,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C05:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2243,8 +2077,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2254,11 +2090,11 @@
         {
           "task_id": "T-D9F180DD69B3FE894167",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "23086f500143c7800a708f299d23f4679030e5f3ab19f3823323c37c2f693b12",
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
       ],
@@ -2269,78 +2105,6 @@
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C05:TEAM-04": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "COUNTER_AUDITOR"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-B6EC4A3E89BE476F85B0",
-          "role": "COUNTER_AUDITOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "06d71b213b0637c0a6e8ea0b762104a24c30c68075534232e8085d039f5aaca4",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
-        },
-        {
-          "task_id": "T-FAD09CADE84FE09B616D",
-          "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
-        },
-        {
-          "task_id": "T-EBC5CD89E0B2731CFF6B",
-          "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C05",
-      "team": 4,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C05:TEAM-05": {
       "status": "WAITING",
       "successful_outputs": 2,
       "required_roles": [
@@ -2354,19 +2118,19 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "PROOF_B",
-        "COUNTER_AUDITOR"
+        "PROOF_A"
       ],
       "missing_required_roles": [
-        "PROOF_A",
+        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
+        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
       "independent_model_families": [
-        "llama-3.2"
+        "gemma-2"
       ],
       "independent_family_count": 1,
       "promotion_checks": {
@@ -2376,43 +2140,33 @@
       },
       "result_refs": [
         {
-          "task_id": "T-B60E4481F951A6630DB1",
-          "role": "COUNTER_AUDITOR",
+          "task_id": "T-FAD09CADE84FE09B616D",
+          "role": "SCOUT",
           "status": "COMPLETED",
           "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "cc8d4406e705f25a593a85eb903e8effe472a22694e1ffeda218e372827473eb",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": "b92a41ef98ebb69b86330be99a97feba338cdff86235d81603b291753c693c4e",
+          "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         },
         {
-          "task_id": "T-B3A3A6E4B2117AD38EEA",
-          "role": "PROOF_B",
+          "task_id": "T-EBC5CD89E0B2731CFF6B",
+          "role": "PROOF_A",
           "status": "COMPLETED",
           "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "5bc44703b028ad929560fbfbc7ba83c07e7593b59bbf8582ee8e149c1fa345dc",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
-        },
-        {
-          "task_id": "T-DF3963BD9368F708145D",
-          "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "4667d2310166e59fb47013f193b5df46e8f7e00ad71c0bba1532d36f17db6871",
+          "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
       "cycle": 7,
       "civilization": "C05",
-      "team": 5,
+      "team": 4,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C05:TEAM-06": {
+    "M-A97A56A2852A:CYCLE-7:C05:TEAM-05": {
       "status": "WAITING",
       "successful_outputs": 0,
       "required_roles": [
@@ -2445,22 +2199,74 @@
       },
       "result_refs": [
         {
-          "task_id": "T-F777F48A09B3F3E5CCC6",
-          "role": "PROOF_B",
+          "task_id": "T-DF3963BD9368F708145D",
+          "role": "SYNTHESIZER",
           "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C05",
+      "team": 5,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C05:TEAM-06": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
+      "missing_required_roles": [
+        "PROOF_A",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-F777F48A09B3F3E5CCC6",
+          "role": "PROOF_B",
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "8fbdbe1815d13ef9daf2186d0cec0e6d0deaec7af764b13dc49e4cbc7ab85367",
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
           "task_id": "T-FF854F2BB866F0C2B0CC",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
@@ -2481,258 +2287,9 @@
       "team": 6,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C05:TEAM-09": {
+    "M-A97A56A2852A:CYCLE-7:C05:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "COUNTER_AUDITOR"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-FEB96CE78C8E55BCF30A",
-          "role": "COUNTER_AUDITOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "dd9de4efa11c608ce9adeab30bfb9fb8e29d7b02c7e8b3d4ba241c232e40a13d",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C05",
-      "team": 9,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C05:TEAM-10": {
-      "status": "WAITING",
-      "successful_outputs": 2,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "REPLICATOR",
-        "SYNTHESIZER"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "gemma-2",
-        "llama-3.2"
-      ],
-      "independent_family_count": 2,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": true
-      },
-      "result_refs": [
-        {
-          "task_id": "T-B535EA7CD3F26ADB2905",
-          "role": "REPLICATOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "8dc6628ea4d983b5c07a0bd3bf3b43a3a99ab150a91c077cf7706a54789dea8e",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
-        },
-        {
-          "task_id": "T-C0D12E7D4201B812BC6A",
-          "role": "SYNTHESIZER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": "aa8ad3a96836d9c37bd08d202cbea02b1d6d21e3ae9bf2303493770646afe6e0",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C05",
-      "team": 10,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C06:TEAM-01": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "RED_TEAM"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-E1FB7ECF5ECB8C7B36A8",
-          "role": "RED_TEAM",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "4b83856b95e2d8cd5e999af8dd9fcb43db4991899eb05df436b7afe7b0ed4a92",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C06",
-      "team": 1,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C06:TEAM-02": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "COUNTER_AUDITOR"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-C4442109C93752F57A97",
-          "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
-        },
-        {
-          "task_id": "T-DA8DDF0446DF72B8206B",
-          "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
-        },
-        {
-          "task_id": "T-E15251981EF157D2CF09",
-          "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
-        },
-        {
-          "task_id": "T-952B79CEB8779EB8BDF5",
-          "role": "COUNTER_AUDITOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "a77d9d741a8581c6e884d1aaf7a2637815eeabcb98bdec94cea47ba822e7b758",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C06",
-      "team": 2,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C06:TEAM-05": {
-      "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2754,10 +2311,8 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2765,23 +2320,23 @@
       },
       "result_refs": [
         {
-          "task_id": "T-CE24C926B2ECFA9B627D",
-          "role": "DECOMPOSER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "ff891c3212de9861f2591d810de65b620b95c66a4df17b94d64c054ddb2f0315",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
+          "task_id": "T-CA2D5ADC0332C0A5E712",
+          "role": "COUNTER_AUDITOR",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
       "cycle": 7,
-      "civilization": "C06",
-      "team": 5,
+      "civilization": "C05",
+      "team": 7,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C06:TEAM-06": {
+    "M-A97A56A2852A:CYCLE-7:C06:TEAM-02": {
       "status": "WAITING",
       "successful_outputs": 2,
       "required_roles": [
@@ -2795,16 +2350,16 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "PROOF_A",
-        "JUDGE"
+        "PROOF_B",
+        "FALSIFIER"
       ],
       "missing_required_roles": [
-        "PROOF_B",
-        "FALSIFIER",
+        "PROOF_A",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER"
+        "SYNTHESIZER",
+        "JUDGE"
       ],
       "independent_model_families": [
         "llama-3.2"
@@ -2817,45 +2372,45 @@
       },
       "result_refs": [
         {
-          "task_id": "T-DCB4781DA9F997D7AC84",
-          "role": "PROOF_A",
+          "task_id": "T-C4442109C93752F57A97",
+          "role": "PROOF_B",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "fafd8091aa791886296b9d68f3140c1208da238c97861db9928de01da4de8031",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
+          "response_sha256": "4493e83fc5f57d2eaf0a313c32f21d21353db5920ad173a0c0b08ac7439a958a",
+          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
-          "task_id": "T-C87D4E8DC23107F64A6A",
-          "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "task_id": "T-DA8DDF0446DF72B8206B",
+          "role": "FALSIFIER",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "2077cbb4456ffeed3df831596a5f9d768fcf971781674a3469671aee6f749b01",
+          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
+        },
+        {
+          "task_id": "T-E15251981EF157D2CF09",
+          "role": "RED_TEAM",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
-        },
-        {
-          "task_id": "T-9BA110435A5F2F049517",
-          "role": "JUDGE",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "189e4ab99bac8413f58f943dca28340939a7408a094aa6d0462544906f00567b",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
+          "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
       "cycle": 7,
       "civilization": "C06",
-      "team": 6,
+      "team": 2,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C06:TEAM-08": {
+    "M-A97A56A2852A:CYCLE-7:C06:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2866,9 +2421,7 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "SYNTHESIZER"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2876,12 +2429,11 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
+        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "gemma-2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2889,15 +2441,54 @@
       },
       "result_refs": [
         {
-          "task_id": "T-F3ECB60C7F6EE4A4A4F2",
-          "role": "SYNTHESIZER",
-          "status": "COMPLETED",
-          "ok": true,
+          "task_id": "T-C87D4E8DC23107F64A6A",
+          "role": "REPLICATOR",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": "8cc82ca199208ee27f2b400078becf35268e4bfcc5bb3b8f8c1d0215e1507473",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
-        },
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C06",
+      "team": 6,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C06:TEAM-08": {
+      "status": "WAITING",
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
         {
           "task_id": "T-EB6A80788FC1E9998169",
           "role": "FALSIFIER",
@@ -2960,10 +2551,10 @@
         {
           "task_id": "T-FD728A0876808FCA2649",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         }
@@ -3025,7 +2616,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C07:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3036,19 +2627,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3068,11 +2662,11 @@
         {
           "task_id": "T-A5B8B3299AB006B0C98A",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "9a29472b8cafdf5553cc60c1e2435a12ae75302248f84bef84f0ac386613b233",
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         }
       ],
@@ -3082,7 +2676,7 @@
       "team": 1,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C07:TEAM-02": {
+    "M-A97A56A2852A:CYCLE-7:C07:TEAM-03": {
       "status": "WAITING",
       "successful_outputs": 1,
       "required_roles": [
@@ -3096,14 +2690,14 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "RED_TEAM"
+        "REPLICATOR"
       ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
+        "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
@@ -3118,62 +2712,13 @@
       },
       "result_refs": [
         {
-          "task_id": "T-A9ED21CEC1858EB65844",
-          "role": "RED_TEAM",
+          "task_id": "T-F62A1F5773BC140D07FB",
+          "role": "REPLICATOR",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "cb352325537f295a062c1628b1ec57ac412fbbe5939a1db95cc575982af554e5",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C07",
-      "team": 2,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C07:TEAM-03": {
-      "status": "WAITING",
-      "successful_outputs": 0,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-F62A1F5773BC140D07FB",
-          "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "d0d725728e0a8735989c4396555559ec525cb47068448a7bf1b2a670bb027a2f",
           "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
         },
         {
@@ -3194,6 +2739,55 @@
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C07:TEAM-04": {
+      "status": "WAITING",
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-A4E893A2BD748BFEC641",
+          "role": "JUDGE",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C07",
+      "team": 4,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C07:TEAM-05": {
       "status": "WAITING",
       "successful_outputs": 1,
       "required_roles": [
@@ -3229,95 +2823,13 @@
       },
       "result_refs": [
         {
-          "task_id": "T-E1B6899573A0DAB0B033",
-          "role": "PROOF_B",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "04bf240ef89c6b3f537a2566418dd0ba3c90663a3772ec25437b44da1afba537",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
-        },
-        {
-          "task_id": "T-A4E893A2BD748BFEC641",
-          "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C07",
-      "team": 4,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C07:TEAM-05": {
-      "status": "WAITING",
-      "successful_outputs": 2,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "REPLICATOR"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-FF2EBD7D5F19276BB8A5",
-          "role": "REPLICATOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "76d163fd3ac1f17041a176a7b83cae4f528cfb6d9519ff7f81352983282da112",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
-        },
-        {
-          "task_id": "T-B63240C0B7FDF9DF8DAC",
-          "role": "ALTERNATIVE_ROUTE",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "4972447a914e263ddd9be3980f7ec7d9be6d6dabeb897aa41840657487c50b46",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
-        },
-        {
           "task_id": "T-E20BD9CBE26E778DC573",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "de48ffc9bb567eb6113213744e355bc9fc2728b0273d497a9647c9c5b6ff26e1",
           "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
         }
       ],
@@ -3329,7 +2841,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C07:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3340,7 +2852,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3348,11 +2862,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3362,11 +2877,11 @@
         {
           "task_id": "T-A501D7E91BFBB690B273",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "4efde2cf392cf11f68c933c484abd02b58cb2d410b9160c5bc9bdb9998b4ac16",
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         }
       ],
@@ -3411,10 +2926,10 @@
         {
           "task_id": "T-E813BCC2D8D3408A5DEA",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         }
@@ -3476,65 +2991,6 @@
     },
     "M-A97A56A2852A:CYCLE-7:C07:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-D115800ABB0EA6A04C97",
-          "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
-        },
-        {
-          "task_id": "T-D87CFF56826FB6B8142C",
-          "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C07",
-      "team": 10,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C08:TEAM-03": {
-      "status": "WAITING",
       "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
@@ -3547,15 +3003,15 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "RED_TEAM"
+        "SYNTHESIZER"
       ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
+        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
       "independent_model_families": [
@@ -3569,25 +3025,35 @@
       },
       "result_refs": [
         {
-          "task_id": "T-C37EF3F1769A656D6FE1",
-          "role": "RED_TEAM",
+          "task_id": "T-D115800ABB0EA6A04C97",
+          "role": "PROOF_B",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
+        },
+        {
+          "task_id": "T-D87CFF56826FB6B8142C",
+          "role": "SYNTHESIZER",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "e3f01caf4abc5841832e2ac3211c439c8cf5e40a3ae7e78ec1964aa76192708d",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
+          "response_sha256": "a931ba8564312fce4d0960aff1d660d116be43e376a7c5c99d780fc4de17ef14",
+          "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
       "cycle": 7,
-      "civilization": "C08",
-      "team": 3,
+      "civilization": "C07",
+      "team": 10,
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C08:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3609,8 +3075,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3620,21 +3088,21 @@
         {
           "task_id": "T-BEFA40A48AD0C17A45C3",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         },
         {
           "task_id": "T-E6798FEEABDB7492F6BA",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": "2c05969a1e316b42e81ae247a333d0bb6643a05ad4c1b54dd702e90470f867d0",
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         }
       ],
@@ -3646,7 +3114,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C08:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3657,19 +3125,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3689,11 +3160,11 @@
         {
           "task_id": "T-F2DA5017F3C9DC52F350",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "1f113fc1d25142bde3d35711917a1295d5206bf9c5612eafeea5df71a8a3a5df",
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         }
       ],
@@ -3705,7 +3176,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C08:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3716,22 +3187,19 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "FALSIFIER"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
+        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3757,16 +3225,6 @@
           "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
-        },
-        {
-          "task_id": "T-CD9C460A2A5726C62CFD",
-          "role": "FALSIFIER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "f822fa9b74197eda23005fbeaa96718ab20337a6266a05a05fd469719bab092f",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -3776,68 +3234,6 @@
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C08:TEAM-09": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "JUDGE"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-DFC780A017E261CAD6AA",
-          "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
-        },
-        {
-          "task_id": "T-E199144307972693E9A8",
-          "role": "JUDGE",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "d0e657406d1e81cede800099947047823e322632e967b8fb60a6d53375e74aa0",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C08",
-      "team": 9,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C08:TEAM-10": {
       "status": "WAITING",
       "successful_outputs": 0,
       "required_roles": [
@@ -3870,13 +3266,75 @@
       },
       "result_refs": [
         {
-          "task_id": "T-E028F83A72DDE1D58015",
-          "role": "SYNTHESIZER",
+          "task_id": "T-DFC780A017E261CAD6AA",
+          "role": "ALTERNATIVE_ROUTE",
           "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
+        },
+        {
+          "task_id": "T-EDEA1BD86F121CE9A59E",
+          "role": "COMPUTE_CHECKER",
+          "status": "HOLD_DETERMINISTIC_CHECK",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C08",
+      "team": 9,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C08:TEAM-10": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-E028F83A72DDE1D58015",
+          "role": "SYNTHESIZER",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "ddc3800c98c8bafffe74880a5e26ef450d533a330354f0157c4e05b52de313fb",
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         }
       ],
@@ -3935,58 +3393,6 @@
       "team": 1,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C09:TEAM-02": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "PROOF_B"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-A2FF1B1BBEF76A92BA29",
-          "role": "PROOF_B",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "ed4448e744f8a29397f3924d2af2d6fdc1229cc31a6dab7bae429e48083cf1d0",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C09",
-      "team": 2,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
     "M-A97A56A2852A:CYCLE-7:C09:TEAM-03": {
       "status": "WAITING",
       "successful_outputs": 0,
@@ -4022,10 +3428,10 @@
         {
           "task_id": "T-FF687C8512354D39781E",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         }
@@ -4037,6 +3443,55 @@
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C09:TEAM-04": {
+      "status": "WAITING",
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
+          "task_id": "T-E8E7CF81F43341CD30DE",
+          "role": "ALTERNATIVE_ROUTE",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C09",
+      "team": 4,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C09:TEAM-05": {
       "status": "WAITING",
       "successful_outputs": 1,
       "required_roles": [
@@ -4050,74 +3505,12 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "PROOF_A"
-      ],
-      "missing_required_roles": [
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-E8E7CF81F43341CD30DE",
-          "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
-        },
-        {
-          "task_id": "T-A8D1C1C86F4C8BF9E48F",
-          "role": "PROOF_A",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "0ec564bd52a8310a1f3318c1709bb2c5595513fbfc8d4cd12f9f81a425627189",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C09",
-      "team": 4,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C09:TEAM-05": {
-      "status": "WAITING",
-      "successful_outputs": 2,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "RED_TEAM"
+        "PROOF_B"
       ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
+        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
@@ -4136,50 +3529,30 @@
         {
           "task_id": "T-E3DEA948E556B89FE789",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
         },
         {
-          "task_id": "T-FAFB3F3B80FC97D6E7D2",
-          "role": "RED_TEAM",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "f17b7564a73773be540a36ecc8bdbd4806d2e6abbbec7dfb19444204ab284711",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
-        },
-        {
-          "task_id": "T-D38F81CDBFA001F7962E",
-          "role": "DECOMPOSER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "498c0b95c44575737db1e07b5100547fccc0ccc36cde94653c0625c0d6b9064c",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
-        },
-        {
           "task_id": "T-9C01D12585FFF4741CCB",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "00437647438bfab3f5891707ab7d1a08779ef2f1abca97422bec9e111373a058",
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         },
         {
           "task_id": "T-BA776C0D5C352E638451",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
@@ -4223,14 +3596,34 @@
       },
       "result_refs": [
         {
-          "task_id": "T-EE6E0580D3F53B0A352B",
-          "role": "REPLICATOR",
+          "task_id": "T-F4AD5AE7EFEA12ECAA22",
+          "role": "PROOF_A",
           "status": "HOLD_NO_CONNECTED_PROVIDER",
           "ok": false,
           "model_id": null,
           "model_family": null,
           "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
+        },
+        {
+          "task_id": "T-EE6E0580D3F53B0A352B",
+          "role": "REPLICATOR",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
+        },
+        {
+          "task_id": "T-D15F5A9AC0769121A6B2",
+          "role": "SYNTHESIZER",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -4241,7 +3634,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C09:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 2,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4252,9 +3645,7 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "JUDGE"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4262,38 +3653,26 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER"
+        "SYNTHESIZER",
+        "JUDGE"
       ],
-      "independent_model_families": [
-        "gemma-2",
-        "llama-3.2"
-      ],
-      "independent_family_count": 2,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": true
+        "minimum_independent_model_families_met": false
       },
       "result_refs": [
         {
-          "task_id": "T-FC61566997115E215F78",
-          "role": "JUDGE",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "142d14167200f36dc29ac9fa73c55e39506da97de0f07ca9bd512364b1f01c68",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
-        },
-        {
-          "task_id": "T-D3A58F50452DE57C56D1",
-          "role": "SCOUT",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": "b75db6d47d814c7ce0f4570c08455c4bb68e670cfc0348415de5cdbca1994426",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
+          "task_id": "T-E48E92CA9C4542ADC36F",
+          "role": "ALTERNATIVE_ROUTE",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         },
         {
           "task_id": "T-F27738858D7900CA483C",
@@ -4326,15 +3705,15 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "PROOF_A"
+        "SYNTHESIZER"
       ],
       "missing_required_roles": [
+        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
       "independent_model_families": [
@@ -4360,22 +3739,12 @@
         {
           "task_id": "T-E8FDEDE8DFFE11F1BBF5",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
-        },
-        {
-          "task_id": "T-F48DD6E363086FA6BCBA",
-          "role": "PROOF_A",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "6b65133714477accf57415a85d72f03da005bbd436c93dbff3f8e66358b4acb3",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-14/farm-2-shard-14.jsonl"
+          "response_sha256": "31498f1a8efa6ac1a36fcf02a3761eab82ab0a02b3dca862f36c0fc00246046a",
+          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -4397,9 +3766,7 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "JUDGE"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4407,7 +3774,8 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER"
+        "SYNTHESIZER",
+        "JUDGE"
       ],
       "independent_model_families": [
         "llama-3.2"
@@ -4420,23 +3788,13 @@
       },
       "result_refs": [
         {
-          "task_id": "T-C3A97F8FDE5917B68E42",
-          "role": "JUDGE",
+          "task_id": "T-E8163CFE062394DE0B6F",
+          "role": "ALTERNATIVE_ROUTE",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "6136d09d26a3aa89b0d83d05cb46a2e8ecc62fc3b92d2bd39bd2728e7be5d318",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
-        },
-        {
-          "task_id": "T-E8163CFE062394DE0B6F",
-          "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "176a2c89331b9cfa1358d15308377d659f198895d47a8afd2b741055136b08bf",
           "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         }
       ],
@@ -4448,7 +3806,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C09:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4459,11 +3817,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "PROOF_B"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
+        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
@@ -4471,10 +3828,8 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4482,22 +3837,12 @@
       },
       "result_refs": [
         {
-          "task_id": "T-C773D2B24647EACAC16D",
-          "role": "PROOF_B",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "9b31319e539ece41c8a13c36c731e5a3cbdc241c6e520215851834614c10329f",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
-        },
-        {
           "task_id": "T-F53E27184F4AA34FD6F0",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         }
@@ -4510,7 +3855,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C10:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 2,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4521,22 +3866,19 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "PROOF_B",
-        "JUDGE"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
+        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER"
+        "SYNTHESIZER",
+        "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4552,26 +3894,6 @@
           "model_family": null,
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
-        },
-        {
-          "task_id": "T-F5909BAAE068D9B7F29F",
-          "role": "PROOF_B",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "12e98b0fc6ae0f8a889d8292e418b635965582e3e1d57d3cfc865d721918b54f",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
-        },
-        {
-          "task_id": "T-97455DDACCFB40A6721B",
-          "role": "JUDGE",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "bbfb897b3832a9f887b8aa299e71a3fa9467c3909674eeaaa915af8e634aed26",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -4582,7 +3904,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C10:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4594,46 +3916,37 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "PROOF_B"
+        "SYNTHESIZER"
       ],
       "missing_required_roles": [
         "PROOF_A",
+        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
       "independent_model_families": [
+        "gemma-2",
         "llama-3.2"
       ],
-      "independent_family_count": 1,
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       },
       "result_refs": [
         {
           "task_id": "T-FA2CD24E0F1EF21F939C",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
-        },
-        {
-          "task_id": "T-B8C1C44EDA727D09BC62",
-          "role": "PROOF_B",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "86a3a8f47c11f599dee3d4406961e23e1a1d263678c9e16bf5be41075cd20dc8",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
         {
           "task_id": "T-D27433EB4DC53F7C5A37",
@@ -4648,21 +3961,21 @@
         {
           "task_id": "T-D881ADC3D5A31AB37D22",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": "78ebb13c2566c2c1fddee63b8088fa5fda49ed44f2e1a7ea8f2c8c1e77137137",
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         },
         {
           "task_id": "T-E93C5809C4DA3427499C",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "1ea9e8147262817ad781c8199eb1315e51acd09243e93528800e8023cc4fb914",
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
       ],
@@ -4686,12 +3999,12 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "RED_TEAM"
+        "FALSIFIER"
       ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
+        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
@@ -4718,23 +4031,13 @@
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
         {
-          "task_id": "T-EB994A5B43F15D8B0F8F",
-          "role": "RED_TEAM",
+          "task_id": "T-DFE20BB3E7F089E8A4F0",
+          "role": "FALSIFIER",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "d0ec895ca67e0ec24d27b35057ad1dc1e05db8f08870b7fe501c369479ed8fec",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
-        },
-        {
-          "task_id": "T-DFE20BB3E7F089E8A4F0",
-          "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "5e90bb6f3491e7b8d1d5564d3f5dd5e966e997c0c68e76f1d8b7ba6cd0e51429",
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
       ],
@@ -4795,7 +4098,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C10:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4807,65 +4110,56 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "REPLICATOR"
+        "PROOF_B",
+        "SYNTHESIZER"
       ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "SYNTHESIZER",
+        "REPLICATOR",
         "JUDGE"
       ],
       "independent_model_families": [
+        "gemma-2",
         "llama-3.2"
       ],
-      "independent_family_count": 1,
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       },
       "result_refs": [
         {
           "task_id": "T-F13F06042CD2A86C945B",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "176d55cf3566b7c388f52781d631ccf1f13eddddbb4188e3e2741b864544a670",
           "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
         },
         {
           "task_id": "T-EBC8C142E085C5F7F1CB",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         },
         {
-          "task_id": "T-A073A1FD962BDD00EB1C",
-          "role": "REPLICATOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "1c5011eda495f436d49a9b470e2ce15f4fa0b893025d5b706e8664b3ec070f93",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
-        },
-        {
           "task_id": "T-A589A80800B4C48FBC6B",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "eb2ce264e7a1de20d7bb3fc6cdef28e24415bf69a15e41a3286f20fa5a4980ae",
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
       ],
@@ -4876,160 +4170,6 @@
       "logical_chief_role": "TEAM_CHIEF"
     },
     "M-A97A56A2852A:CYCLE-7:C10:TEAM-06": {
-      "status": "WAITING",
-      "successful_outputs": 2,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "PROOF_A",
-        "FALSIFIER"
-      ],
-      "missing_required_roles": [
-        "PROOF_B",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-FC6040E92D9F17F188F4",
-          "role": "PROOF_A",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "6140584041855b1211e4b45fb6ff3d769ef5a647037e693bd6bcb1b93d0c674e",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-1/farm-1-shard-01.jsonl"
-        },
-        {
-          "task_id": "T-C0CE63323D2690580464",
-          "role": "FALSIFIER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "b817f42029fb595945416c2ae2a83208309e76f293d680d378fece0e407bc467",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
-        },
-        {
-          "task_id": "T-DB8721BFD1C5B85833EC",
-          "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C10",
-      "team": 6,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C10:TEAM-07": {
-      "status": "WAITING",
-      "successful_outputs": 2,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "FALSIFIER"
-      ],
-      "missing_required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-B35A244D644E6059682A",
-          "role": "DECOMPOSER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "9176320b938b15ebf62170857d4c590e01811522895cdefa8d8a669c528f4e12",
-          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
-        },
-        {
-          "task_id": "T-D98EB0155D7D169CEE19",
-          "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
-        },
-        {
-          "task_id": "T-F7DB61CA14525BAF13BD",
-          "role": "FALSIFIER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "83a89bc2ec905bf3929c60498e6b429dfa5a288b4eface0221423effabcea2f1",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
-        },
-        {
-          "task_id": "T-B3222E7A0527901A1E90",
-          "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C10",
-      "team": 7,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C10:TEAM-08": {
       "status": "WAITING",
       "successful_outputs": 0,
       "required_roles": [
@@ -5062,23 +4202,23 @@
       },
       "result_refs": [
         {
-          "task_id": "T-ABCD8BEDB5CD30AB6E13",
-          "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
+          "task_id": "T-DB8721BFD1C5B85833EC",
+          "role": "DECOMPOSER",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
           "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
+          "model_id": null,
+          "model_family": null,
           "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
+          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
       "cycle": 7,
       "civilization": "C10",
-      "team": 8,
+      "team": 6,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C10:TEAM-09": {
+    "M-A97A56A2852A:CYCLE-7:C10:TEAM-07": {
       "status": "WAITING",
       "successful_outputs": 1,
       "required_roles": [
@@ -5092,13 +4232,13 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "COUNTER_AUDITOR"
+        "PROOF_B"
       ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
+        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
@@ -5114,15 +4254,64 @@
       },
       "result_refs": [
         {
-          "task_id": "T-BAE8BAFE8FB9239BCDF0",
-          "role": "COUNTER_AUDITOR",
+          "task_id": "T-D98EB0155D7D169CEE19",
+          "role": "SYNTHESIZER",
+          "status": "HOLD_QUOTA_BACKOFF",
+          "ok": false,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
+        },
+        {
+          "task_id": "T-B3222E7A0527901A1E90",
+          "role": "PROOF_B",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "5f9760d07e7dad929824f14a93982f24d65e6e844d4f2319acf4137bb8e62dc7",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
-        },
+          "response_sha256": "454ec833e3425b95a1437d967ce922a62432447aeee8dc5f751867d98978287a",
+          "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C10",
+      "team": 7,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C10:TEAM-09": {
+      "status": "WAITING",
+      "successful_outputs": 0,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [],
+      "independent_family_count": 0,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
         {
           "task_id": "T-E81577B499DA73657C96",
           "role": "FALSIFIER",
@@ -5230,6 +4419,16 @@
           "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
+        },
+        {
+          "task_id": "T-D0F3AEC1F476F3D1DCDC",
+          "role": "DECOMPOSER",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -5273,10 +4472,10 @@
         {
           "task_id": "T-EC398AE0AA6D60AC2C90",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
         },
@@ -5299,7 +4498,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C11:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5310,19 +4509,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5332,20 +4534,20 @@
         {
           "task_id": "T-99452DC8CE31753E66AF",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "f5461631f893a26e771029c10d921d34555f2f949dabf0ed68fa157de4bcc9da",
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         },
         {
           "task_id": "T-ED27FCBB0C27BD09D316",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
@@ -5415,131 +4617,7 @@
       "team": 8,
       "logical_chief_role": "TEAM_CHIEF"
     },
-    "M-A97A56A2852A:CYCLE-7:C11:TEAM-09": {
-      "status": "WAITING",
-      "successful_outputs": 2,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "PROOF_A",
-        "SYNTHESIZER"
-      ],
-      "missing_required_roles": [
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-804B6DA9196D5424C6D1",
-          "role": "SYNTHESIZER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "8c6044408956b419e6b7224b24dbcd07b55471793bc59fedc2240c5277ac63ac",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
-        },
-        {
-          "task_id": "T-DA01D3E7A33EA3D3A14D",
-          "role": "PROOF_A",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "576f62d62aac734e492bbc18b7907be79cb01454f7152507893573e6a89f7600",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C11",
-      "team": 9,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
     "M-A97A56A2852A:CYCLE-7:C11:TEAM-10": {
-      "status": "WAITING",
-      "successful_outputs": 1,
-      "required_roles": [
-        "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "successful_required_roles": [
-        "PROOF_A"
-      ],
-      "missing_required_roles": [
-        "PROOF_B",
-        "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
-      ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_required_roles_success": false,
-        "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
-      },
-      "result_refs": [
-        {
-          "task_id": "T-FCF80ABD0F59C7A67A69",
-          "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
-        },
-        {
-          "task_id": "T-D65D4B594D0FC2751017",
-          "role": "PROOF_A",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "5fdc860b55a4bd84b273c4bf7e9de1fd3926583b02426e4899de8f0f81fe3770",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
-        }
-      ],
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C11",
-      "team": 10,
-      "logical_chief_role": "TEAM_CHIEF"
-    },
-    "M-A97A56A2852A:CYCLE-7:C12:TEAM-01": {
       "status": "WAITING",
       "successful_outputs": 0,
       "required_roles": [
@@ -5572,13 +4650,64 @@
       },
       "result_refs": [
         {
+          "task_id": "T-FCF80ABD0F59C7A67A69",
+          "role": "SYNTHESIZER",
+          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "ok": false,
+          "model_id": null,
+          "model_family": null,
+          "response_sha256": null,
+          "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
+        }
+      ],
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C11",
+      "team": 10,
+      "logical_chief_role": "TEAM_CHIEF"
+    },
+    "M-A97A56A2852A:CYCLE-7:C12:TEAM-01": {
+      "status": "WAITING",
+      "successful_outputs": 1,
+      "required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "successful_required_roles": [],
+      "missing_required_roles": [
+        "PROOF_A",
+        "PROOF_B",
+        "FALSIFIER",
+        "RED_TEAM",
+        "COUNTER_AUDITOR",
+        "REPLICATOR",
+        "SYNTHESIZER",
+        "JUDGE"
+      ],
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_required_roles_success": false,
+        "minimum_required_roles_met": false,
+        "minimum_independent_model_families_met": false
+      },
+      "result_refs": [
+        {
           "task_id": "T-D37651188E2CF3F55C21",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "6a9cbba2c9001891e58f0d4a091d94778c1b4a89bf2403fe8996034f9b9eafa9",
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         },
         {
@@ -5600,7 +4729,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C12:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5611,10 +4740,11 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
@@ -5622,8 +4752,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5633,11 +4765,11 @@
         {
           "task_id": "T-E8239AF54051AB0057A2",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "3f7ef70f922c98f73ab738740d50f2c109b74dd158e23c990cf0fe860613293f",
           "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
         },
         {
@@ -5681,19 +4813,19 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "RED_TEAM"
+        "COUNTER_AUDITOR"
       ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "COUNTER_AUDITOR",
+        "RED_TEAM",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
       "independent_model_families": [
-        "llama-3.2"
+        "gemma-2"
       ],
       "independent_family_count": 1,
       "promotion_checks": {
@@ -5705,11 +4837,11 @@
         {
           "task_id": "T-C7DF63ABEAE347108370",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "cd44ef5e283a793c2989532a99bcc5e6c88db4e23e13bb3ba088befbf100fdcb",
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
         {
@@ -5717,20 +4849,10 @@
           "role": "PROOF_B",
           "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
-        },
-        {
-          "task_id": "T-C1D1108986A7FF4FB11C",
-          "role": "RED_TEAM",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "c0ca30be68c4ac33f5c1de7d0ec52aea9e1df8a7723bba7372f75c038fc43981",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -5741,7 +4863,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C12:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 1,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5753,14 +4875,14 @@
         "JUDGE"
       ],
       "successful_required_roles": [
-        "COUNTER_AUDITOR"
+        "RED_TEAM",
+        "REPLICATOR"
       ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
-        "REPLICATOR",
+        "COUNTER_AUDITOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
@@ -5777,31 +4899,21 @@
         {
           "task_id": "T-C0D71C82DE24C1BF53F0",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
-          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
-        },
-        {
-          "task_id": "T-E4733A5C36C9A7D77A84",
-          "role": "COUNTER_AUDITOR",
           "status": "COMPLETED",
           "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": "dbbda4e29b162919ace36348e3f0ddb629084b33fab2b7dade493fcc02c32088",
-          "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
+          "response_sha256": "ef44b6a9ee627d519dbfdb967a7fd584517c0e148c2dda9892ea6f41522ccfe8",
+          "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
         },
         {
           "task_id": "T-DCF87D40D55D0D9B5356",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "a817bd6e38493f45806e12e6b62abd57f613cb6085edddb35125db8cda2d0aa5",
           "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         }
       ],
@@ -5813,7 +4925,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C12:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5824,19 +4936,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5846,11 +4961,11 @@
         {
           "task_id": "T-F265A0A71ADEE55A3163",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "9bb60757d11755403db9fa09cac3721e4f0ba421a7c7a18f7cc652bebe22f169",
           "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         }
       ],
@@ -5897,8 +5012,8 @@
           "role": "JUDGE",
           "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
@@ -5921,7 +5036,7 @@
     },
     "M-A97A56A2852A:CYCLE-7:C12:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 2,
+      "successful_outputs": 0,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5932,22 +5047,19 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [
-        "REPLICATOR"
-      ],
+      "successful_required_roles": [],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
+        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
+      "independent_model_families": [],
+      "independent_family_count": 0,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5963,26 +5075,6 @@
           "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
-        },
-        {
-          "task_id": "T-E496F94B82849264CF87",
-          "role": "REPLICATOR",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "95fd4c5d5ee63bfa3339ecd6e2eae34ff5fca81c55b3e8dd749ad9c959d22035",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-35/farm-2-shard-35.jsonl"
-        },
-        {
-          "task_id": "T-DE1E14C43853B456C4B3",
-          "role": "DECOMPOSER",
-          "status": "COMPLETED",
-          "ok": true,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": "00f03726b465e697644ea0ad1c3578cb418073f2418c9dd5e4839d6b7d7343ef",
-          "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
       ],
       "mission_id": "M-A97A56A2852A",
@@ -6058,7 +5150,7 @@
       "civilization": "C01",
       "logical_chief_role": "CIVILIZATION_CHIEF",
       "status": "WAITING",
-      "team_packages_seen": 10,
+      "team_packages_seen": 9,
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
@@ -6081,12 +5173,13 @@
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
+        "gemma-2",
         "llama-3.2"
       ],
-      "independent_family_count": 1,
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     },
     "M-A97A56A2852A:CYCLE-7:C03": {
@@ -6095,7 +5188,7 @@
       "civilization": "C03",
       "logical_chief_role": "CIVILIZATION_CHIEF",
       "status": "WAITING",
-      "team_packages_seen": 8,
+      "team_packages_seen": 7,
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
@@ -6113,7 +5206,7 @@
       "civilization": "C04",
       "logical_chief_role": "CIVILIZATION_CHIEF",
       "status": "WAITING",
-      "team_packages_seen": 7,
+      "team_packages_seen": 9,
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
@@ -6132,7 +5225,7 @@
       "civilization": "C05",
       "logical_chief_role": "CIVILIZATION_CHIEF",
       "status": "WAITING",
-      "team_packages_seen": 7,
+      "team_packages_seen": 6,
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
@@ -6151,7 +5244,25 @@
       "civilization": "C06",
       "logical_chief_role": "CIVILIZATION_CHIEF",
       "status": "WAITING",
-      "team_packages_seen": 7,
+      "team_packages_seen": 5,
+      "ready_teams": 0,
+      "required_ready_teams": 10,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
+      "promotion_checks": {
+        "all_ten_teams_ready": false,
+        "minimum_independent_model_families_met": false
+      }
+    },
+    "M-A97A56A2852A:CYCLE-7:C07": {
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C07",
+      "logical_chief_role": "CIVILIZATION_CHIEF",
+      "status": "WAITING",
+      "team_packages_seen": 8,
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
@@ -6164,35 +5275,17 @@
         "minimum_independent_model_families_met": true
       }
     },
-    "M-A97A56A2852A:CYCLE-7:C07": {
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C07",
-      "logical_chief_role": "CIVILIZATION_CHIEF",
-      "status": "WAITING",
-      "team_packages_seen": 9,
-      "ready_teams": 0,
-      "required_ready_teams": 10,
-      "independent_model_families": [
-        "llama-3.2"
-      ],
-      "independent_family_count": 1,
-      "promotion_checks": {
-        "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
-      }
-    },
     "M-A97A56A2852A:CYCLE-7:C08": {
       "mission_id": "M-A97A56A2852A",
       "cycle": 7,
       "civilization": "C08",
       "logical_chief_role": "CIVILIZATION_CHIEF",
       "status": "WAITING",
-      "team_packages_seen": 6,
+      "team_packages_seen": 5,
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
-        "llama-3.2"
+        "gemma-2"
       ],
       "independent_family_count": 1,
       "promotion_checks": {
@@ -6206,25 +5299,6 @@
       "civilization": "C09",
       "logical_chief_role": "CIVILIZATION_CHIEF",
       "status": "WAITING",
-      "team_packages_seen": 10,
-      "ready_teams": 0,
-      "required_ready_teams": 10,
-      "independent_model_families": [
-        "gemma-2",
-        "llama-3.2"
-      ],
-      "independent_family_count": 2,
-      "promotion_checks": {
-        "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": true
-      }
-    },
-    "M-A97A56A2852A:CYCLE-7:C10": {
-      "mission_id": "M-A97A56A2852A",
-      "cycle": 7,
-      "civilization": "C10",
-      "logical_chief_role": "CIVILIZATION_CHIEF",
-      "status": "WAITING",
       "team_packages_seen": 9,
       "ready_teams": 0,
       "required_ready_teams": 10,
@@ -6237,13 +5311,32 @@
         "minimum_independent_model_families_met": false
       }
     },
+    "M-A97A56A2852A:CYCLE-7:C10": {
+      "mission_id": "M-A97A56A2852A",
+      "cycle": 7,
+      "civilization": "C10",
+      "logical_chief_role": "CIVILIZATION_CHIEF",
+      "status": "WAITING",
+      "team_packages_seen": 8,
+      "ready_teams": 0,
+      "required_ready_teams": 10,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
+      "promotion_checks": {
+        "all_ten_teams_ready": false,
+        "minimum_independent_model_families_met": true
+      }
+    },
     "M-A97A56A2852A:CYCLE-7:C11": {
       "mission_id": "M-A97A56A2852A",
       "cycle": 7,
       "civilization": "C11",
       "logical_chief_role": "CIVILIZATION_CHIEF",
       "status": "WAITING",
-      "team_packages_seen": 7,
+      "team_packages_seen": 6,
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
@@ -6265,12 +5358,13 @@
       "ready_teams": 0,
       "required_ready_teams": 10,
       "independent_model_families": [
+        "gemma-2",
         "llama-3.2"
       ],
-      "independent_family_count": 1,
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     }
   },
