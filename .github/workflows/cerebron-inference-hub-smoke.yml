@@ -1,0 +1,49 @@
+name: CEREBRON Inference Hub Smoke
+
+on:
+  push:
+    branches:
+      - cerebron-inference-hub-v1
+    paths:
+      - '.github/workflows/cerebron-inference-hub-smoke.yml'
+      - 'cerebron/inference_hub/hub.py'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free external inference client
+        run: pip install --quiet hf-gradio
+      - name: Execute twenty real logical agents with quota recovery
+        run: |
+          python cerebron/inference_hub/hub.py enqueue --mission-id HUB-REAL-SMOKE-20-RECOVERY-${{ github.run_id }} --prompt 'Réponds CEREBRON_HUB_OK puis calcule exactement 17*19. CLAIM<=EVIDENCE.' --agents 20
+          echo '=== PASS 1 ==='
+          python cerebron/inference_hub/hub.py run --limit 20
+          python cerebron/inference_hub/hub.py status
+          cp cerebron/inference_hub/state/latest.json cerebron/inference_hub/state/pass1.json
+          echo '=== QUOTA BACKOFF 60s ==='
+          sleep 60
+          echo '=== PASS 2: RETRY HELD/RETRYABLE ONLY ==='
+          python cerebron/inference_hub/hub.py run --limit 20
+          python cerebron/inference_hub/hub.py status
+          cp cerebron/inference_hub/state/latest.json cerebron/inference_hub/state/pass2.json
+      - name: Upload execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-hub-smoke-20-recovery-${{ github.run_id }}
+          path: |
+            cerebron/inference_hub/state/queue.json
+            cerebron/inference_hub/state/latest.json
+            cerebron/inference_hub/state/pass1.json
+            cerebron/inference_hub/state/pass2.json
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,82 @@
+name: CEREBRON Inference Hub V1
+
+on:
+  push:
+    branches:
+      - cerebron-inference-hub-v1
+    paths:
+      - 'cerebron/inference_hub/**'
+      - '.github/workflows/cerebron-inference-hub-v1.yml'
+  workflow_dispatch:
+    inputs:
+      smoke_agents:
+        description: 'Number of real zero-euro external smoke agents'
+        required: false
+        default: '2'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cerebron-inference-hub-v1
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests
+        run: python -m unittest cerebron.inference_hub.test_hub -v
+      - name: Validate 1000 logical-agent queue construction
+        run: |
+          tmpdir=$(mktemp -d)
+          cp cerebron/inference_hub/config.json "$tmpdir/config.json"
+          PYTHONPATH=. python - <<'PY'
+          import tempfile
+          from pathlib import Path
+          from unittest import mock
+          import cerebron.inference_hub.hub as h
+          with tempfile.TemporaryDirectory() as d:
+              p=Path(d)
+              with mock.patch.object(h,'QUEUE_PATH',p/'queue.json'), mock.patch.object(h,'LATEST_PATH',p/'latest.json'):
+                  made=h.enqueue('CI-1000','architecture-only queue validation',1000)
+                  s=h.status()
+                  assert len(made)==1000, len(made)
+                  assert s['tasks']==1000, s
+                  print(s)
+          PY
+
+  external-smoke:
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install zero-euro Hugging Face client
+        run: pip install --quiet hf-gradio
+      - name: Run real external smoke agents
+        env:
+          SMOKE_AGENTS: ${{ inputs.smoke_agents }}
+        run: |
+          python cerebron/inference_hub/hub.py enqueue --mission-id HUB-SMOKE-${{ github.run_id }} --prompt 'Réponds uniquement CEREBRON_HUB_OK et calcule 17*19.' --agents "$SMOKE_AGENTS"
+          python cerebron/inference_hub/hub.py run --limit "$SMOKE_AGENTS"
+          python cerebron/inference_hub/hub.py status
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerebron-inference-hub-${{ github.run_id }}
+          path: |
+            cerebron/inference_hub/state/queue.json
+            cerebron/inference_hub/state/latest.json
+          if-no-files-found: warn
+          retention-days: 30
