@@ -1,7 +1,7 @@
 {
   "schema": "cerebron-hierarchy-state-v1",
-  "run_id": "36095255994",
-  "updated_at": "2026-09-25T04:48:01+00:00",
+  "run_id": "36096923396",
+  "updated_at": "2026-09-25T05:12:38+00:00",
   "semantic_chief_agents_enabled": false,
   "source_rows": 432,
   "queue_rows": 432,
@@ -17,7 +17,7 @@
   "teams": {
     "M-A97A56A2852A:CYCLE-10:C01:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -28,19 +28,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -60,41 +63,41 @@
         {
           "task_id": "T-277BBF197A3FF2764790",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
         {
           "task_id": "T-240B0C1BAA7F68532948",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "fd9e41dc9e251c59d9851871e5ce64b4057f3d7f0c8e6d5d2655142a8ebcf584",
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
         {
           "task_id": "T-61E9E6F9753364B0AF4F",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
         },
         {
           "task_id": "T-178F85715677836B053F",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "3a8af1478e741f925ae48510315147fe7f8a0bbdc33cae9723b781cbe818d938",
           "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
         },
         {
@@ -116,7 +119,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C01:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -127,19 +130,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -169,20 +175,20 @@
         {
           "task_id": "T-5D3D674FF17EB4C494A2",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "06d9c9d298910fbbbd892a84867d7c38226ef2b71845cebfb9146b2d89879ac8",
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         },
         {
           "task_id": "T-5FFC72D7E03759DC94BB",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         },
@@ -199,10 +205,10 @@
         {
           "task_id": "T-2ED71873C0135358CC6F",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         },
@@ -235,7 +241,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C01:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -246,19 +252,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -268,11 +277,11 @@
         {
           "task_id": "T-45244AEF996CFE811D46",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "8a172888924450bbaa00afcc7d26e39c5b54c845280431a047d3577c82feca9c",
           "artifact_file": "farm-results/cerebron-farm-0-shard-3/farm-0-shard-03.jsonl"
         },
         {
@@ -298,20 +307,20 @@
         {
           "task_id": "T-684AC6D3CBC0D8ED7B88",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         },
         {
           "task_id": "T-57EB7800FC9F26FA33F1",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         }
@@ -324,7 +333,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C01:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -335,7 +344,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -343,11 +354,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -367,11 +379,11 @@
         {
           "task_id": "T-37FF0B1C4494595BBE16",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "dbc3007360d0a3ab2e971678b6872263be2213c095af328d63cc4c1766599f89",
           "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
         },
         {
@@ -393,7 +405,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C01:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -415,8 +427,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -426,21 +440,21 @@
         {
           "task_id": "T-3C9688AC3D3EA42559DB",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-1/farm-1-shard-01.jsonl"
         },
         {
           "task_id": "T-2472CDB2D3B3A232B398",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "3056b42e9aaf2c436dbe285aaa2188b6e36f81f8600d1b802fd4c9655373700e",
           "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
         },
         {
@@ -456,10 +470,10 @@
         {
           "task_id": "T-49C58C8EC93D2C98C92B",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
@@ -515,20 +529,20 @@
         {
           "task_id": "T-2B450CCB5847676261B7",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
         {
           "task_id": "T-550F5704842D092AD6DF",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
         },
@@ -545,10 +559,10 @@
         {
           "task_id": "T-744073C5F13506767708",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-14/farm-2-shard-14.jsonl"
         },
@@ -571,7 +585,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C01:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -582,7 +596,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -590,11 +606,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -604,21 +621,21 @@
         {
           "task_id": "T-301591E422350F1E498B",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "15dd7965a705072b6dce5df24b0d408b553edcdcf0015b857bc5e3ae7686d03c",
           "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
         },
         {
           "task_id": "T-565C31D1145E60584F07",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "cf2d872969f69cd27ba22dc1792d0bed2e55a844adfd330e069b5573711b0dd0",
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         }
       ],
@@ -778,7 +795,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C01:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -789,19 +806,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER",
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -811,31 +831,31 @@
         {
           "task_id": "T-71549075CE59DB8AC069",
           "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
           "task_id": "T-1B321ABE51FB1E216C2B",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "99e7ef010b9a9dfb869cfd6bebe4e3309b3f34322129a2dc73cbaa7a32d0fe35",
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
         {
           "task_id": "T-2955870C9C908AA48B2D",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "51e4159b4cf2ef7c3840e4dc742325effa9e2fe814e6ce77b93f3dfe0e5f065a",
           "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
         }
       ],
@@ -847,7 +867,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C02:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 3,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -858,19 +878,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
+      "successful_required_roles": [
         "PROOF_A",
+        "JUDGE"
+      ],
+      "missing_required_roles": [
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -890,31 +913,31 @@
         {
           "task_id": "T-291456573AD0C2F9BFB4",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "bf68edcb48f42b7a45400b31c31835485031f612178a7d6cfc6ca08da9913ccf",
           "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
         },
         {
           "task_id": "T-0FD77D626E302BD2023A",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "05672df5f8483a75e854a581c77cbe9893c4eb5b45ce0d1c57ac5174d8b9f45c",
           "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         },
         {
           "task_id": "T-2FD30E29D33F98F14810",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "6749a72687b24969b19dbf7dc5c890e84016acc60a1eb579999a4d0bd209efb0",
           "artifact_file": "farm-results/cerebron-farm-2-shard-35/farm-2-shard-35.jsonl"
         }
       ],
@@ -926,7 +949,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C02:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -948,8 +971,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -959,10 +984,10 @@
         {
           "task_id": "T-4BD0F700C2D611359433",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-3/farm-0-shard-03.jsonl"
         },
@@ -979,11 +1004,11 @@
         {
           "task_id": "T-38822061F79D4CE539CA",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "1b7e261469aa7da11d4904cdfacf5cae85a164d3314e3ba7b36f0a65d962fd58",
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         },
         {
@@ -1005,7 +1030,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C02:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1027,8 +1052,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1038,31 +1065,31 @@
         {
           "task_id": "T-57F4847CD1FBE20ABE95",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
         {
           "task_id": "T-5E1B2A08A0F26A3D77D1",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
         },
         {
           "task_id": "T-52B0AA9335EAC790C095",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "9ade2ca41f87b21a70b613c884c7e4878f0db01acfa4b67a76ae3d44738f4d53",
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         },
         {
@@ -1147,10 +1174,10 @@
         {
           "task_id": "T-3C2C45E84E050315BB6E",
           "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-25/farm-1-shard-25.jsonl"
         },
@@ -1226,10 +1253,10 @@
         {
           "task_id": "T-30C999263DC70E51CD36",
           "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
@@ -1331,7 +1358,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C02:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1342,19 +1369,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B",
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1364,11 +1394,11 @@
         {
           "task_id": "T-2A1466B98BFD7A958555",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "db0064a6205e21c2732e41e2ca0de09b2fca68bcaddf018e06169860d621e02c",
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
         {
@@ -1404,21 +1434,21 @@
         {
           "task_id": "T-3A9316DC328AEEF4CA5D",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         },
         {
           "task_id": "T-55CD8936BFCEB5C20EBC",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "e7b6ec5ef6b40ec76366fb8abe7cb56b05701c4146665b7784014835d64c206c",
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         }
       ],
@@ -1473,10 +1503,10 @@
         {
           "task_id": "T-72762B20375A36948D4F",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-14/farm-2-shard-14.jsonl"
         },
@@ -1499,7 +1529,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C02:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1510,7 +1540,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1518,11 +1550,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1562,11 +1595,11 @@
         {
           "task_id": "T-16A019922DC84209054A",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "f123edc47f20902f3eb7f2987be5408361bdfc423098bf7daf5899d543873dd5",
           "artifact_file": "farm-results/cerebron-farm-2-shard-29/farm-2-shard-29.jsonl"
         }
       ],
@@ -1627,7 +1660,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C03:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1649,8 +1682,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1660,11 +1695,11 @@
         {
           "task_id": "T-3AA96955DC594C0DCE0B",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "fcfb97add472e8372bac72ef0ee801ec011b33fb106ebd6e832919b19f93802a",
           "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
         },
         {
@@ -1680,10 +1715,10 @@
         {
           "task_id": "T-64DFEA8562A766C9EAEC",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         },
@@ -1706,7 +1741,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C03:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1717,7 +1752,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1725,11 +1762,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1739,20 +1777,20 @@
         {
           "task_id": "T-3C07DE8F59567CA1288A",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "d4fa71fe4116f93012a88970dba35911a28982df3e723f6705e63ce4ee336ea2",
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
         },
         {
           "task_id": "T-3B9517465C6AFD7A22E1",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         },
@@ -1775,7 +1813,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C03:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1797,8 +1835,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1808,11 +1848,11 @@
         {
           "task_id": "T-1970710CD36F4B945A61",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "d3a71d70c864eb0e36e2034fc3c27332cc24082f6c9c99088533281c8e422ac7",
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         }
       ],
@@ -1824,7 +1864,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C03:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1835,19 +1875,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1857,11 +1900,11 @@
         {
           "task_id": "T-2469D5CB62388862DA35",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "caf7accf8874669f416a85b074346ec8bdb3aa2072d59a0eb15d4c7aaca609ea",
           "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
         },
         {
@@ -1877,11 +1920,11 @@
         {
           "task_id": "T-28BEBE10C2B95BD438C2",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "9b4cd2779224cbb84b23b6ab31fd733de6f2e5a6c4ed6f2263a8d3ce617f9c16",
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         }
       ],
@@ -1893,7 +1936,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C03:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1915,8 +1958,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1926,30 +1971,30 @@
         {
           "task_id": "T-872F5C277AC9A1F56519",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
           "task_id": "T-23671EDAE4B58187522C",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "2b06fc2ce769b20e762cd698a2bba62f6d4eea1e25399be2400a87bb348c9874",
           "artifact_file": "farm-results/cerebron-farm-0-shard-3/farm-0-shard-03.jsonl"
         },
         {
           "task_id": "T-44DB59AB7EFC8719B740",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
         },
@@ -2005,10 +2050,10 @@
         {
           "task_id": "T-335FAF47D03E3ED28A98",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
         },
@@ -2041,7 +2086,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C03:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 3,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2052,19 +2097,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR",
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2074,11 +2122,11 @@
         {
           "task_id": "T-1CFDF40CC2883AD71F08",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "2500ce326221827520e80902f6816c9fb8788d64e63426e6051a3efb1dc4db1e",
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
         {
@@ -2114,31 +2162,31 @@
         {
           "task_id": "T-660A95DC69AC0B11E606",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         },
         {
           "task_id": "T-2AB51602EB5C4E65F730",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "36f2e8b0bd216d6db24e44df3c4b5a60ec75e77b1ba5be640e1020ca2c901f6d",
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         },
         {
           "task_id": "T-1FC39EB1DAA110C0DA1B",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "1216a9ce089ac173ce6aeec5f99f151a5158759af4705430b46446896d5e97c6",
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
       ],
@@ -2203,20 +2251,20 @@
         {
           "task_id": "T-49A7CA4F3DE04D25ABAE",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-7/farm-1-shard-07.jsonl"
         },
         {
           "task_id": "T-461501BDA83BD05484A3",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
@@ -2229,7 +2277,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C03:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2240,19 +2288,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "RED_TEAM"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2262,30 +2313,30 @@
         {
           "task_id": "T-325D2B86BAAB6CC522D0",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "26bdea423617738f3740cd14d1d8fab117b94ab80ac327376590dd8c601cee99",
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
         {
           "task_id": "T-2FDC6EB4829A261EFC90",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "496f48fd401726d0e54af66f2f7a5bc360ff912da700eb08fa35f79f8fe4f136",
           "artifact_file": "farm-results/cerebron-farm-2-shard-35/farm-2-shard-35.jsonl"
         },
         {
           "task_id": "T-3B86F6C192007D555FC4",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
@@ -2298,7 +2349,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C03:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2309,7 +2360,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2317,11 +2370,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2341,11 +2395,11 @@
         {
           "task_id": "T-2B9153BF9B670A180604",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "a4d44d45fc9a52caf005d84d7f48497b79715f90221dea72c1d10ec99dba0521",
           "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
         },
         {
@@ -2387,7 +2441,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C04:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2398,7 +2452,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2406,11 +2462,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2420,10 +2477,10 @@
         {
           "task_id": "T-56B254D470CEFAE34D35",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
@@ -2450,21 +2507,21 @@
         {
           "task_id": "T-2627DCE4657125629B1A",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "215ace084587fd30ad8500d862695f5d1841f8431bdbdde2731601b2e955222f",
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
           "task_id": "T-37FAFDC3E75EC437C826",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "e9c75f1f78c40ff739191d1c7f4ccd6a802a902e6b99ea5849b17a43bb9be5ad",
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         }
       ],
@@ -2476,7 +2533,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C04:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2487,9 +2544,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -2498,8 +2556,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2509,11 +2569,11 @@
         {
           "task_id": "T-248D54A2B5204078FD34",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "b0169f85d5b0667e83d595396c5b6a7fe8b012d4ff403f4d749084faf947c673",
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
         {
@@ -2545,7 +2605,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C04:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2556,19 +2616,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2588,40 +2651,40 @@
         {
           "task_id": "T-32FC83350C0062FDCCE2",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
           "task_id": "T-5076AB2D365E00E945CB",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
         },
         {
           "task_id": "T-2E2C4ACD900F1A579A92",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "3ce3a17d6ad23fbff4a39216c1d41e0da0c2bb8dee444ed2ce3cf54de903039a",
           "artifact_file": "farm-results/cerebron-farm-1-shard-1/farm-1-shard-01.jsonl"
         },
         {
           "task_id": "T-28BE6BCCE9906CB7DB89",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         }
@@ -2667,10 +2730,10 @@
         {
           "task_id": "T-2B67C546AFD20F1E7199",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         }
@@ -2726,10 +2789,10 @@
         {
           "task_id": "T-62600ACDC59319D07673",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         },
@@ -2752,7 +2815,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C04:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2763,19 +2826,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "RED_TEAM"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2785,21 +2851,21 @@
         {
           "task_id": "T-18B5745E2ABF3CD0C179",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "58fdf96c8f45c1e90a03229dc28963557d30c196319bcec6efde4868fbff08e5",
           "artifact_file": "farm-results/cerebron-farm-0-shard-3/farm-0-shard-03.jsonl"
         },
         {
           "task_id": "T-288D7279C0CAD5195086",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "1766dba35c81d8a6a9f5ebc6c2d260f03103201af48d26c99698699e34a5aa03",
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         }
       ],
@@ -2811,7 +2877,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C04:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2822,7 +2888,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2830,11 +2898,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2844,11 +2913,11 @@
         {
           "task_id": "T-250D704589EA389D7557",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "173a0537264096f3a2b42d9667e9a3a21fef08ab7b2b63d62e7e5f07b7b66873",
           "artifact_file": "farm-results/cerebron-farm-1-shard-22/farm-1-shard-22.jsonl"
         }
       ],
@@ -2860,7 +2929,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C04:TEAM-08": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2871,7 +2940,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2879,11 +2950,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2893,20 +2965,20 @@
         {
           "task_id": "T-24B6D5607FF6D590C115",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "e847093b57bd70ea572a0174b58f74c597d404500e7012eac80f55c298051429",
           "artifact_file": "farm-results/cerebron-farm-1-shard-1/farm-1-shard-01.jsonl"
         },
         {
           "task_id": "T-6C6A7F264BF1539E6A0D",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         },
@@ -2992,10 +3064,10 @@
         {
           "task_id": "T-1A5C5075BCBADD771E9D",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
@@ -3117,7 +3189,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C05:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3128,10 +3200,11 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
@@ -3139,8 +3212,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3150,10 +3225,10 @@
         {
           "task_id": "T-33D3FA36073F38AE55FA",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
@@ -3170,30 +3245,30 @@
         {
           "task_id": "T-2584C72AF94BEE1ACFF5",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "9bf1ea97a5ea7c12008fc89a6a302b98ce98c937a1f8089a7a815c1f612e7ba9",
           "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
         },
         {
           "task_id": "T-64C017ECD941BBD81B43",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-16/farm-1-shard-16.jsonl"
         },
         {
           "task_id": "T-37D2937F6BA62ACAAF9F",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-25/farm-1-shard-25.jsonl"
         }
@@ -3206,7 +3281,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C05:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3228,8 +3303,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3259,21 +3336,21 @@
         {
           "task_id": "T-19A820537AA624160420",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "6442b373973b3458f96251ffa71628c2ba95226cfd6807f62a266c8f3dfa39fa",
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
           "task_id": "T-24461A179430F56F3677",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "933f346b1e90e08c64396792231d7f9832d4b7fecd7a98da31719ced2575a5d8",
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
         }
       ],
@@ -3318,10 +3395,10 @@
         {
           "task_id": "T-3C11B8C289214A79EB22",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
         },
@@ -3417,10 +3494,10 @@
         {
           "task_id": "T-34D5E3F3F7175F14F57D",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
@@ -3443,7 +3520,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C05:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3454,19 +3531,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3476,11 +3556,11 @@
         {
           "task_id": "T-56C699FDE130A1CA4759",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "7b76b44fd5b9888824ed963d7b48e5eae2a17fd6597832cec9e43b14df6c6678",
           "artifact_file": "farm-results/cerebron-farm-1-shard-16/farm-1-shard-16.jsonl"
         },
         {
@@ -3496,20 +3576,20 @@
         {
           "task_id": "T-2FCEB6168A9D212FFCC6",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         },
         {
           "task_id": "T-35C2A613B126E461EE70",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         },
@@ -3532,7 +3612,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C05:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3543,19 +3623,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3585,11 +3668,11 @@
         {
           "task_id": "T-2DE272C5706F53076957",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "7f4743aa674e2984cd6ac7e1fa6cea534a642ff40bcad7df22203c17dc104e5a",
           "artifact_file": "farm-results/cerebron-farm-1-shard-25/farm-1-shard-25.jsonl"
         }
       ],
@@ -3644,10 +3727,10 @@
         {
           "task_id": "T-382CB5ABC585312A8DEA",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
@@ -3674,10 +3757,10 @@
         {
           "task_id": "T-86C188B5FDB0DA98767C",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
         }
@@ -3690,7 +3773,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C05:TEAM-08": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3701,9 +3784,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -3712,8 +3796,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3723,11 +3809,11 @@
         {
           "task_id": "T-1637D67839F9DAF8AF99",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "86feecca263cedfd8a5a7e1c4118471831dc41d2b77fab8693f644cc7761a139",
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
@@ -3743,10 +3829,10 @@
         {
           "task_id": "T-4832360262901A100CA3",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
         }
@@ -3792,10 +3878,10 @@
         {
           "task_id": "T-6E306D8D7FEC79FDCFBC",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         }
@@ -3808,7 +3894,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C05:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3819,10 +3905,11 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
@@ -3830,8 +3917,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3841,21 +3930,21 @@
         {
           "task_id": "T-215A944CF82DA8441C1E",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "4cc00c20b49fd530a0369aadc82376a52008f353eb9d2e6e563ce348dd318376",
           "artifact_file": "farm-results/cerebron-farm-0-shard-24/farm-0-shard-24.jsonl"
         },
         {
           "task_id": "T-2CE478EF9613C0D7D4D4",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "885ba364785a955ec82420968a7fd36b0db92d219b18c769c17fc4ddf2a7bb73",
           "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
         },
         {
@@ -3897,7 +3986,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C06:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3908,19 +3997,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3940,11 +4032,11 @@
         {
           "task_id": "T-20E38BC03A78B90C5387",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "591caa8472a64a4ef6a51cc666cb2e81d49c97755ab15573ac12689e9615bc9d",
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
         {
@@ -3966,7 +4058,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C06:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3988,8 +4080,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4009,11 +4103,11 @@
         {
           "task_id": "T-36DDAA47DF9AE7913D96",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "34c893f85e7b18fa0f028f1507045d764571989780f87c10dc522ca77943bb37",
           "artifact_file": "farm-results/cerebron-farm-0-shard-30/farm-0-shard-30.jsonl"
         },
         {
@@ -4029,10 +4123,10 @@
         {
           "task_id": "T-44903F89E6FC691DFBAA",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-22/farm-1-shard-22.jsonl"
         },
@@ -4055,7 +4149,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C06:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4066,9 +4160,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -4077,8 +4172,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4098,11 +4195,11 @@
         {
           "task_id": "T-45D93BA56C17A17CA304",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "6b649e0869afdad7b033a2ff9e8e9c768a6cb93d5b6e8165b36fac7b7a91c8ae",
           "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
         },
         {
@@ -4118,10 +4215,10 @@
         {
           "task_id": "T-38F564DFD59BE924473C",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-25/farm-1-shard-25.jsonl"
         }
@@ -4134,7 +4231,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C06:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4145,9 +4242,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -4156,8 +4254,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4167,20 +4267,20 @@
         {
           "task_id": "T-2BE5BF24BA33FB6F22A9",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "1b8f3a22d29267273689eb8e0d8b6d82bf641315fe51c0e17f52ccfb5e28d5b2",
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
         {
           "task_id": "T-561F5B291B2795B4FF21",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
@@ -4246,10 +4346,10 @@
         {
           "task_id": "T-4B24C0E7C263284C0EBA",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
@@ -4282,7 +4382,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C06:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4293,19 +4393,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4315,11 +4418,11 @@
         {
           "task_id": "T-2276B73DD58EF699C6DD",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "a8550e94b2069226e2634b736059812e46916a9d260e589fffae0e77c4773fe2",
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
         },
         {
@@ -4492,10 +4595,10 @@
         {
           "task_id": "T-404FA5A466A041BCC96C",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-1/farm-1-shard-01.jsonl"
         },
@@ -4528,7 +4631,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C06:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 4,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4539,19 +4642,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
+      "successful_required_roles": [
         "PROOF_A",
+        "COUNTER_AUDITOR",
+        "REPLICATOR"
+      ],
+      "missing_required_roles": [
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4581,51 +4687,51 @@
         {
           "task_id": "T-315378CFBF6D822C9FE4",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "8d2a9c9d52fb99501ca55c64e6b14b2b38289a9918a659357f37ffbf39a9abf8",
           "artifact_file": "farm-results/cerebron-farm-1-shard-25/farm-1-shard-25.jsonl"
         },
         {
           "task_id": "T-349EEA4BCAA5FE6415F3",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "922194c90dc83203429a128c2504f0f301ee7b2c70ebc19eab8382eac6a99b67",
           "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         },
         {
           "task_id": "T-4A3C2AE1C96D7A4CB823",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
         },
         {
           "task_id": "T-56364A02685C78B79A15",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "c1b054d36771bc4c448d371d653c06298a20bc01b50a30e1385b98b9d44df99c",
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         },
         {
           "task_id": "T-1F390EAEA8AAB9CDB81B",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "d6e0676d77240ebc0aa2db9bebcc5448cf94340ff82f89078d8563cb220bcd9a",
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         },
         {
@@ -4657,7 +4763,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C07:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4668,19 +4774,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B",
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4690,11 +4799,11 @@
         {
           "task_id": "T-456B9C69FEA62BF4A64F",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "db6b9597159e037bbd5185af4735b8e65d47c487735f228f224fc5fdbc927ffa",
           "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
         },
         {
@@ -4720,11 +4829,11 @@
         {
           "task_id": "T-33804F03F1A267094063",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "c71ee810c65f04cc0a226133b8311dfcb88319a4efd3aa1a8c706a5879a6b479",
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
       ],
@@ -4736,7 +4845,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C07:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 3,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4747,19 +4856,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B",
+        "RED_TEAM"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4769,31 +4881,31 @@
         {
           "task_id": "T-58BA193950491CC75C80",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "a48d0ae5f6cea60b0868a9a2497f8326d24a73400650115333f74020f382826b",
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
           "task_id": "T-290FC5219959A370FA07",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "5729f5a79397fd5d76960a6b2fd3d67e5a129fc5ffb771a6b34818816ba15916",
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
         {
           "task_id": "T-2E996F51A831E5F76E94",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "a0a9ebf24644d10f59530fcb5f6fc1303dd1db3594aadfdd44664a8bf5883b5a",
           "artifact_file": "farm-results/cerebron-farm-1-shard-1/farm-1-shard-01.jsonl"
         },
         {
@@ -4897,10 +5009,10 @@
         {
           "task_id": "T-34808C8B58DA31A4E41C",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-21/farm-0-shard-21.jsonl"
         },
@@ -4923,7 +5035,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C07:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4934,9 +5046,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -4945,8 +5058,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4956,20 +5071,20 @@
         {
           "task_id": "T-1583F0D5F8CEA7D72397",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "f491b20ea5f1f09148c22799335b0d457366db0fe2f4be3bcac949d06fca156a",
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
           "task_id": "T-4B4808E4CE9D2B95D846",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-30/farm-0-shard-30.jsonl"
         },
@@ -5051,7 +5166,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C07:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5062,7 +5177,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5070,11 +5187,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5094,31 +5212,31 @@
         {
           "task_id": "T-38604A9E3242DA7ECA4C",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "d34b400c14b244ef0934ab75300416c3b7d4fce74b9bdab8cbb04a96ae8e7b58",
           "artifact_file": "farm-results/cerebron-farm-1-shard-22/farm-1-shard-22.jsonl"
         },
         {
           "task_id": "T-566DED2BDAED9107620E",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
           "task_id": "T-64B2E08A6D3FDC5FB75C",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "41574e7ce574873d547e86c230a02c48fae94917f18c1a89aac829e66c6f25fd",
           "artifact_file": "farm-results/cerebron-farm-2-shard-14/farm-2-shard-14.jsonl"
         }
       ],
@@ -5183,10 +5301,10 @@
         {
           "task_id": "T-242720BA6AED01FDC78A",
           "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-29/farm-2-shard-29.jsonl"
         }
@@ -5232,10 +5350,10 @@
         {
           "task_id": "T-3A1FDC94FC3A0BBFE537",
           "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
         },
@@ -5291,10 +5409,10 @@
         {
           "task_id": "T-38C44DAC0292BEDC21CA",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
         },
@@ -5311,20 +5429,20 @@
         {
           "task_id": "T-424E4059ED9E55B1C3AC",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
           "task_id": "T-7692B886F1193766B6F9",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
         }
@@ -5337,7 +5455,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C08:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5359,8 +5477,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5380,20 +5500,20 @@
         {
           "task_id": "T-414BBFC582FB34A4DDC7",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "4a0473e94c5ff9937718c2d1cd7949424ebfa6ea34c3f40dbbbba3e999c7e09c",
           "artifact_file": "farm-results/cerebron-farm-1-shard-10/farm-1-shard-10.jsonl"
         },
         {
           "task_id": "T-5CFE2C718972C51FB56E",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-16/farm-1-shard-16.jsonl"
         }
@@ -5465,7 +5585,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C08:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5476,10 +5596,11 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
@@ -5487,8 +5608,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5498,31 +5621,31 @@
         {
           "task_id": "T-619C182D1042B00B076B",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
         {
           "task_id": "T-5E57F92F6C5DCEF4CBDB",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-4/farm-1-shard-04.jsonl"
         },
         {
           "task_id": "T-33CAE4A9919ED06A0DA3",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "29ca3aaaf72f16c329483f205b2b30d2725e75fc8880996462f78222c3bd10bc",
           "artifact_file": "farm-results/cerebron-farm-2-shard-14/farm-2-shard-14.jsonl"
         },
         {
@@ -5544,7 +5667,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C08:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5566,8 +5689,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5607,20 +5732,20 @@
         {
           "task_id": "T-2519ABED3A97A1374EE4",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "d97952ef21f533b7428605dfede8760c31b3ff54f363cc7074aacac88562bd8c",
           "artifact_file": "farm-results/cerebron-farm-1-shard-13/farm-1-shard-13.jsonl"
         },
         {
           "task_id": "T-2BAC6A147902FC2AF1CC",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-29/farm-2-shard-29.jsonl"
         }
@@ -5633,7 +5758,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C08:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5644,19 +5769,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B",
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5666,21 +5794,21 @@
         {
           "task_id": "T-1934E5E4B5F57E0DC01B",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "821661e44e7e52b738afd0cc3d866a7f21ab655cc6136f6cbd01347a1847a1c7",
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
         {
           "task_id": "T-129D47EFB97896DF83C9",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "9fc7a649d2cbb1f46e966f186f8faada50cb9aeb448551d333658a92592ea262",
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
       ],
@@ -5761,7 +5889,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C08:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5772,19 +5900,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5794,11 +5925,11 @@
         {
           "task_id": "T-4946DD1A017D00CAAEAB",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "8e30cae4ced405fdd5d17a6c0e4da1c0c45fd2c44c5f8b8b8e53efaf6f56f55c",
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
         {
@@ -5889,7 +6020,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C08:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5911,8 +6042,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5922,11 +6055,11 @@
         {
           "task_id": "T-48A6CEB7F32906AD8D07",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "24556abd4f3a2616ae96fc9eb7497d2bcba29ab9dd391712bb3231ac7463a1ee",
           "artifact_file": "farm-results/cerebron-farm-1-shard-16/farm-1-shard-16.jsonl"
         },
         {
@@ -5958,7 +6091,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C08:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5969,10 +6102,11 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
@@ -5980,8 +6114,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5991,11 +6127,11 @@
         {
           "task_id": "T-2E3ADE1CCC283621190F",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "68d8dd8f1a3cf1fba9f2047ea8bea7739374001be1b6f4150449209cac3c816e",
           "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
         },
         {
@@ -6011,10 +6147,10 @@
         {
           "task_id": "T-3DCD1A7D0C5727963333",
           "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         }
@@ -6086,7 +6222,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C09:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6108,8 +6244,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6139,11 +6277,11 @@
         {
           "task_id": "T-1227677E9D5CACCF7119",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "660210d979a28a0314a54ed6373419b420d8467478f32d4707d80ed28b8d3b27",
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
@@ -6159,10 +6297,10 @@
         {
           "task_id": "T-58B37787DE9D6C3C9EEA",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-35/farm-2-shard-35.jsonl"
         }
@@ -6244,7 +6382,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C09:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6255,19 +6393,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6277,10 +6418,10 @@
         {
           "task_id": "T-3FD592CAC01C5C3DE7BC",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
@@ -6297,11 +6438,11 @@
         {
           "task_id": "T-3FEEDA71AE17B0B8DC06",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "0dbfd645e36d1e33761cfa6715865eeb076a578f9e8eeabad9761af77dfc65b7",
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         }
       ],
@@ -6313,7 +6454,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C09:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6324,9 +6465,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -6335,8 +6477,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6356,21 +6500,21 @@
         {
           "task_id": "T-3DE67337F86A416A81A8",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         },
         {
           "task_id": "T-1B9C5E84AA3D773BF87D",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "e0580574864ab138571c1205f8529c4c6a172c49f8bb7c347fbc881f4a8352d6",
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         },
         {
@@ -6392,7 +6536,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C09:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6403,19 +6547,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "RED_TEAM"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6435,11 +6582,11 @@
         {
           "task_id": "T-2C78E5BD447E5B9076FA",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "67419af7d1087ee54e7c23ae852c1508fa33210fb0c42f27d2bc339d48abf973",
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
         {
@@ -6514,20 +6661,20 @@
         {
           "task_id": "T-31C84F50F27C85A884C8",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         },
         {
           "task_id": "T-4A98BFAC9394C1425C96",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-35/farm-2-shard-35.jsonl"
         }
@@ -6589,7 +6736,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C09:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6600,10 +6747,11 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
@@ -6611,8 +6759,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6622,10 +6772,10 @@
         {
           "task_id": "T-4CEF638592DE1A39D791",
           "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
         },
@@ -6642,10 +6792,10 @@
         {
           "task_id": "T-72D0C12ACEA19F561B0E",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         },
@@ -6662,11 +6812,11 @@
         {
           "task_id": "T-21CEE2C84968C7952672",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "940a1276cc3da37263dea593cf8848f623397df5f0495cc58c821ce737d9e14d",
           "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         }
       ],
@@ -6711,20 +6861,20 @@
         {
           "task_id": "T-3E80B1299A1B914FAA27",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-33/farm-0-shard-33.jsonl"
         },
         {
           "task_id": "T-40CB671AC2DD99962042",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-9/farm-0-shard-09.jsonl"
         },
@@ -6767,7 +6917,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C10:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 3,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6778,19 +6928,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
+      "successful_required_roles": [
         "PROOF_A",
         "PROOF_B",
+        "JUDGE"
+      ],
+      "missing_required_roles": [
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6830,50 +6983,50 @@
         {
           "task_id": "T-59A909E931E09ACFE268",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-34/farm-1-shard-34.jsonl"
         },
         {
           "task_id": "T-14B9F380E06B7ADBFD4B",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "e6bcb46554196762cb406044e43b4ebc84a14c22110daba133bb5ece3f9f8b1e",
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
           "task_id": "T-28D91A3EA9CA5C081E07",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "bb84d086725e21ece36ff84b0c03851cabb9bc4a8d00bcdd7d84cd7da70cac99",
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         },
         {
           "task_id": "T-2354787AAC2C7194CA76",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "76a491c6d6328a343ef191b40fd17972321e3798ac0d7e98a582e72e75b8487a",
           "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         },
         {
           "task_id": "T-3211C589404623F52872",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         }
@@ -6929,10 +7082,10 @@
         {
           "task_id": "T-3E8CEB67BC18EAF54D75",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-22/farm-1-shard-22.jsonl"
         },
@@ -6965,7 +7118,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C10:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6976,7 +7129,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6984,11 +7139,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6998,21 +7154,21 @@
         {
           "task_id": "T-8DD26480D9AD694E64BC",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
           "task_id": "T-53091B5907EB816C183B",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "4d900f2584cfe4a1ff22a9d14c1487a4e82ead73c62982d393993e777e663677",
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         }
       ],
@@ -7067,10 +7223,10 @@
         {
           "task_id": "T-4CE0AB6EDC20ACB690F2",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
@@ -7136,10 +7292,10 @@
         {
           "task_id": "T-3ECCF31388BA8C0A0F8C",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-1/farm-1-shard-01.jsonl"
         },
@@ -7221,7 +7377,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C10:TEAM-08": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7232,7 +7388,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7240,11 +7398,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7254,21 +7413,21 @@
         {
           "task_id": "T-54218F53063021699E66",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
         {
           "task_id": "T-3928773977F1552F29FE",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "9a957871d9adab7efc4f046c1b65e7866f32c9eea433a6a8141d0d71e9bae8d1",
           "artifact_file": "farm-results/cerebron-farm-0-shard-30/farm-0-shard-30.jsonl"
         },
         {
@@ -7284,11 +7443,11 @@
         {
           "task_id": "T-509F7DD8C12AC1AD555D",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "525d8d3da9485cd942a546d84a8d09b90c0e3b2eafa99822fc32085abb8ded2d",
           "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
         }
       ],
@@ -7300,7 +7459,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C10:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7311,19 +7470,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "RED_TEAM",
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7333,21 +7495,21 @@
         {
           "task_id": "T-1FD1C48E9A7FEAD33780",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
           "task_id": "T-4383B46A9899F3D87105",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "b82c22201a32fc454129857d7414ce93138330983fb05106d7dc3941b82b033d",
           "artifact_file": "farm-results/cerebron-farm-1-shard-16/farm-1-shard-16.jsonl"
         },
         {
@@ -7363,11 +7525,11 @@
         {
           "task_id": "T-231081B40286A5B49663",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "296d83f214c5b8e9dcb11e79deba10c46737da2162dd08b7e8c2e551f3b9456f",
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
       ],
@@ -7379,7 +7541,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C10:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7390,7 +7552,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7398,11 +7562,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7412,11 +7577,11 @@
         {
           "task_id": "T-582EDA44D2A47B8F6C46",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "c7ec72da89cc295507a839e02137f2121cce12d67109b99ea90ef2bf3d8e68e6",
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
@@ -7507,7 +7672,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C11:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7518,19 +7683,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7540,10 +7708,10 @@
         {
           "task_id": "T-4887B6BCC0F2FC31E913",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-3/farm-0-shard-03.jsonl"
         },
@@ -7560,11 +7728,11 @@
         {
           "task_id": "T-2BA7281A55B9FF24E5BD",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "b5624fb0e5d1ebdba56c602d975d095dd5bd9b20f5f06d57c0d20ec8de446e3c",
           "artifact_file": "farm-results/cerebron-farm-1-shard-25/farm-1-shard-25.jsonl"
         },
         {
@@ -7590,11 +7758,11 @@
         {
           "task_id": "T-1B8B3111DF8D6B643078",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "1f525dc7ec4f84c98344908246c69bd610199615311b6bf63055c24a06e3cc42",
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         }
       ],
@@ -7675,7 +7843,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C11:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7697,8 +7865,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7748,20 +7918,20 @@
         {
           "task_id": "T-1E2CE7B6AD0E63828CF7",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "9488486da1d69e7840fe0767a6a96913299db2a6669f1e057f2dc0cc3eb2ee8c",
           "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
         },
         {
           "task_id": "T-2E6CDD153E45EA10B20A",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
@@ -7774,7 +7944,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C11:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7796,8 +7966,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7817,11 +7989,11 @@
         {
           "task_id": "T-2314F058CAC9BF37A125",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "9ae88cbb8c3225b47cf83870afe7e7d21560ab6c412072ac48c1794e5a95dccf",
           "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
         }
       ],
@@ -7833,7 +8005,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C11:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7844,7 +8016,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7852,11 +8026,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7866,21 +8041,21 @@
         {
           "task_id": "T-5719AE4AE40C37C1E584",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-6/farm-0-shard-06.jsonl"
         },
         {
           "task_id": "T-1D9872BA6960DA39849C",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "8da3e1574df6fe13cd67c1dce000d944176633d208428fbb93bb4545e7d25162",
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         },
         {
@@ -7935,10 +8110,10 @@
         {
           "task_id": "T-49038F3AE4BB8898FE03",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
         },
@@ -8073,10 +8248,10 @@
         {
           "task_id": "T-2DC055789DFA9F929088",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
@@ -8109,7 +8284,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C11:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8120,9 +8295,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -8131,8 +8307,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8142,10 +8320,10 @@
         {
           "task_id": "T-5D886DA11D8444634AAB",
           "role": "RED_TEAM",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-30/farm-0-shard-30.jsonl"
         },
@@ -8172,10 +8350,10 @@
         {
           "task_id": "T-578A670212AFA2400CC0",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-16/farm-1-shard-16.jsonl"
         },
@@ -8192,11 +8370,11 @@
         {
           "task_id": "T-1B423F9BA8270F7D13FF",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "6c80963e6dc173c3ff69754a6e77fde5fe5912dadc861416dee3fdb6eecc46d0",
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         },
         {
@@ -8218,7 +8396,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C12:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8229,9 +8407,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -8240,8 +8419,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8271,11 +8452,11 @@
         {
           "task_id": "T-1463F4BBF0C9E6CA4708",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "b2822ff398399ae1e2b4a032ec661a664c8609beaac34b819c0e4aa0e1f1f09c",
           "artifact_file": "farm-results/cerebron-farm-2-shard-29/farm-2-shard-29.jsonl"
         }
       ],
@@ -8287,7 +8468,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C12:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8298,19 +8479,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR",
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8330,21 +8514,21 @@
         {
           "task_id": "T-5A9D008E2C93217E809C",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
+          "response_sha256": "a2975cfcd97bd6398ac8f9877cf8f653af7e0c6bb11ff58fa8f913fd288b29ec",
           "artifact_file": "farm-results/cerebron-farm-0-shard-30/farm-0-shard-30.jsonl"
         },
         {
           "task_id": "T-25D7D2B5DCCF34657686",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "18d4715a32f92c35b98403bf2afbb1be9a321b63f0f17155aa7aa38ab45da7b9",
           "artifact_file": "farm-results/cerebron-farm-1-shard-28/farm-1-shard-28.jsonl"
         },
         {
@@ -8376,7 +8560,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C12:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8387,19 +8571,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
-      "missing_required_roles": [
+      "successful_required_roles": [
         "PROOF_A",
+        "FALSIFIER"
+      ],
+      "missing_required_roles": [
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8409,21 +8596,21 @@
         {
           "task_id": "T-228514974768975885F5",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "a156f59ef17c600136dce8e255fb87bef5805a390535ae78802f87b2f892efc8",
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
         {
           "task_id": "T-357C4CCC940A5274596F",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "fb4de741c4e082908301e8a36d806998f25460c30bdcf9ebc905e98edc6f0df6",
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         },
         {
@@ -8547,10 +8734,10 @@
         {
           "task_id": "T-323947FBF1C4FAAD929C",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         },
@@ -8573,7 +8760,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C12:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8584,19 +8771,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8616,11 +8806,11 @@
         {
           "task_id": "T-2443BB3F493A7B21E0B2",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "89f4f4f51605e6c6cd1cfddc4c8c31a51bfb4bf805c65079e2347e89ffa108ab",
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
         {
@@ -8652,7 +8842,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C12:TEAM-08": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8663,7 +8853,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8671,11 +8863,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8715,20 +8908,20 @@
         {
           "task_id": "T-1B96CF82C91B9FEBC1A4",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "7912b0c30e680a5bd39cf932bd4e1cca4e2368c1504001f131fb98814b56ffdb",
           "artifact_file": "farm-results/cerebron-farm-2-shard-32/farm-2-shard-32.jsonl"
         },
         {
           "task_id": "T-4B0DCF257BC5C309C095",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-5/farm-2-shard-05.jsonl"
         }
@@ -8741,7 +8934,7 @@
     },
     "M-A97A56A2852A:CYCLE-10:C12:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8752,19 +8945,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8814,21 +9010,21 @@
         {
           "task_id": "T-3049FCA38CD2B2F3D587",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "64f338bf18a7d6cb9dfe91ff0ec989ddd8518a85ddce791864c9bd0a06535d1a",
           "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
         },
         {
           "task_id": "T-118FEF39AB88CEAF558D",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "mistral7b",
           "model_family": "mistral-7b",
-          "response_sha256": null,
+          "response_sha256": "128416ba1b2c658e1eff6346e240a80ffae71e3eb85fe87d9a3344dc98b30411",
           "artifact_file": "farm-results/cerebron-farm-2-shard-26/farm-2-shard-26.jsonl"
         }
       ],
@@ -8883,30 +9079,30 @@
         {
           "task_id": "T-4568DBA201B6B01C19DF",
           "role": "SCOUT",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
         },
         {
           "task_id": "T-61AD83AB11E9525DC1F9",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         },
         {
           "task_id": "T-72B2B9E4DF378B068959",
           "role": "PROOF_A",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "mistral7b",
+          "model_family": "mistral-7b",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         },
@@ -8948,8 +9144,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -8964,8 +9162,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -8980,8 +9180,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -8996,8 +9198,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9012,8 +9216,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9028,8 +9234,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9044,8 +9252,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9060,8 +9270,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9076,8 +9288,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9092,8 +9306,10 @@
       "team_packages_seen": 9,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9108,8 +9324,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9124,8 +9342,10 @@
       "team_packages_seen": 9,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "mistral-7b"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
