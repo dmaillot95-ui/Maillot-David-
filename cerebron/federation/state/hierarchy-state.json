@@ -1,7 +1,7 @@
 {
   "schema": "cerebron-hierarchy-state-v1",
-  "run_id": "36221225453",
-  "updated_at": "2026-09-26T06:16:21+00:00",
+  "run_id": "36224426554",
+  "updated_at": "2026-09-26T07:05:22+00:00",
   "semantic_chief_agents_enabled": false,
   "source_rows": 432,
   "queue_rows": 432,
@@ -129,10 +129,10 @@
         {
           "task_id": "T-0E6CFFF9688E228EEE5F",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
@@ -317,10 +317,10 @@
         {
           "task_id": "T-221A6F4A5A55E84D63A5",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         }
@@ -333,7 +333,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C01:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -344,19 +344,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "RED_TEAM"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -366,11 +369,11 @@
         {
           "task_id": "T-19FAFDCEE99CAEB2888D",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "c9e5677c7a7af2933133e5ff6deb91145c6d82a7c945556bec37d221cb2566d0",
           "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
         },
         {
@@ -599,7 +602,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C01:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -610,23 +613,27 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       },
       "result_refs": [
         {
@@ -642,21 +649,21 @@
         {
           "task_id": "T-0F16C3F1733D168ED423",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "77acfa59e96f03faf96b3c9a281e4493e5091206e39baa4847e11444414d0081",
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
           "task_id": "T-040ABAFBA06FBE91BE39",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "17dd2bb916bdce94508dc3c3c0f5a4fbb817d94f76e5acfd9a33271605ecdb7f",
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         }
       ],
@@ -711,10 +718,10 @@
         {
           "task_id": "T-0F4AF960B53E01B609E7",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         }
@@ -727,7 +734,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C02:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -738,19 +745,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -780,11 +790,11 @@
         {
           "task_id": "T-16027BA90A4C13121439",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "578066f1e94e17e85e0fe88f28a2d4fa3421b12fe39c5ec0665c3c5b4d161465",
           "artifact_file": "farm-results/cerebron-farm-2-shard-23/farm-2-shard-23.jsonl"
         }
       ],
@@ -796,7 +806,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C02:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -818,8 +828,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -849,11 +861,11 @@
         {
           "task_id": "T-110BB64E82169BFFBA72",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "bb1cf28e44de0366b492c52880fee160769699a0097a2f6d7f66d07310aa7b60",
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         },
         {
@@ -954,7 +966,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C02:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -965,7 +977,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -973,11 +987,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -987,11 +1002,11 @@
         {
           "task_id": "T-05960DFABF6C871430DB",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "71344ebdfbde64250fe6304ef28f1d08b16e22ebf4abfc1051a98ab29aed1de1",
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
         {
@@ -1023,7 +1038,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C02:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1034,9 +1049,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -1045,8 +1061,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1056,11 +1074,11 @@
         {
           "task_id": "T-08583440006B17D6C136",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "8ac1e3a86c3a827c1edd65457975ab6b62805771d7c3bc553300a741ee700a38",
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
@@ -1076,11 +1094,11 @@
         {
           "task_id": "T-15DE578B4BE045693D67",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "105f870b3158dbace46e0d8eb9afc0e2b8d71291cc023d47434ed94117715890",
           "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
         },
         {
@@ -1221,7 +1239,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C02:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1243,8 +1261,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1284,11 +1304,11 @@
         {
           "task_id": "T-1F4C6F345BDF1999FA44",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "4f327721ab9d2ff9c882315f32b598788fee1fd6217ab24381303c498068b0f4",
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         },
         {
@@ -1803,7 +1823,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C03:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -1825,8 +1845,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -1866,11 +1888,11 @@
         {
           "task_id": "T-2104D960311E21B5B5ED",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "e3c254c66ec8197fd789c1b8748adf3764d6dd10b29b5f16fad9ab9355c17554",
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         },
         {
@@ -1955,10 +1977,10 @@
         {
           "task_id": "T-3B30A939A474515FB170",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
@@ -2487,10 +2509,10 @@
         {
           "task_id": "T-267640D36292DD60FACE",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         },
@@ -2546,10 +2568,10 @@
         {
           "task_id": "T-2164103A24078009B3F1",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
@@ -2710,7 +2732,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C04:TEAM-08": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2721,7 +2743,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "JUDGE"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2729,11 +2753,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
-        "JUDGE"
+        "SYNTHESIZER"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -2743,11 +2768,11 @@
         {
           "task_id": "T-0136D983EC827668DDD1",
           "role": "JUDGE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "b64c0e4bf4e386c6e39678f30e125f22c67df6ea8491dbb9c80b989a969b5c0d",
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
         {
@@ -2842,10 +2867,10 @@
         {
           "task_id": "T-211B30C4EF9C1F82017B",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
@@ -2868,7 +2893,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C04:TEAM-10": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 2,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2879,33 +2904,37 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER",
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       },
       "result_refs": [
         {
           "task_id": "T-2AB4A9CA5B9A16F064C6",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "0293d24583e593737703ea758981cf885f09f5dec04fb2762fb258d7af3f0e03",
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
         {
@@ -2941,11 +2970,11 @@
         {
           "task_id": "T-0D12569B92DDA242FE57",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "e35a9c28d1319eabb99b5265c56753354e596d13fbf5a3ddceb6bb5e2e85d61c",
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         },
         {
@@ -2977,7 +3006,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C05:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -2988,19 +3017,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3030,11 +3062,11 @@
         {
           "task_id": "T-1419A5CFB31B1340D09F",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "41ae59b0f029f11840659cc84d2d08f874f7266dbf4fc03efddac13c9117f7c0",
           "artifact_file": "farm-results/cerebron-farm-1-shard-19/farm-1-shard-19.jsonl"
         },
         {
@@ -3089,10 +3121,10 @@
         {
           "task_id": "T-3BF4FA564C1EE3AC43AA",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
@@ -3145,7 +3177,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C05:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3156,19 +3188,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "RED_TEAM"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3188,11 +3223,11 @@
         {
           "task_id": "T-01E940EB8BADC17864F5",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "a6861de1792be1ed111411a9b60dff5497a24d2cf959dc2d882a0a824f04da8d",
           "artifact_file": "farm-results/cerebron-farm-2-shard-2/farm-2-shard-02.jsonl"
         },
         {
@@ -3283,7 +3318,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C05:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3294,9 +3329,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_A"
+      ],
       "missing_required_roles": [
-        "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
@@ -3305,8 +3341,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3316,11 +3354,11 @@
         {
           "task_id": "T-012AF69952EE216EB665",
           "role": "PROOF_A",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "eb953ed5998f09a1f29405092698e1a6a66cc8b7d39a7ad249f3eb4af29f156a",
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
         {
@@ -3342,7 +3380,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C05:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3353,19 +3391,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3385,11 +3426,11 @@
         {
           "task_id": "T-1AB99950B2E8AB8A5EB8",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "f42df8262facaacfb87da06ade0431fc1dadc15d6095bd4a15e3cccead3d585a",
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
@@ -3737,7 +3778,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C06:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3748,19 +3789,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3770,11 +3814,11 @@
         {
           "task_id": "T-091C7DC94F044301E499",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma2b",
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "57134242456ae509aedd5372398a895038c3b801b682037f2fb5b9376457b79a",
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
         {
@@ -3859,10 +3903,10 @@
         {
           "task_id": "T-21D7C947A4A78AD1F3AA",
           "role": "PROOF_B",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-1-shard-31/farm-1-shard-31.jsonl"
         },
@@ -3885,7 +3929,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C06:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -3907,8 +3951,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -3918,11 +3964,11 @@
         {
           "task_id": "T-1259BC581BD2E2227FE0",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "b44770fbd7682adf49933e71b9dcbeee43087d805de079df2551598966b2b1cc",
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
@@ -4373,10 +4419,10 @@
         {
           "task_id": "T-2FC14CE8E5E17FFAC9EC",
           "role": "FALSIFIER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
@@ -4625,7 +4671,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C07:TEAM-03": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4636,19 +4682,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4668,11 +4717,11 @@
         {
           "task_id": "T-09130C6F86FA97EAAC2E",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "6de237e0fd9371ea938b115fb89ff8d3eaee37851fafbebe477e0749d1be64e1",
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
@@ -4714,7 +4763,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C07:TEAM-04": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -4725,19 +4774,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -4797,11 +4849,11 @@
         {
           "task_id": "T-12BDAD8124621EF9F60B",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "bca24138bf0c63d1d6025ffe15398d2d8e7deb41dfbcaffe4e81c1542138d460",
           "artifact_file": "farm-results/cerebron-farm-2-shard-35/farm-2-shard-35.jsonl"
         },
         {
@@ -5080,7 +5132,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C07:TEAM-08": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5091,19 +5143,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "FALSIFIER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
-        "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5133,21 +5188,21 @@
         {
           "task_id": "T-250C0F6B1CB717613AB9",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
           "task_id": "T-06029D2D4713B442BAC0",
           "role": "FALSIFIER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "b4c47f81b79c1b25ae5ad93fb67bb27460bb8d1924276e0ed85b59765be10ea1",
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         },
         {
@@ -5169,7 +5224,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C07:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5191,8 +5246,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5202,11 +5259,11 @@
         {
           "task_id": "T-05B84CA15C5808AC013F",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "309b3b41d378b4778936498d5631b351f4a80bc82cb387379a05c1cd8713e291",
           "artifact_file": "farm-results/cerebron-farm-0-shard-27/farm-0-shard-27.jsonl"
         },
         {
@@ -5406,7 +5463,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C08:TEAM-02": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5417,10 +5474,11 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "PROOF_B"
+      ],
       "missing_required_roles": [
         "PROOF_A",
-        "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
@@ -5428,8 +5486,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5449,11 +5509,11 @@
         {
           "task_id": "T-11E2D25DDF668DC78010",
           "role": "PROOF_B",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "gemma9b",
-          "model_family": "gemma-2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
+          "response_sha256": "8bd40a2de10179174836bf11b585d0129f323599aa523239efac9ffc301a6bdb",
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
         {
@@ -5643,7 +5703,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C08:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5654,19 +5714,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5676,10 +5739,10 @@
         {
           "task_id": "T-1F2B49BBA16ABDCC42E0",
           "role": "SYNTHESIZER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
@@ -5716,11 +5779,11 @@
         {
           "task_id": "T-1B9A9693C22B97E111A0",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
-          "model_id": "llama3b",
-          "model_family": "llama-3.2",
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma9b",
+          "model_family": "gemma-2",
+          "response_sha256": "8aba453436a27559c9453c9e0a89f26be20d42aa7749f510ffc1eda39ecf1302",
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
       ],
@@ -5732,7 +5795,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C08:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5743,19 +5806,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "RED_TEAM"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
-        "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5765,11 +5831,11 @@
         {
           "task_id": "T-1274DA6D2808905799B6",
           "role": "RED_TEAM",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "215136148d92445ef330e6c9db7318b5a24830a8f2406533b14b05f39f6cde67",
           "artifact_file": "farm-results/cerebron-farm-2-shard-20/farm-2-shard-20.jsonl"
         },
         {
@@ -5791,7 +5857,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C08:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -5802,19 +5868,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -5834,11 +5903,11 @@
         {
           "task_id": "T-03BA94E278ED4DCA7E36",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "9a7c5cd0b0236b034d8e9d446206028b1303b50c34bd05184e3987a1997c0346",
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
         {
@@ -5923,10 +5992,10 @@
         {
           "task_id": "T-18F5D4887A6472CDAD3A",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
@@ -5989,7 +6058,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C08:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6000,7 +6069,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6008,11 +6079,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6022,11 +6094,11 @@
         {
           "task_id": "T-12CCA4E28B0617EA7A7B",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "528c028d4e3cbf16c186b049f5490ab009cf6ab2a5a5cdf10dd9ab1b7b036946",
           "artifact_file": "farm-results/cerebron-farm-0-shard-0/farm-0-shard-00.jsonl"
         },
         {
@@ -6344,7 +6416,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C09:TEAM-05": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6366,8 +6438,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6407,11 +6481,11 @@
         {
           "task_id": "T-0FC922DB8B324C01138F",
           "role": "ALTERNATIVE_ROUTE",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "2ef712951901db6631c6d5d5f494dab26f7d9308bbd215f987e82535060f0a54",
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         },
         {
@@ -6512,7 +6586,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C09:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6523,7 +6597,9 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "SYNTHESIZER"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -6531,11 +6607,12 @@
         "RED_TEAM",
         "COUNTER_AUDITOR",
         "REPLICATOR",
-        "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -6545,11 +6622,11 @@
         {
           "task_id": "T-322FFC18208CF7E932AA",
           "role": "SYNTHESIZER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "167086bc07ed0986e2b7955adf123ffee2844a643ac3fa5cda85b2ad5909e75a",
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         },
         {
@@ -6604,10 +6681,10 @@
         {
           "task_id": "T-1806AD4F043C47AD1C1B",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
@@ -7058,10 +7135,10 @@
         {
           "task_id": "T-262EBF8282DA2621B32C",
           "role": "DECOMPOSER",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-2-shard-11/farm-2-shard-11.jsonl"
         },
@@ -7383,10 +7460,10 @@
         {
           "task_id": "T-1992C4622D1348B23819",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-12/farm-0-shard-12.jsonl"
         },
@@ -7429,7 +7506,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C11:TEAM-01": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7451,8 +7528,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7502,11 +7581,11 @@
         {
           "task_id": "T-11D1AD6DD6146B19EE2B",
           "role": "DECOMPOSER",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "97eae014e1ebb29697ec624b79c9cf501eeb684e37f1120b156abc94879d85ec",
           "artifact_file": "farm-results/cerebron-farm-2-shard-35/farm-2-shard-35.jsonl"
         }
       ],
@@ -7814,7 +7893,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C11:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7836,8 +7915,10 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7847,11 +7928,11 @@
         {
           "task_id": "T-12A16E5FBD702E50D85C",
           "role": "SCOUT",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "4418d046b4423521e962aeca90cbd64d358d3e488bd0083affaf38bb2cdf8217",
           "artifact_file": "farm-results/cerebron-farm-0-shard-15/farm-0-shard-15.jsonl"
         }
       ],
@@ -7863,7 +7944,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C11:TEAM-07": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -7874,19 +7955,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "COUNTER_AUDITOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
-        "COUNTER_AUDITOR",
         "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -7906,11 +7990,11 @@
         {
           "task_id": "T-052D42D5F118A06E6CE0",
           "role": "COUNTER_AUDITOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "llama3b",
           "model_family": "llama-3.2",
-          "response_sha256": null,
+          "response_sha256": "fa557b9837dfab2af29566c04b7eb571d1d96ceb48ddf72da43833ff041691f1",
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         }
       ],
@@ -8001,7 +8085,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C11:TEAM-09": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8012,19 +8096,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8064,11 +8151,11 @@
         {
           "task_id": "T-2AF1F66090E60F88AC09",
           "role": "REPLICATOR",
-          "status": "HOLD_QUOTA_BACKOFF",
-          "ok": false,
+          "status": "COMPLETED",
+          "ok": true,
           "model_id": "gemma2b",
           "model_family": "gemma-2",
-          "response_sha256": null,
+          "response_sha256": "d706d91930c056e7594ad2bb7781fa5ecb22ed4364444a504007c4b2bd652f07",
           "artifact_file": "farm-results/cerebron-farm-2-shard-17/farm-2-shard-17.jsonl"
         },
         {
@@ -8340,10 +8427,10 @@
         {
           "task_id": "T-1AAEA38D3B88AE444DF4",
           "role": "JUDGE",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
+          "status": "HOLD_QUOTA_BACKOFF",
           "ok": false,
-          "model_id": null,
-          "model_family": null,
+          "model_id": "llama3b",
+          "model_family": "llama-3.2",
           "response_sha256": null,
           "artifact_file": "farm-results/cerebron-farm-0-shard-18/farm-0-shard-18.jsonl"
         },
@@ -8524,7 +8611,7 @@
     },
     "M-A97A56A2852A:CYCLE-11:C12:TEAM-06": {
       "status": "WAITING",
-      "successful_outputs": 0,
+      "successful_outputs": 1,
       "required_roles": [
         "PROOF_A",
         "PROOF_B",
@@ -8535,19 +8622,22 @@
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "successful_required_roles": [],
+      "successful_required_roles": [
+        "REPLICATOR"
+      ],
       "missing_required_roles": [
         "PROOF_A",
         "PROOF_B",
         "FALSIFIER",
         "RED_TEAM",
         "COUNTER_AUDITOR",
-        "REPLICATOR",
         "SYNTHESIZER",
         "JUDGE"
       ],
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_required_roles_success": false,
         "minimum_required_roles_met": false,
@@ -8597,11 +8687,11 @@
         {
           "task_id": "T-26486F5A0B6FE19BA132",
           "role": "REPLICATOR",
-          "status": "HOLD_NO_CONNECTED_PROVIDER",
-          "ok": false,
-          "model_id": null,
-          "model_family": null,
-          "response_sha256": null,
+          "status": "COMPLETED",
+          "ok": true,
+          "model_id": "gemma2b",
+          "model_family": "gemma-2",
+          "response_sha256": "3b1b7d70402136d51a559dddc3193cf9474a6789dc94844476a6340c9f5e82d4",
           "artifact_file": "farm-results/cerebron-farm-2-shard-8/farm-2-shard-08.jsonl"
         }
       ],
@@ -8948,11 +9038,14 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     },
     "M-A97A56A2852A:CYCLE-11:C02": {
@@ -8964,11 +9057,14 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     },
     "M-A97A56A2852A:CYCLE-11:C03": {
@@ -8980,8 +9076,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "llama-3.2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -8996,11 +9094,14 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     },
     "M-A97A56A2852A:CYCLE-11:C05": {
@@ -9012,11 +9113,14 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     },
     "M-A97A56A2852A:CYCLE-11:C06": {
@@ -9028,8 +9132,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9044,11 +9150,14 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     },
     "M-A97A56A2852A:CYCLE-11:C08": {
@@ -9060,11 +9169,14 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     },
     "M-A97A56A2852A:CYCLE-11:C09": {
@@ -9076,8 +9188,10 @@
       "team_packages_seen": 8,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
@@ -9108,11 +9222,14 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2",
+        "llama-3.2"
+      ],
+      "independent_family_count": 2,
       "promotion_checks": {
         "all_ten_teams_ready": false,
-        "minimum_independent_model_families_met": false
+        "minimum_independent_model_families_met": true
       }
     },
     "M-A97A56A2852A:CYCLE-11:C12": {
@@ -9124,8 +9241,10 @@
       "team_packages_seen": 10,
       "ready_teams": 0,
       "required_ready_teams": 10,
-      "independent_model_families": [],
-      "independent_family_count": 0,
+      "independent_model_families": [
+        "gemma-2"
+      ],
+      "independent_family_count": 1,
       "promotion_checks": {
         "all_ten_teams_ready": false,
         "minimum_independent_model_families_met": false
